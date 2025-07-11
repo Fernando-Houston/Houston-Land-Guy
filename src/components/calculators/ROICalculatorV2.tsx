@@ -9,11 +9,8 @@ import {
   MapPin, 
   DollarSign, 
   TrendingUp, 
-  Building, 
-  Calculator,
   Loader2,
   ChevronRight,
-  Info,
   Save,
   Download
 } from 'lucide-react';
@@ -68,7 +65,6 @@ export default function ROICalculatorV2() {
     register,
     handleSubmit,
     formState: { errors },
-    watch,
     reset
   } = useForm<CalculatorFormData>({
     resolver: zodResolver(calculatorSchema),

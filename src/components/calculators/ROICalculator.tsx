@@ -9,11 +9,8 @@ import {
   MapPin, 
   DollarSign, 
   TrendingUp, 
-  Building, 
-  Calculator,
   Loader2,
-  ChevronRight,
-  Info
+  ChevronRight
 } from 'lucide-react';
 import { createAutocompleteInput, extractAddressComponents } from '@/lib/google-maps';
 import { CoreAgentsAPI } from '@/lib/api/core-agents';
@@ -52,15 +49,14 @@ export default function ROICalculator() {
   const [developmentCosts, setDevelopmentCosts] = useState<DevelopmentCosts | null>(null);
   const [roiProjection, setROIProjection] = useState<ROIProjection | null>(null);
   const [loading, setLoading] = useState(false);
-  const [marketData, setMarketData] = useState<any>(null);
+  const [marketData, setMarketData] = useState<Record<string, unknown> | null>(null);
   
   const addressInputRef = useRef<HTMLInputElement>(null);
 
   const {
     register,
     handleSubmit,
-    formState: { errors },
-    watch
+    formState: { errors }
   } = useForm<CalculatorFormData>({
     resolver: zodResolver(calculatorSchema),
     defaultValues: {
@@ -110,7 +106,7 @@ export default function ROICalculator() {
   const fetchPropertyData = async (address: string, coords: { lat: number; lng: number }) => {
     setLoading(true);
     try {
-      const [marketResponse, neighborhoodResponse] = await Promise.all([
+      const [marketResponse] = await Promise.all([
         CoreAgentsAPI.getMarketIntelligence(address),
         CoreAgentsAPI.getNeighborhoodData(coords)
       ]);

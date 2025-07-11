@@ -7,8 +7,6 @@ import {
   Area,
   BarChart,
   Bar,
-  LineChart,
-  Line,
   PieChart,
   Pie,
   Cell,
@@ -27,11 +25,9 @@ import {
 import {
   TrendingUp,
   TrendingDown,
-  MapPin,
   Calendar,
   DollarSign,
   Activity,
-  Building,
   Home,
   AlertCircle,
   Download,
@@ -41,18 +37,8 @@ import {
 import { useMarketData, useMarketTiming, useNeighborhoodComparison } from '@/hooks/useAPI';
 import { LoadingSkeleton } from '@/components/ui/LoadingSkeleton';
 import { LeadCaptureModal } from '@/components/forms/LeadCaptureModal';
-import { PropertyTypeDistribution, NeighborhoodMetric, MarketInsightData, NeighborhoodData } from '@/lib/types/tools';
+import { PropertyTypeDistribution, MarketInsightData, NeighborhoodData } from '@/lib/types/tools';
 
-interface MarketMetrics {
-  avgPricePerSqFt: number;
-  priceChange: number;
-  daysOnMarket: number;
-  domChange: number;
-  activeListings: number;
-  listingsChange: number;
-  soldListings: number;
-  soldChange: number;
-}
 
 interface MetricCardProps {
   title: string;
