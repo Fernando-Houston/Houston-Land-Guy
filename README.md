@@ -1,36 +1,167 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Houston Development Intelligence
+
+A data-driven lead generation platform for small-to-medium builders in Houston, built with Next.js 14, TypeScript, Tailwind CSS, and PostgreSQL.
+
+## Project Setup Complete ✅
+
+### What's Been Implemented
+
+1. **Next.js 14 Project Foundation**
+   - TypeScript configuration
+   - Tailwind CSS styling
+   - App Router structure
+   - ESLint configuration
+
+2. **Database Setup (Prisma + PostgreSQL)**
+   - Lead management schema
+   - Interaction tracking
+   - Calculator results storage
+   - Market data caching
+
+3. **Branding & Layout**
+   - 70% Houston Development Intelligence / 30% Houston Land Guy branding
+   - Responsive header with mobile menu
+   - Comprehensive footer with navigation
+   - Mobile-first design approach
+
+4. **Homepage with Lead Capture**
+   - Hero section with clear value proposition
+   - Lead capture form integrated
+   - Features showcase
+   - Call-to-action sections
+
+5. **Navigation Structure**
+   - /tools - Development calculators
+   - /intelligence - Market data and insights
+   - /services - Service offerings
+   - /about - Company information
+   - /contact - Contact forms
+   - /consultation - Consultation booking
 
 ## Getting Started
 
-First, run the development server:
+### Prerequisites
+- Node.js 18+
+- PostgreSQL database (Railway recommended)
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+### Environment Setup
+
+Create a `.env.local` file and update with your credentials:
+
+```env
+# Database
+DATABASE_URL="postgresql://user:password@host:port/database?sslmode=require"
+
+# Core Agents Integration
+CORE_AGENTS_URL=https://core-agents-6d4f5.up.railway.app
+CORE_AGENTS_SECRET_KEY=your_secret_key_here
+
+# External APIs
+PERPLEXITY_API_KEY=your_perplexity_key_here
+CENSUS_API_KEY=your_census_key_here
+REPLICATE_API_TOKEN=your_replicate_token_here
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+### Installation & Development
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+```bash
+# Install dependencies
+npm install
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+# Generate Prisma client
+npx prisma generate
 
-## Learn More
+# Push database schema (after configuring DATABASE_URL)
+npx prisma db push
 
-To learn more about Next.js, take a look at the following resources:
+# Run development server
+npm run dev
+```
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+Open [http://localhost:3000](http://localhost:3000) to see the application.
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## Project Structure
 
-## Deploy on Vercel
+```
+houston-development-intelligence/
+├── app/                    # Next.js App Router
+│   ├── (marketing)/        # Marketing pages route group
+│   ├── (tools)/            # Tools route group
+│   ├── api/                # API routes
+│   └── layout.tsx          # Root layout with header/footer
+├── components/
+│   ├── ui/                 # Reusable UI components
+│   ├── tools/              # Tool-specific components
+│   ├── forms/              # Form components
+│   └── layout/             # Layout components
+├── lib/
+│   ├── db/                 # Database utilities
+│   ├── api/                # API helpers
+│   ├── utils/              # Shared utilities
+│   ├── types/              # TypeScript types
+│   ├── validations/        # Zod schemas
+│   └── errors/             # Error handling
+├── prisma/
+│   └── schema.prisma       # Database schema
+└── public/                 # Static assets
+```
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## Key Features
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+- **Lead Capture**: Forms throughout the site capture leads with source tracking
+- **Database Ready**: PostgreSQL with Prisma ORM configured
+- **Mobile-First**: Fully responsive design
+- **SEO Optimized**: Meta tags and structured data ready
+- **Type-Safe**: Full TypeScript implementation
+- **API Routes**: RESTful API for lead management
+
+## Next Steps for Development
+
+1. **Connect Railway PostgreSQL**
+   - Update DATABASE_URL in .env.local
+   - Run `npx prisma db push`
+
+2. **Implement ROI Calculator** (Terminal 2)
+   - Create calculator UI components
+   - Add calculation logic
+   - Integrate with lead capture
+
+3. **Core Agents Integration** (Terminal 3)
+   - Implement API client
+   - Add market data fetching
+   - Create data visualization components
+
+4. **Content & SEO** (Terminal 4)
+   - Add meta tags
+   - Create content pages
+   - Implement analytics
+
+## Commands
+
+```bash
+# Development
+npm run dev         # Start development server with Turbopack
+npm run build       # Build for production
+npm run start       # Start production server
+npm run lint        # Run ESLint
+
+# Database
+npx prisma studio   # Open Prisma Studio
+npx prisma generate # Generate Prisma client
+npx prisma db push  # Push schema to database
+```
+
+## Tech Stack
+
+- **Frontend**: Next.js 14, React, TypeScript
+- **Styling**: Tailwind CSS
+- **Database**: PostgreSQL (Railway)
+- **ORM**: Prisma
+- **State Management**: Zustand (installed)
+- **Forms**: React Hook Form (ready to install)
+- **Validation**: Zod
+- **Icons**: Lucide React
+
+---
+
+Built for Houston Development Intelligence by Terminal 1

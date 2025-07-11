@@ -1,0 +1,130 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// Models
+model Lead {
+  id              String       @id @default(cuid())
+  email           String       @unique
+  phone           String?
+  name            String?
+  company         String?
+  source          LEAD_SOURCE
+  status          LEAD_STATUS  @default(NEW)
+  score           Int          @default(0)
+  
+  // Lead interests
+  neighborhoods   String[]
+  projectTypes    PROJECT_TYPE[]
+  budgetMin       Float?
+  budgetMax       Float?
+  timeline        String?
+  message         String?
+  
+  // Tracking
+  utmSource       String?
+  utmMedium       String?
+  utmCampaign     String?
+  referrer        String?
+  
+  // Timestamps
+  createdAt       DateTime     @default(now())
+  updatedAt       DateTime     @updatedAt
+  lastContactedAt DateTime?
+  
+  // Relations
+  interactions    Interaction[]
+  calculatorResults CalculatorResult[]
+  
+  @@index([email])
+  @@index([status])
+  @@index([source])
+  @@index([createdAt])
+}
+
+model Interaction {
+  id          String   @id @default(cuid())
+  leadId      String
+  lead        Lead     @relation(fields: [leadId], references: [id])
+  type        String   // e.g., "page_view", "tool_use", "form_submission"
+  details     Json     // Flexible JSON field for interaction-specific data
+  createdAt   DateTime @default(now())
+  
+  @@index([leadId])
+  @@index([type])
+  @@index([createdAt])
+}
+
+model CalculatorResult {
+  id              String   @id @default(cuid())
+  leadId          String?
+  lead            Lead?    @relation(fields: [leadId], references: [id])
+  
+  // Calculator inputs
+  calculatorType  String   // "roi", "financing", "feasibility"
+  inputs          Json     // All calculator inputs
+  
+  // Results
+  roi             Float?
+  totalCost       Float?
+  projectedProfit Float?
+  timeline        String?
+  risks           Json?    // Risk assessment data
+  
+  // Tracking
+  sessionId       String?
+  completed       Boolean  @default(false)
+  createdAt       DateTime @default(now())
+  
+  @@index([leadId])
+  @@index([calculatorType])
+  @@index([createdAt])
+}
+
+model MarketData {
+  id            String   @id @default(cuid())
+  neighborhood  String
+  dataType      String   // "permits", "trends", "demographics"
+  data          Json     // Flexible JSON field for various data types
+  source        String   // "core_agents", "census", etc.
+  lastUpdated   DateTime @default(now())
+  
+  @@unique([neighborhood, dataType])
+  @@index([neighborhood])
+  @@index([dataType])
+  @@index([lastUpdated])
+}
+
+// Enums
+enum LEAD_STATUS {
+  NEW
+  QUALIFIED
+  CONTACTED
+  CONVERTED
+}
+
+enum LEAD_SOURCE {
+  ROI_CALCULATOR
+  MARKET_REPORT
+  NEWSLETTER
+  DIRECT_CONTACT
+  HERO_FORM
+  CONSULTATION_FORM
+}
+
+enum PROJECT_TYPE {
+  SINGLE_FAMILY
+  MULTI_FAMILY
+  TOWNHOME
+  CONDO
+  MIXED_USE
+  COMMERCIAL
+}
