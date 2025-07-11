@@ -8,15 +8,17 @@ const footerNavigation = {
     { name: 'Financing Calculator', href: '/tools#financing-calculator' },
   ],
   intelligence: [
-    { name: 'Market Reports', href: '/intelligence#reports' },
-    { name: 'Permit Trends', href: '/intelligence#permits' },
+    { name: 'Market Reports', href: '/blog' },
+    { name: 'Resources', href: '/resources' },
     { name: 'Neighborhood Analysis', href: '/intelligence#neighborhoods' },
     { name: 'Development Opportunities', href: '/intelligence#opportunities' },
   ],
   company: [
     { name: 'About', href: '/about' },
     { name: 'Services', href: '/services' },
+    { name: 'FAQ', href: '/faq' },
     { name: 'Contact', href: '/contact' },
+    { name: 'Local Citations', href: '/local-citations' },
     { name: 'Privacy Policy', href: '/privacy' },
   ],
   social: [

@@ -1,0 +1,22 @@
+User-agent: *
+Allow: /
+
+# Sitemaps
+Sitemap: https://houstonlandguy.com/sitemap.xml
+
+# Allow search engines to crawl all important pages
+Allow: /woodlands-development-land/
+Allow: /katy-development-opportunities/
+Allow: /sugar-land-development-sites/
+Allow: /roi-calculator/
+Allow: /intelligence/
+Allow: /consultation/
+
+# Disallow admin and private areas
+Disallow: /api/
+Disallow: /admin/
+Disallow: /_next/
+Disallow: /private/
+
+# Houston Development Intelligence - Crawl Delay
+Crawl-delay: 1

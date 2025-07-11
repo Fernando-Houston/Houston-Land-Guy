@@ -48,14 +48,14 @@ export default function Home() {
               transition={{ duration: 0.8 }}
             >
               <h1 className="text-4xl font-bold tracking-tight text-white sm:text-5xl lg:text-6xl">
-                Houston Development
+                Houston&apos;s Premier Development
                 <motion.span 
                   className="block text-3xl sm:text-4xl lg:text-5xl text-green-300 mt-2"
                   initial={{ opacity: 0 }}
                   animate={{ opacity: 1 }}
                   transition={{ delay: 0.3, duration: 0.6 }}
                 >
-                  Intelligence
+                  Intelligence Platform
                 </motion.span>
               </h1>
               <motion.p 
@@ -63,9 +63,10 @@ export default function Home() {
                 {...fadeInUp}
                 transition={{ delay: 0.4 }}
               >
-                Make smarter investment decisions with real-time market intelligence, 
-                ROI calculators, and comprehensive development analysis tools designed 
-                specifically for Houston&apos;s real estate market.
+                Discover exclusive <strong>Houston development opportunities</strong> and <strong>off-market land deals</strong> across Harris County. 
+                Our advanced market intelligence platform provides <strong>Houston land development</strong> insights, 
+                ROI calculators, and comprehensive analysis tools for builders, developers, and investors seeking 
+                premium <strong>Harris County property</strong> investments.
               </motion.p>
               
               {/* Trust Indicators */}
@@ -172,10 +173,11 @@ export default function Home() {
             transition={{ duration: 0.6 }}
           >
             <h2 className="text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl">
-              Everything You Need to <span className="gradient-text">Succeed</span>
+              Exclusive <span className="gradient-text">Houston Development Opportunities</span>
             </h2>
             <p className="mt-4 text-lg text-gray-600">
-              Comprehensive tools built specifically for Houston&apos;s development market
+              Comprehensive <strong>Houston real estate</strong> intelligence and <strong>Harris County development</strong> tools 
+              designed specifically for builders, developers, and investors in the Houston market.
             </p>
           </motion.div>
           
@@ -188,43 +190,43 @@ export default function Home() {
           >
             {[
               {
-                name: 'ROI Calculator',
-                description: 'Calculate potential returns with real-time market data and advanced financial modeling',
+                name: 'Houston Land Development ROI Calculator',
+                description: 'Calculate potential returns for Houston development projects with real-time Harris County market data and advanced financial modeling',
                 icon: Calculator,
                 bgClass: 'bg-green-100',
                 iconClass: 'text-green-600',
               },
               {
-                name: 'Market Intelligence',
-                description: 'Access permit trends, pricing data, and neighborhood analytics updated daily',
+                name: 'Houston Real Estate Market Intelligence',
+                description: 'Access Houston development trends, Harris County permit data, pricing analysis, and neighborhood development potential updated daily',
                 icon: TrendingUp,
                 bgClass: 'bg-emerald-100',
                 iconClass: 'text-emerald-600',
               },
               {
-                name: 'Zoning Analysis',
-                description: 'Instantly understand zoning regulations and development restrictions for any property',
+                name: 'Harris County Zoning Analysis',
+                description: 'Instantly understand Houston zoning regulations, development restrictions, and compliance requirements for any Harris County property',
                 icon: Building2,
                 bgClass: 'bg-teal-100',
                 iconClass: 'text-teal-600',
               },
               {
-                name: 'Feasibility Studies',
-                description: 'Generate comprehensive feasibility reports with construction costs and market comps',
+                name: 'Houston Development Feasibility Studies',
+                description: 'Generate comprehensive feasibility reports for Houston development sites with construction costs, market comps, and ROI projections',
                 icon: BarChart3,
                 bgClass: 'bg-green-100',
                 iconClass: 'text-green-700',
               },
               {
-                name: 'Expert Network',
-                description: 'Connect with vetted contractors, architects, and development professionals',
+                name: 'Houston Builder Lots Network',
+                description: 'Connect with vetted Houston contractors, architects, and development professionals specializing in Harris County projects',
                 icon: Users,
                 bgClass: 'bg-emerald-100',
                 iconClass: 'text-emerald-700',
               },
               {
-                name: 'Deal Flow',
-                description: 'Get notified of off-market opportunities matching your investment criteria',
+                name: 'Off-Market Houston Land Deals',
+                description: 'Get exclusive access to off-market land opportunities and Houston development sites matching your investment criteria',
                 icon: TrendingUp,
                 bgClass: 'bg-green-100',
                 iconClass: 'text-green-800',
