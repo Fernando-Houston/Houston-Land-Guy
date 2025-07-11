@@ -10,6 +10,8 @@ interface LeadCaptureFormProps {
   source: string
   onSuccess?: (data: FormData) => void
   className?: string
+  buttonText?: string
+  showProjectDetails?: boolean
 }
 
 interface FormData {
@@ -26,7 +28,7 @@ interface FormErrors {
   message?: string
 }
 
-export function LeadCaptureForm({ source, onSuccess, className }: LeadCaptureFormProps) {
+export function LeadCaptureForm({ source, onSuccess, className, buttonText = "Get Started", showProjectDetails = false }: LeadCaptureFormProps) {
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [errors, setErrors] = useState<FormErrors>({})
   const [formData, setFormData] = useState<FormData>({
@@ -244,7 +246,7 @@ export function LeadCaptureForm({ source, onSuccess, className }: LeadCaptureFor
             Submitting...
           </>
         ) : (
-          'Get Started'
+          buttonText
         )}
       </motion.button>
     </motion.form>
