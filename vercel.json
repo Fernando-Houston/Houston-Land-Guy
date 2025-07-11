@@ -2,16 +2,5 @@
   "buildCommand": "npm run build",
   "outputDirectory": ".next",
   "framework": "nextjs",
-  "installCommand": "npm install",
-  "env": {
-    "NODE_ENV": "production"
-  },
-  "build": {
-    "env": {
-      "NODE_ENV": "production",
-      "DATABASE_URL": "@database_url",
-      "CORE_AGENTS_URL": "@core_agents_url",
-      "NEXTAUTH_SECRET": "@nextauth_secret"
-    }
-  }
+  "installCommand": "npm install"
 }
