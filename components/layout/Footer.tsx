@@ -3,15 +3,15 @@ import Link from 'next/link'
 const footerNavigation = {
   tools: [
     { name: 'ROI Calculator', href: '/roi-calculator' },
-    { name: 'Market Dashboard', href: '/tools/market-dashboard' },
-    { name: 'Zoning Explorer', href: '/tools/zoning-explorer' },
-    { name: 'Financing Calculator', href: '/tools/financing-calculator' },
+    { name: 'Market Dashboard', href: '/tools#market-dashboard' },
+    { name: 'Zoning Explorer', href: '/tools#zoning-explorer' },
+    { name: 'Financing Calculator', href: '/tools#financing-calculator' },
   ],
   intelligence: [
-    { name: 'Market Reports', href: '/intelligence/reports' },
-    { name: 'Permit Trends', href: '/intelligence/permits' },
-    { name: 'Neighborhood Analysis', href: '/intelligence/neighborhoods' },
-    { name: 'Development Opportunities', href: '/intelligence/opportunities' },
+    { name: 'Market Reports', href: '/intelligence#reports' },
+    { name: 'Permit Trends', href: '/intelligence#permits' },
+    { name: 'Neighborhood Analysis', href: '/intelligence#neighborhoods' },
+    { name: 'Development Opportunities', href: '/intelligence#opportunities' },
   ],
   company: [
     { name: 'About', href: '/about' },
@@ -20,9 +20,9 @@ const footerNavigation = {
     { name: 'Privacy Policy', href: '/privacy' },
   ],
   social: [
-    { name: 'LinkedIn', href: '#' },
-    { name: 'Twitter', href: '#' },
-    { name: 'Facebook', href: '#' },
+    { name: 'LinkedIn', href: 'https://www.linkedin.com/company/houston-land-guy' },
+    { name: 'Twitter', href: 'https://twitter.com/houstonlandguy' },
+    { name: 'Facebook', href: 'https://www.facebook.com/houstonlandguy' },
   ],
 }
 
