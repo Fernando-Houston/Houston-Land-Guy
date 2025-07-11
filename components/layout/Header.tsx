@@ -43,7 +43,7 @@ export function Header() {
           <div className="flex items-center">
             <Link href="/" className="flex items-center group">
               <motion.span 
-                className="text-xl font-bold text-gray-900 group-hover:text-blue-600 transition-colors"
+                className="text-xl font-bold text-gray-900 group-hover:text-green-600 transition-colors"
                 whileHover={{ scale: 1.02 }}
               >
                 Houston Development Intelligence
@@ -69,13 +69,13 @@ export function Header() {
                       href={item.href}
                       className={cn(
                         "text-sm font-medium transition-colors relative group",
-                        isActive ? "text-blue-600" : "text-gray-700 hover:text-blue-600"
+                        isActive ? "text-green-600" : "text-gray-700 hover:text-green-600"
                       )}
                     >
                       {item.name}
                       {isActive && (
                         <motion.div
-                          className="absolute -bottom-1 left-0 right-0 h-0.5 bg-blue-600"
+                          className="absolute -bottom-1 left-0 right-0 h-0.5 bg-green-600"
                           layoutId="navbar-indicator"
                         />
                       )}
@@ -90,7 +90,7 @@ export function Header() {
               >
                 <Link
                   href="/consultation"
-                  className="inline-block rounded-md bg-blue-600 px-4 py-2 text-sm font-medium text-white hover:bg-blue-700 transition-colors"
+                  className="inline-block rounded-md bg-green-500 px-4 py-2 text-sm font-medium text-white hover:bg-green-600 transition-colors"
                 >
                   Free Consultation
                 </Link>
@@ -101,7 +101,7 @@ export function Header() {
           <div className="md:hidden">
             <motion.button
               type="button"
-              className="inline-flex items-center justify-center rounded-md p-2 text-gray-700 hover:bg-gray-100 hover:text-gray-900 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-blue-500"
+              className="inline-flex items-center justify-center rounded-md p-2 text-gray-700 hover:bg-gray-100 hover:text-gray-900 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-green-500"
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
               whileTap={{ scale: 0.95 }}
             >
@@ -160,7 +160,7 @@ export function Header() {
                       className={cn(
                         "flex items-center rounded-md px-3 py-2 text-base font-medium transition-colors",
                         isActive 
-                          ? "bg-blue-50 text-blue-600" 
+                          ? "bg-green-50 text-green-600" 
                           : "text-gray-700 hover:bg-gray-100 hover:text-gray-900"
                       )}
                       onClick={() => setMobileMenuOpen(false)}
@@ -178,7 +178,7 @@ export function Header() {
               >
                 <Link
                   href="/consultation"
-                  className="flex items-center rounded-md bg-blue-600 px-3 py-2 text-base font-medium text-white hover:bg-blue-700 mt-4"
+                  className="flex items-center rounded-md bg-green-500 px-3 py-2 text-base font-medium text-white hover:bg-green-600 mt-4"
                   onClick={() => setMobileMenuOpen(false)}
                 >
                   Free Consultation
