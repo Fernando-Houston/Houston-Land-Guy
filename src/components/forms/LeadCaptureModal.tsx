@@ -171,7 +171,7 @@ export function LeadCaptureModal({ isOpen, onClose, onSuccess, source }: LeadCap
 
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">
-                    I'm interested in
+                    I&apos;m interested in
                   </label>
                   <select
                     {...register('interest')}

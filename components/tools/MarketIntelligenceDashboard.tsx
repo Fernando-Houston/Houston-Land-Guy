@@ -71,26 +71,27 @@ export function MarketIntelligenceDashboard({ neighborhoods = ['Houston Heights'
       const transformedData: Record<string, MarketData> = {}
       
       for (const neighborhood of neighborhoods) {
+        const apiData = data as { data: Record<string, any> }
         transformedData[neighborhood] = {
           neighborhood,
-          permits: data.data[neighborhood]?.permits || {
+          permits: apiData.data[neighborhood]?.permits || {
             total: 0,
             residential: 0,
             commercial: 0,
             trend: 0,
           },
-          demographics: data.data[neighborhood]?.demographics || {
+          demographics: apiData.data[neighborhood]?.demographics || {
             population: 0,
             medianIncome: 0,
             growthRate: 0,
           },
-          trends: data.data[neighborhood]?.trends || {
+          trends: apiData.data[neighborhood]?.trends || {
             averagePrice: 0,
             priceChange: 0,
             daysOnMarket: 0,
             inventory: 0,
           },
-          opportunities: data.data[neighborhood]?.opportunities || {
+          opportunities: apiData.data[neighborhood]?.opportunities || {
             score: 0,
             factors: [],
           },

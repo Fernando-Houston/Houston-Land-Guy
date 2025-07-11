@@ -41,6 +41,7 @@ import {
 import { useMarketData, useMarketTiming, useNeighborhoodComparison } from '@/hooks/useAPI';
 import { LoadingSkeleton } from '@/components/ui/LoadingSkeleton';
 import { LeadCaptureModal } from '@/components/forms/LeadCaptureModal';
+import { PropertyTypeDistribution, NeighborhoodMetric, MarketInsightData, NeighborhoodData } from '@/lib/types/tools';
 
 interface MarketMetrics {
   avgPricePerSqFt: number;
@@ -51,6 +52,14 @@ interface MarketMetrics {
   listingsChange: number;
   soldListings: number;
   soldChange: number;
+}
+
+interface MetricCardProps {
+  title: string;
+  value: string | number;
+  change?: number;
+  icon: React.ComponentType<{ className?: string }>;
+  trend?: 'up' | 'down';
 }
 
 const NEIGHBORHOODS = [
@@ -95,7 +104,7 @@ export default function MarketIntelligenceDashboard() {
 
   const neighborhoodMetrics = useMemo(() => {
     if (!comparisonData) return [];
-    return comparisonData.neighborhoods.map((n: any) => ({
+    return comparisonData.neighborhoods.map((n: NeighborhoodData) => ({
       name: n.name,
       avgPrice: n.avgPricePerSqFt,
       growth: n.yearOverYearGrowth,
@@ -145,7 +154,7 @@ export default function MarketIntelligenceDashboard() {
     }
   };
 
-  const MetricCard = ({ title, value, change, icon: Icon, trend }: any) => (
+  const MetricCard = ({ title, value, change, icon: Icon, trend }: MetricCardProps) => (
     <motion.div
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
@@ -388,7 +397,7 @@ export default function MarketIntelligenceDashboard() {
                 fill="#8884d8"
                 dataKey="value"
               >
-                {(marketData?.propertyTypeDistribution || []).map((entry: any, index: number) => (
+                {(marketData?.propertyTypeDistribution || []).map((entry: PropertyTypeDistribution, index: number) => (
                   <Cell key={`cell-${index}`} fill={CHART_COLORS[index % CHART_COLORS.length]} />
                 ))}
               </Pie>
@@ -434,10 +443,10 @@ export default function MarketIntelligenceDashboard() {
           Key Market Insights
         </h2>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          {marketData?.insights?.map((insight: any, index: number) => (
-            <div key={index} className="flex items-start">
+          {marketData?.insights?.map((insight: MarketInsightData, index: number) => (
+            <div key={typeof insight === 'string' ? index : insight.id || index} className="flex items-start">
               <div className="w-2 h-2 bg-blue-600 rounded-full mt-2 mr-3 flex-shrink-0" />
-              <p className="text-gray-700">{insight}</p>
+              <p className="text-gray-700">{typeof insight === 'string' ? insight : insight.text}</p>
             </div>
           ))}
         </div>

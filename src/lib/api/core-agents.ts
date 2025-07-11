@@ -1,10 +1,22 @@
+import type { ApiResponse } from '@/types/api';
+
 const CORE_AGENTS_API = process.env.NEXT_PUBLIC_CORE_AGENTS_API || 'https://core-agents-6d4f5.up.railway.app';
 const API_KEY = process.env.NEXT_PUBLIC_CORE_AGENTS_KEY || '16d076af50e4067c252d09321d76c33bd06218fafea855fe427954098dd227b7';
 
-interface ApiResponse<T> {
-  data?: T;
-  error?: string;
-  status: 'success' | 'error';
+// Property coordinates interface
+interface PropertyCoordinates {
+  lat: number;
+  lng: number;
+}
+
+// Property data interface
+interface PropertyData {
+  address: string;
+  coordinates: PropertyCoordinates;
+  lotSize?: number;
+  currentValue?: number;
+  zoning?: string;
+  neighborhood?: string;
 }
 
 export class CoreAgentsAPI {
@@ -35,35 +47,35 @@ export class CoreAgentsAPI {
   }
 
   static async getMarketIntelligence(address: string) {
-    return this.fetchWithAuth<any>('/api/v1/market_intelligence', {
+    return this.fetchWithAuth<Record<string, unknown>>('/api/v1/market_intelligence', {
       method: 'POST',
       body: JSON.stringify({ address, analysis_type: 'property_assessment' })
     });
   }
 
-  static async getFinancialAnalysis(propertyData: any) {
-    return this.fetchWithAuth<any>('/api/v1/financial_intelligence', {
+  static async getFinancialAnalysis(propertyData: PropertyData) {
+    return this.fetchWithAuth<Record<string, unknown>>('/api/v1/financial_intelligence', {
       method: 'POST',
       body: JSON.stringify({ property_data: propertyData })
     });
   }
 
-  static async getNeighborhoodData(coordinates: { lat: number; lng: number }) {
-    return this.fetchWithAuth<any>('/api/v1/neighborhood_intelligence', {
+  static async getNeighborhoodData(coordinates: PropertyCoordinates) {
+    return this.fetchWithAuth<Record<string, unknown>>('/api/v1/neighborhood_intelligence', {
       method: 'POST',
       body: JSON.stringify({ coordinates })
     });
   }
 
   static async getRegulatoryInfo(address: string) {
-    return this.fetchWithAuth<any>('/api/v1/regulatory_intelligence', {
+    return this.fetchWithAuth<Record<string, unknown>>('/api/v1/regulatory_intelligence', {
       method: 'POST',
       body: JSON.stringify({ address })
     });
   }
 
-  static async submitLead(leadData: any) {
-    return this.fetchWithAuth<any>('/api/v1/leads', {
+  static async submitLead(leadData: Record<string, unknown>) {
+    return this.fetchWithAuth<Record<string, unknown>>('/api/v1/leads', {
       method: 'POST',
       body: JSON.stringify(leadData)
     });

@@ -1,6 +1,19 @@
 import axios from 'axios';
 import useSWR from 'swr';
 import { useCallback } from 'react';
+import type {
+  MarketData,
+  NeighborhoodData,
+  PropertyAnalysisData,
+  MarketTimingData,
+  ROICalculationRequest,
+  ROICalculationResponse,
+  LeadData,
+  LeadResponse,
+  SaveCalculationRequest,
+  SaveCalculationResponse,
+  CalculationHistoryResponse
+} from '@/types/api';
 
 const API_BASE = process.env.NEXT_PUBLIC_API_URL || '/api';
 
@@ -29,7 +42,7 @@ const fetcher = (url: string) => api.get(url).then(res => res.data);
 
 // Custom hooks
 export function useMarketData(neighborhood?: string) {
-  const { data, error, isLoading, mutate } = useSWR(
+  const { data, error, isLoading, mutate } = useSWR<MarketData>(
     neighborhood ? `/core-agents/market-intelligence?neighborhood=${neighborhood}` : null,
     fetcher,
     {
@@ -47,7 +60,7 @@ export function useMarketData(neighborhood?: string) {
 }
 
 export function useNeighborhoodComparison(neighborhoods: string[]) {
-  const { data, error, isLoading } = useSWR(
+  const { data, error, isLoading } = useSWR<NeighborhoodData>(
     neighborhoods.length > 0 
       ? `/core-agents/neighborhood-comparison?neighborhoods=${neighborhoods.join(',')}` 
       : null,
@@ -62,7 +75,7 @@ export function useNeighborhoodComparison(neighborhoods: string[]) {
 }
 
 export function usePropertyAnalysis(address: string) {
-  const { data, error, isLoading } = useSWR(
+  const { data, error, isLoading } = useSWR<PropertyAnalysisData>(
     address ? `/core-agents/property-analysis?address=${encodeURIComponent(address)}` : null,
     fetcher
   );
@@ -76,9 +89,9 @@ export function usePropertyAnalysis(address: string) {
 
 // API mutation hooks
 export function useROICalculation() {
-  const calculate = useCallback(async (data: any) => {
+  const calculate = useCallback(async (data: ROICalculationRequest): Promise<ROICalculationResponse> => {
     try {
-      const response = await api.post('/tools/roi-calculator', data);
+      const response = await api.post<ROICalculationResponse>('/tools/roi-calculator', data);
       return response.data;
     } catch (error) {
       throw error;
@@ -89,9 +102,9 @@ export function useROICalculation() {
 }
 
 export function useLeadCapture() {
-  const capture = useCallback(async (leadData: any) => {
+  const capture = useCallback(async (leadData: LeadData): Promise<LeadResponse> => {
     try {
-      const response = await api.post('/leads', leadData);
+      const response = await api.post<LeadResponse>('/leads', leadData);
       return response.data;
     } catch (error) {
       throw error;
@@ -102,9 +115,9 @@ export function useLeadCapture() {
 }
 
 export function useSaveCalculation() {
-  const save = useCallback(async (calculation: any) => {
+  const save = useCallback(async (calculation: SaveCalculationRequest): Promise<SaveCalculationResponse> => {
     try {
-      const response = await api.post('/calculations/save', calculation);
+      const response = await api.post<SaveCalculationResponse>('/calculations/save', calculation);
       return response.data;
     } catch (error) {
       throw error;
@@ -116,7 +129,7 @@ export function useSaveCalculation() {
 
 // Market timing indicators
 export function useMarketTiming() {
-  const { data, error, isLoading } = useSWR(
+  const { data, error, isLoading } = useSWR<MarketTimingData>(
     '/core-agents/market-timing',
     fetcher,
     {
@@ -134,7 +147,7 @@ export function useMarketTiming() {
 
 // Historical calculations
 export function useCalculationHistory(userId?: string) {
-  const { data, error, isLoading } = useSWR(
+  const { data, error, isLoading } = useSWR<CalculationHistoryResponse>(
     userId ? `/calculations/history?userId=${userId}` : null,
     fetcher
   );

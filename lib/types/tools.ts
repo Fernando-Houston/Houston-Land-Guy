@@ -70,3 +70,35 @@ export interface MarketAnalysisInput {
   }
   timeframe: 'current' | '3months' | '6months' | '1year'
 }
+
+// Dashboard-specific types
+export interface PropertyTypeDistribution {
+  name: string
+  value: number
+  color?: string
+}
+
+export interface NeighborhoodMetric {
+  name: string
+  demand: number
+  score: number
+}
+
+export interface MarketInsight {
+  id: string
+  text: string
+  category: 'trend' | 'opportunity' | 'risk' | 'regulation'
+  priority: 'high' | 'medium' | 'low'
+}
+
+// Union type for backward compatibility
+export type MarketInsightData = MarketInsight | string
+
+// Neighborhood comparison data
+export interface NeighborhoodData {
+  name: string
+  avgPricePerSqFt: number
+  yearOverYearGrowth: number
+  inventoryLevel: number
+  demandScore: number
+}
