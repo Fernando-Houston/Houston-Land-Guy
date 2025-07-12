@@ -30,13 +30,13 @@ export function Logo({ className = '', showText = true, variant = 'auto' }: Logo
       >
         {/* Try to show image logo first */}
         {!imageError && (
-          <div className="relative mr-3">
+          <div className="relative mr-4 flex items-center">
             <Image
               src={logoImagePath}
               alt="Houston Land Group Logo"
-              width={180}
-              height={60}
-              className="h-12 w-auto transition-all duration-200 drop-shadow-sm hover:drop-shadow-md"
+              width={240}
+              height={90}
+              className="h-16 w-auto transition-all duration-200 drop-shadow-sm hover:drop-shadow-md hover:scale-105 filter brightness-100 contrast-110"
               onError={() => setImageError(true)}
               priority
             />
