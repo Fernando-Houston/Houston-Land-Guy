@@ -1,6 +1,5 @@
 'use client'
 
-import { motion } from 'framer-motion'
 import Link from 'next/link'
 import Image from 'next/image'
 import { 
@@ -129,7 +128,7 @@ export default function WhyInvestHoustonPage() {
             </ol>
           </nav>
 
-          <motion.div 
+          <div 
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8 }}
@@ -149,7 +148,7 @@ export default function WhyInvestHoustonPage() {
               <span>•</span>
               <span>8 min read</span>
             </div>
-          </motion.div>
+          </div>
         </div>
       </section>
 
@@ -170,7 +169,7 @@ export default function WhyInvestHoustonPage() {
       {/* Main Content */}
       <div className="max-w-4xl mx-auto px-4 py-12 sm:px-6 lg:px-8">
         {/* Introduction */}
-        <motion.div 
+        <div 
           className="prose prose-lg max-w-none mb-12"
           initial={{ opacity: 0 }}
           whileInView={{ opacity: 1 }}
@@ -195,10 +194,10 @@ export default function WhyInvestHoustonPage() {
               No other major US city combines these advantages.
             </p>
           </div>
-        </motion.div>
+        </div>
 
         {/* 6 Reasons Section */}
-        <motion.div 
+        <div 
           className="mb-16"
           initial={{ opacity: 0 }}
           whileInView={{ opacity: 1 }}
@@ -210,7 +209,7 @@ export default function WhyInvestHoustonPage() {
 
           <div className="grid md:grid-cols-2 gap-8">
             {investmentReasons.map((reason, index) => (
-              <motion.div 
+              <div 
                 key={index}
                 className="bg-white rounded-xl p-6 shadow-lg hover:shadow-xl transition-shadow border border-gray-100"
                 initial={{ opacity: 0, y: 20 }}
@@ -233,13 +232,13 @@ export default function WhyInvestHoustonPage() {
                     </p>
                   </div>
                 </div>
-              </motion.div>
+              </div>
             ))}
           </div>
-        </motion.div>
+        </div>
 
         {/* No Zoning Deep Dive */}
-        <motion.div 
+        <div 
           className="mb-16"
           initial={{ opacity: 0 }}
           whileInView={{ opacity: 1 }}
@@ -284,10 +283,10 @@ export default function WhyInvestHoustonPage() {
               In Houston, if the market wants it and you can build it safely, you can do it.
             </p>
           </div>
-        </motion.div>
+        </div>
 
         {/* Population Growth */}
-        <motion.div 
+        <div 
           className="mb-16"
           initial={{ opacity: 0 }}
           whileInView={{ opacity: 1 }}
@@ -352,10 +351,10 @@ export default function WhyInvestHoustonPage() {
             affordable living, and business-friendly policies. Every new resident needs 
             housing, shopping, services, and employment spaces. That's your opportunity.
           </p>
-        </motion.div>
+        </div>
 
         {/* Investment Opportunities */}
-        <motion.div 
+        <div 
           className="mb-16"
           initial={{ opacity: 0 }}
           whileInView={{ opacity: 1 }}
@@ -367,7 +366,7 @@ export default function WhyInvestHoustonPage() {
 
           <div className="space-y-6">
             {opportunityTypes.map((opp, index) => (
-              <motion.div 
+              <div 
                 key={index}
                 className="bg-white border border-gray-200 rounded-xl p-6 hover:shadow-lg transition-shadow"
                 initial={{ opacity: 0, x: -20 }}
@@ -415,13 +414,13 @@ export default function WhyInvestHoustonPage() {
                     </div>
                   </div>
                 </div>
-              </motion.div>
+              </div>
             ))}
           </div>
-        </motion.div>
+        </div>
 
         {/* Global Advantages */}
-        <motion.div 
+        <div 
           className="mb-16"
           initial={{ opacity: 0 }}
           whileInView={{ opacity: 1 }}
@@ -466,10 +465,10 @@ export default function WhyInvestHoustonPage() {
             Austin may have tech, but Houston has energy, healthcare, aerospace, and 
             international trade all driving demand for development.
           </p>
-        </motion.div>
+        </div>
 
         {/* Timing Section */}
-        <motion.div 
+        <div 
           className="mb-16"
           initial={{ opacity: 0 }}
           whileInView={{ opacity: 1 }}
@@ -536,10 +535,10 @@ export default function WhyInvestHoustonPage() {
               </div>
             </div>
           </div>
-        </motion.div>
+        </div>
 
         {/* Risk Mitigation */}
-        <motion.div 
+        <div 
           className="mb-16"
           initial={{ opacity: 0 }}
           whileInView={{ opacity: 1 }}
@@ -596,10 +595,10 @@ export default function WhyInvestHoustonPage() {
               </div>
             </div>
           </div>
-        </motion.div>
+        </div>
 
         {/* Call to Action */}
-        <motion.div 
+        <div 
           className="mb-16"
           initial={{ opacity: 0 }}
           whileInView={{ opacity: 1 }}
@@ -634,10 +633,10 @@ export default function WhyInvestHoustonPage() {
               Or call us directly: (713) 555-LAND
             </p>
           </div>
-        </motion.div>
+        </div>
 
         {/* Conclusion */}
-        <motion.div 
+        <div 
           className="prose prose-lg max-w-none"
           initial={{ opacity: 0 }}
           whileInView={{ opacity: 1 }}
@@ -662,7 +661,7 @@ export default function WhyInvestHoustonPage() {
             The only question isn't whether to invest in Houston—it's how quickly you can 
             get started before the best opportunities are gone.
           </p>
-        </motion.div>
+        </div>
 
         {/* Related Articles */}
         <div className="mt-16 pt-8 border-t border-gray-200">

@@ -1,7 +1,6 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import { motion } from 'framer-motion'
 import Link from 'next/link'
 import { 
   MapPin, TrendingUp, DollarSign, School, Users, 
@@ -87,7 +86,7 @@ export default function NeighborhoodComparison() {
       {/* Header */}
       <section className="bg-gradient-to-br from-gray-50 to-green-50 py-12">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          <motion.div
+          <div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6 }}
@@ -106,7 +105,7 @@ export default function NeighborhoodComparison() {
             <p className="text-xl text-gray-700">
               Compare up to 4 Houston neighborhoods side-by-side with real-time market data
             </p>
-          </motion.div>
+          </div>
         </div>
       </section>
 
@@ -182,7 +181,7 @@ export default function NeighborhoodComparison() {
               <p className="mt-4 text-gray-600">Loading neighborhood data...</p>
             </div>
           ) : (
-            <motion.div
+            <div
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               transition={{ duration: 0.6 }}
@@ -413,7 +412,7 @@ export default function NeighborhoodComparison() {
                   </tbody>
                 </table>
               </div>
-            </motion.div>
+            </div>
           )}
         </div>
       </section>
@@ -422,7 +421,7 @@ export default function NeighborhoodComparison() {
       {!loading && Object.keys(neighborhoodData).length > 0 && (
         <section className="py-12 bg-white">
           <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-            <motion.div
+            <div
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
@@ -490,7 +489,7 @@ export default function NeighborhoodComparison() {
                   </p>
                 </div>
               </div>
-            </motion.div>
+            </div>
           </div>
         </section>
       )}
@@ -498,7 +497,7 @@ export default function NeighborhoodComparison() {
       {/* CTA Section */}
       <section className="py-16 bg-gradient-to-br from-green-600 to-emerald-700">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          <motion.div
+          <div
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
@@ -520,7 +519,7 @@ export default function NeighborhoodComparison() {
                 buttonText="Get Analysis Report"
               />
             </div>
-          </motion.div>
+          </div>
         </div>
       </section>
     </>

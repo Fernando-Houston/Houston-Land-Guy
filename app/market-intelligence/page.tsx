@@ -1,6 +1,5 @@
 import { Metadata } from 'next'
 import Link from 'next/link'
-import { motion } from 'framer-motion'
 import { 
   TrendingUp, FileText, Building2, DollarSign, BarChart3, 
   Clock, Download, Bell, ArrowRight, Activity, MapPin, Calendar
@@ -38,7 +37,7 @@ async function MarketIntelligenceHub() {
       {/* Hero Section */}
       <section className="bg-gradient-to-br from-gray-900 via-gray-800 to-green-900 text-white py-16">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          <motion.div
+          <div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6 }}
@@ -75,14 +74,14 @@ async function MarketIntelligenceHub() {
                 <div className="text-sm text-gray-300">Days on Market</div>
               </div>
             </div>
-          </motion.div>
+          </div>
         </div>
       </section>
 
       {/* Quick Access Grid */}
       <section className="py-16 bg-white">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          <motion.div
+          <div
             initial={{ opacity: 0 }}
             whileInView={{ opacity: 1 }}
             viewport={{ once: true }}
@@ -94,7 +93,7 @@ async function MarketIntelligenceHub() {
             
             <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
               <Link href="/market-intelligence/weekly-reports">
-                <motion.div
+                <div
                   whileHover={{ scale: 1.02 }}
                   className="bg-gradient-to-br from-green-50 to-emerald-50 rounded-xl p-6 hover:shadow-lg transition-all cursor-pointer"
                 >
@@ -106,11 +105,11 @@ async function MarketIntelligenceHub() {
                   <span className="text-green-600 font-medium text-sm flex items-center">
                     View Reports <ArrowRight className="h-4 w-4 ml-1" />
                   </span>
-                </motion.div>
+                </div>
               </Link>
 
               <Link href="/market-intelligence/permit-tracker">
-                <motion.div
+                <div
                   whileHover={{ scale: 1.02 }}
                   className="bg-gradient-to-br from-blue-50 to-indigo-50 rounded-xl p-6 hover:shadow-lg transition-all cursor-pointer"
                 >
@@ -122,11 +121,11 @@ async function MarketIntelligenceHub() {
                   <span className="text-blue-600 font-medium text-sm flex items-center">
                     Track Permits <ArrowRight className="h-4 w-4 ml-1" />
                   </span>
-                </motion.div>
+                </div>
               </Link>
 
               <Link href="/market-intelligence/investment-opportunities">
-                <motion.div
+                <div
                   whileHover={{ scale: 1.02 }}
                   className="bg-gradient-to-br from-purple-50 to-pink-50 rounded-xl p-6 hover:shadow-lg transition-all cursor-pointer"
                 >
@@ -138,11 +137,11 @@ async function MarketIntelligenceHub() {
                   <span className="text-purple-600 font-medium text-sm flex items-center">
                     View Opportunities <ArrowRight className="h-4 w-4 ml-1" />
                   </span>
-                </motion.div>
+                </div>
               </Link>
 
               <Link href="/market-intelligence/market-timing">
-                <motion.div
+                <div
                   whileHover={{ scale: 1.02 }}
                   className="bg-gradient-to-br from-orange-50 to-red-50 rounded-xl p-6 hover:shadow-lg transition-all cursor-pointer"
                 >
@@ -154,17 +153,17 @@ async function MarketIntelligenceHub() {
                   <span className="text-orange-600 font-medium text-sm flex items-center">
                     Check Timing <ArrowRight className="h-4 w-4 ml-1" />
                   </span>
-                </motion.div>
+                </div>
               </Link>
             </div>
-          </motion.div>
+          </div>
         </div>
       </section>
 
       {/* Live Market Metrics */}
       <section className="py-16 bg-gradient-to-b from-gray-50 to-white">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          <motion.div
+          <div
             initial={{ opacity: 0 }}
             whileInView={{ opacity: 1 }}
             viewport={{ once: true }}
@@ -186,14 +185,14 @@ async function MarketIntelligenceHub() {
             <div className="max-w-4xl mx-auto">
               <MarketMetricsCard metrics={marketMetrics.data} />
             </div>
-          </motion.div>
+          </div>
         </div>
       </section>
 
       {/* Latest Market Report */}
       <section className="py-16 bg-white">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          <motion.div
+          <div
             initial={{ opacity: 0 }}
             whileInView={{ opacity: 1 }}
             viewport={{ once: true }}
@@ -266,14 +265,14 @@ async function MarketIntelligenceHub() {
                 </div>
               </div>
             </div>
-          </motion.div>
+          </div>
         </div>
       </section>
 
       {/* Featured Opportunities */}
       <section className="py-16 bg-gradient-to-b from-gray-50 to-white">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          <motion.div
+          <div
             initial={{ opacity: 0 }}
             whileInView={{ opacity: 1 }}
             viewport={{ once: true }}
@@ -285,7 +284,7 @@ async function MarketIntelligenceHub() {
             
             <div className="grid md:grid-cols-2 gap-8">
               {opportunities.data.slice(0, 2).map((opp) => (
-                <motion.div
+                <div
                   key={opp.id}
                   whileHover={{ y: -5 }}
                   className="bg-white rounded-xl shadow-lg overflow-hidden"
@@ -336,7 +335,7 @@ async function MarketIntelligenceHub() {
                       <ArrowRight className="h-4 w-4 ml-1" />
                     </Link>
                   </div>
-                </motion.div>
+                </div>
               ))}
             </div>
             
@@ -349,14 +348,14 @@ async function MarketIntelligenceHub() {
                 <ArrowRight className="h-4 w-4 ml-2" />
               </Link>
             </div>
-          </motion.div>
+          </div>
         </div>
       </section>
 
       {/* Newsletter Signup */}
       <section className="py-16 bg-gradient-to-br from-gray-900 to-gray-800">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          <motion.div
+          <div
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
@@ -390,7 +389,7 @@ async function MarketIntelligenceHub() {
             <p className="text-sm text-gray-400 mt-4">
               Join 5,000+ developers and investors getting weekly Houston market insights
             </p>
-          </motion.div>
+          </div>
         </div>
       </section>
     </>

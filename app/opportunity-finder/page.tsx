@@ -1,7 +1,6 @@
 'use client'
 
 import { useState } from 'react'
-import { motion } from 'framer-motion'
 import Link from 'next/link'
 import { 
   Search, Filter, MapPin, DollarSign, TrendingUp, 
@@ -136,7 +135,7 @@ export default function OpportunityFinder() {
       {/* Header */}
       <section className="bg-gradient-to-br from-gray-900 via-gray-800 to-purple-900 text-white py-16">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          <motion.div
+          <div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6 }}
@@ -154,14 +153,14 @@ export default function OpportunityFinder() {
               Search Houston's exclusive off-market development opportunities 
               with advanced filtering and AI-powered recommendations
             </p>
-          </motion.div>
+          </div>
         </div>
       </section>
 
       {/* Search Criteria */}
       <section className="py-12 bg-white">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          <motion.div
+          <div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ duration: 0.6 }}
@@ -350,7 +349,7 @@ export default function OpportunityFinder() {
                 )}
               </button>
             </div>
-          </motion.div>
+          </div>
         </div>
       </section>
 
@@ -378,7 +377,7 @@ export default function OpportunityFinder() {
             </div>
 
             {opportunities.length === 0 ? (
-              <motion.div
+              <div
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 className="text-center py-12 bg-white rounded-xl shadow-sm"
@@ -396,11 +395,11 @@ export default function OpportunityFinder() {
                 >
                   Reset filters and search again
                 </button>
-              </motion.div>
+              </div>
             ) : (
               <div className="grid md:grid-cols-2 gap-6">
                 {opportunities.map((opp, index) => (
-                  <motion.div
+                  <div
                     key={opp.id}
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
@@ -462,7 +461,7 @@ export default function OpportunityFinder() {
                         </Link>
                       </div>
                     </div>
-                  </motion.div>
+                  </div>
                 ))}
               </div>
             )}
@@ -473,7 +472,7 @@ export default function OpportunityFinder() {
       {/* CTA Section */}
       <section className="py-16 bg-gradient-to-br from-purple-600 to-indigo-700">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          <motion.div
+          <div
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
@@ -496,7 +495,7 @@ export default function OpportunityFinder() {
                 buttonText="Set Up Alerts"
               />
             </div>
-          </motion.div>
+          </div>
         </div>
       </section>
     </>
