@@ -74,7 +74,7 @@ export default function WoodlandsDevelopmentPage() {
                   <div className="text-3xl sm:text-4xl font-bold">$200M+</div>
                   <div className="text-sm opacity-90">Annual Development Value</div>
                 </div>
-              </motion.div>
+              </div>
               
               <motion.div 
                 className="mt-10 flex flex-col sm:flex-row sm:space-x-4 space-y-4 sm:space-y-0"
@@ -90,7 +90,7 @@ export default function WoodlandsDevelopmentPage() {
                     Calculate Woodlands ROI
                     <ArrowRight className="ml-2 h-5 w-5" />
                   </Link>
-                </motion.div>
+                </div>
                 <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
                   <Link
                     href="#opportunities"
@@ -98,9 +98,9 @@ export default function WoodlandsDevelopmentPage() {
                   >
                     View Development Sites
                   </Link>
-                </motion.div>
-              </motion.div>
-            </motion.div>
+                </div>
+              </div>
+            </div>
             
             <motion.div 
               className="feature-card shadow-2xl"
@@ -126,7 +126,7 @@ export default function WoodlandsDevelopmentPage() {
                   </div>
                 </div>
               </div>
-            </motion.div>
+            </div>
           </div>
         </div>
       </section>
@@ -134,13 +134,7 @@ export default function WoodlandsDevelopmentPage() {
       {/* The Woodlands Development Overview */}
       <section className="py-16 sm:py-24 bg-gradient-to-b from-gray-50 to-white">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          <motion.div 
-            className="text-center mb-16"
-            initial={{ opacity: 0 }}
-            whileInView={{ opacity: 1 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.6 }}
-          >
+          <div className="text-center mb-16">
             <h2 className="text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl">
               Why The Woodlands for <span className="gradient-text">Development Investment</span>
             </h2>
@@ -149,7 +143,7 @@ export default function WoodlandsDevelopmentPage() {
               As one of America&apos;s premier master-planned communities, it offers unparalleled infrastructure, 
               established market demand, and consistent appreciation for <strong>Woodlands real estate development</strong> projects.
             </p>
-          </motion.div>
+          </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             {[
@@ -205,7 +199,7 @@ export default function WoodlandsDevelopmentPage() {
                 <h3 className="text-lg font-semibold text-gray-900 mb-2">{feature.title}</h3>
                 <p className="text-gray-600 mb-3">{feature.description}</p>
                 <div className="text-green-600 font-semibold text-sm">{feature.stats}</div>
-              </motion.div>
+              </div>
             ))}
           </div>
         </div>
@@ -214,13 +208,7 @@ export default function WoodlandsDevelopmentPage() {
       {/* Development Opportunities Section */}
       <section id="opportunities" className="py-16 sm:py-24 bg-white">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          <motion.div 
-            className="text-center mb-16"
-            initial={{ opacity: 0 }}
-            whileInView={{ opacity: 1 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.6 }}
-          >
+          <div className="text-center mb-16">
             <h2 className="text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl">
               Current <span className="gradient-text">Woodlands Development Opportunities</span>
             </h2>
@@ -228,7 +216,7 @@ export default function WoodlandsDevelopmentPage() {
               Exclusive access to premium <strong>Woodlands development sites</strong> and <strong>builder lots</strong> 
               currently available for qualified developers and investors.
             </p>
-          </motion.div>
+          </div>
 
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
             <motion.div
@@ -269,7 +257,7 @@ export default function WoodlandsDevelopmentPage() {
                   <div className="mt-2 text-green-600 font-medium">3-25 acre sites • $5M-$20M range</div>
                 </div>
               </div>
-            </motion.div>
+            </div>
 
             <motion.div
               className="feature-card"
@@ -306,7 +294,7 @@ export default function WoodlandsDevelopmentPage() {
               </div>
 
               <LeadCaptureForm source="WOODLANDS_OPPORTUNITIES" />
-            </motion.div>
+            </div>
           </div>
         </div>
       </section>
@@ -345,7 +333,7 @@ export default function WoodlandsDevelopmentPage() {
                   Schedule Woodlands Consultation
                   <ArrowRight className="ml-2 h-5 w-5" />
                 </Link>
-              </motion.div>
+              </div>
               <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
                 <Link
                   href="/roi-calculator"
@@ -353,9 +341,9 @@ export default function WoodlandsDevelopmentPage() {
                 >
                   Try Woodlands ROI Calculator
                 </Link>
-              </motion.div>
-            </motion.div>
-          </motion.div>
+              </div>
+            </div>
+          </div>
         </div>
       </section>
     </>

@@ -1,6 +1,5 @@
 'use client'
 
-import { motion } from 'framer-motion'
 import Link from 'next/link'
 import { 
   ExternalLink, FileText, Calculator, Map, Building2, Users, 
@@ -330,12 +329,7 @@ export default function ResourcesPage() {
       {/* Hero Section */}
       <section className="relative overflow-hidden bg-gradient-to-br from-gray-50 to-green-50 py-16 sm:py-24">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          <motion.div 
-            className="text-center"
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6 }}
-          >
+          <div className="text-center">
             <h1 className="text-4xl font-bold tracking-tight text-gray-900 sm:text-5xl lg:text-6xl">
               Houston Development <span className="gradient-text">Resources</span>
             </h1>
@@ -343,29 +337,20 @@ export default function ResourcesPage() {
               Essential tools, guides, and connections for successful real estate development in Houston. 
               Access regulatory resources, market data, calculators, and industry networks all in one place.
             </p>
-          </motion.div>
+          </div>
         </div>
       </section>
 
       {/* Featured Tools */}
       <section className="py-16 bg-white">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          <motion.div 
-            initial={{ opacity: 0 }}
-            whileInView={{ opacity: 1 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.6 }}
-          >
+          <div>
             <h2 className="text-3xl font-bold text-gray-900 mb-8 text-center">Featured Tools</h2>
             
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
               {featuredTools.map((tool, index) => (
-                <motion.div
+                <div
                   key={tool.title}
-                  initial={{ opacity: 0, y: 20 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true }}
-                  transition={{ duration: 0.5, delay: index * 0.1 }}
                 >
                   <Link 
                     href={tool.url}
@@ -377,10 +362,10 @@ export default function ResourcesPage() {
                     </h3>
                     <p className="mt-2 text-sm text-gray-600">{tool.description}</p>
                   </Link>
-                </motion.div>
+                </div>
               ))}
             </div>
-          </motion.div>
+          </div>
         </div>
       </section>
 
@@ -389,12 +374,8 @@ export default function ResourcesPage() {
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <div className="space-y-16">
             {resourceCategories.map((category, categoryIndex) => (
-              <motion.div
+              <div
                 key={category.title}
-                initial={{ opacity: 0 }}
-                whileInView={{ opacity: 1 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.6, delay: categoryIndex * 0.1 }}
               >
                 <div className="flex items-center mb-8">
                   {getIconComponent(category.icon, category.color)}
@@ -403,15 +384,11 @@ export default function ResourcesPage() {
                 
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                   {category.resources.map((resource, index) => (
-                    <motion.div
+                    <div
                       key={resource.name}
                       className={`bg-white rounded-lg shadow-sm border p-6 hover:shadow-md transition-shadow ${
                         resource.featured ? 'border-green-200 bg-green-50' : 'border-gray-200'
                       }`}
-                      initial={{ opacity: 0, y: 20 }}
-                      whileInView={{ opacity: 1, y: 0 }}
-                      viewport={{ once: true }}
-                      transition={{ duration: 0.5, delay: index * 0.05 }}
                     >
                       <div className="flex items-start justify-between mb-3">
                         <h3 className="font-semibold text-gray-900 flex-1">{resource.name}</h3>
@@ -447,10 +424,10 @@ export default function ResourcesPage() {
                           Coming Soon
                         </span>
                       )}
-                    </motion.div>
+                    </div>
                   ))}
                 </div>
-              </motion.div>
+              </div>
             ))}
           </div>
         </div>
@@ -459,13 +436,7 @@ export default function ResourcesPage() {
       {/* Download Section */}
       <section className="py-16 bg-white">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          <motion.div 
-            className="bg-gradient-to-br from-green-50 to-emerald-50 rounded-2xl p-8 md:p-12"
-            initial={{ opacity: 0 }}
-            whileInView={{ opacity: 1 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.6 }}
-          >
+          <div className="bg-gradient-to-br from-green-50 to-emerald-50 rounded-2xl p-8 md:p-12">
             <div className="text-center">
               <Download className="h-12 w-12 text-green-600 mx-auto mb-4" />
               <h2 className="text-2xl font-bold text-gray-900 mb-4">
@@ -480,20 +451,14 @@ export default function ResourcesPage() {
                 Download Free Checklist
               </button>
             </div>
-          </motion.div>
+          </div>
         </div>
       </section>
 
       {/* Link Exchange Notice */}
       <section className="py-16 bg-gradient-to-b from-gray-50 to-white">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          <motion.div 
-            className="bg-white border border-gray-200 rounded-xl p-8"
-            initial={{ opacity: 0 }}
-            whileInView={{ opacity: 1 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.6 }}
-          >
+          <div className="bg-white border border-gray-200 rounded-xl p-8">
             <div className="flex items-start">
               <Globe className="h-8 w-8 text-green-600 flex-shrink-0 mt-1" />
               <div className="ml-4">
@@ -518,7 +483,7 @@ export default function ResourcesPage() {
                 </Link>
               </div>
             </div>
-          </motion.div>
+          </div>
         </div>
       </section>
 
@@ -527,13 +492,7 @@ export default function ResourcesPage() {
         <div className="absolute inset-0 bg-gradient-to-r from-green-600 to-emerald-700" />
         
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 relative">
-          <motion.div 
-            className="text-center"
-            initial={{ opacity: 0 }}
-            whileInView={{ opacity: 1 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.6 }}
-          >
+          <div className="text-center">
             <h2 className="text-3xl font-bold tracking-tight text-white sm:text-4xl">
               Need Personalized Development Guidance?
             </h2>
@@ -541,13 +500,7 @@ export default function ResourcesPage() {
               Our experts can help you navigate Houston's development landscape and connect you 
               with the right resources for your specific project needs.
             </p>
-            <motion.div 
-              className="mt-8"
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.6, delay: 0.2 }}
-            >
+            <div className="mt-8">
               <Link
                 href="/consultation"
                 className="inline-flex items-center justify-center px-8 py-4 border border-transparent text-base font-semibold rounded-lg text-green-600 bg-white hover:bg-gray-50 transition-all shadow-lg"
@@ -555,8 +508,8 @@ export default function ResourcesPage() {
                 Schedule Free Consultation
                 <ExternalLink className="ml-2 h-5 w-5" />
               </Link>
-            </motion.div>
-          </motion.div>
+            </div>
+          </div>
         </div>
       </section>
     </>

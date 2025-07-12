@@ -87,7 +87,7 @@ export default function KatyDevelopmentPage() {
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.6 }}
               >
-                <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
+                <div>
                   <Link
                     href="/roi-calculator"
                     className="cta-primary w-full sm:w-auto inline-flex items-center justify-center"
@@ -96,7 +96,7 @@ export default function KatyDevelopmentPage() {
                     <ArrowRight className="ml-2 h-5 w-5" />
                   </Link>
                 </motion.div>
-                <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
+                <div>
                   <Link
                     href="#development-sites"
                     className="cta-secondary w-full sm:w-auto inline-flex items-center justify-center bg-white/10 backdrop-blur-sm border-white/30 text-white hover:bg-white/20"
@@ -139,13 +139,7 @@ export default function KatyDevelopmentPage() {
       {/* Katy Development Market Overview */}
       <section className="py-16 sm:py-24 bg-gradient-to-b from-gray-50 to-white">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          <motion.div 
-            className="text-center mb-16"
-            initial={{ opacity: 0 }}
-            whileInView={{ opacity: 1 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.6 }}
-          >
+          <div className="text-center mb-16">
             <h2 className="text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl">
               Why Katy is the <span className="gradient-text">Next Houston Development Hotspot</span>
             </h2>
@@ -196,14 +190,9 @@ export default function KatyDevelopmentPage() {
                 stats: "15+ Communities"
               }
             ].map((feature, index) => (
-              <motion.div
+              <div
                 key={feature.title}
                 className={`feature-card group ${feature.highlight ? 'ring-2 ring-green-500' : ''}`}
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.5, delay: index * 0.1 }}
-                whileHover={{ scale: 1.03, transition: { duration: 0.2 } }}
               >
                 <div className="flex items-center justify-center h-12 w-12 rounded-md bg-emerald-100 text-emerald-600 mb-4 group-hover:scale-110 transition-transform">
                   <feature.icon className="h-6 w-6" />
@@ -227,13 +216,7 @@ export default function KatyDevelopmentPage() {
       {/* Katy Development Sites */}
       <section id="development-sites" className="py-16 sm:py-24 bg-white">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          <motion.div 
-            className="text-center mb-16"
-            initial={{ opacity: 0 }}
-            whileInView={{ opacity: 1 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.6 }}
-          >
+          <div className="text-center mb-16">
             <h2 className="text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl">
               Available <span className="gradient-text">Katy Development Sites</span>
             </h2>
@@ -244,12 +227,7 @@ export default function KatyDevelopmentPage() {
           </motion.div>
 
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center mb-16">
-            <motion.div
-              initial={{ opacity: 0, x: -30 }}
-              whileInView={{ opacity: 1, x: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.6 }}
-            >
+            <div>
               <h3 className="text-2xl font-bold text-gray-900 mb-6">
                 Current Katy Development Categories
               </h3>
@@ -284,13 +262,7 @@ export default function KatyDevelopmentPage() {
               </div>
             </motion.div>
 
-            <motion.div
-              className="feature-card"
-              initial={{ opacity: 0, x: 30 }}
-              whileInView={{ opacity: 1, x: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.6 }}
-            >
+            <div className="feature-card">
               <h3 className="text-xl font-bold text-gray-900 mb-4">
                 Access Exclusive Katy Opportunities
               </h3>
@@ -323,13 +295,7 @@ export default function KatyDevelopmentPage() {
           </div>
 
           {/* Success Stories */}
-          <motion.div
-            className="bg-emerald-50 rounded-2xl p-8"
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.6 }}
-          >
+          <div className="bg-emerald-50 rounded-2xl p-8">
             <h3 className="text-2xl font-bold text-gray-900 mb-6 text-center">
               Katy Development Success Stories
             </h3>
@@ -362,13 +328,7 @@ export default function KatyDevelopmentPage() {
         <div className="absolute inset-0 bg-gradient-to-r from-emerald-600 to-green-700" />
         
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 relative">
-          <motion.div 
-            className="text-center"
-            initial={{ opacity: 0 }}
-            whileInView={{ opacity: 1 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.6 }}
-          >
+          <div className="text-center">
             <h2 className="text-3xl font-bold tracking-tight text-white sm:text-4xl lg:text-5xl">
               Ready to Capitalize on Katy&apos;s Growth?
             </h2>
@@ -376,13 +336,7 @@ export default function KatyDevelopmentPage() {
               Join successful developers who are building the future of Katy with strategic 
               <strong> land development investments</strong>
             </p>
-            <motion.div 
-              className="mt-10 flex flex-col sm:flex-row gap-4 justify-center"
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.6, delay: 0.2 }}
-            >
+            <div className="mt-10 flex flex-col sm:flex-row gap-4 justify-center">
               <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
                 <Link
                   href="/consultation"
