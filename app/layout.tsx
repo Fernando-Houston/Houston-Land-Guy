@@ -200,6 +200,32 @@ export default function RootLayout({
             })
           }}
         />
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `
+              // requestIdleCallback polyfill for Safari and other browsers
+              if (!window.requestIdleCallback) {
+                window.requestIdleCallback = function (cb) {
+                  var start = Date.now();
+                  return setTimeout(function () {
+                    cb({
+                      didTimeout: false,
+                      timeRemaining: function () {
+                        return Math.max(0, 50 - (Date.now() - start));
+                      }
+                    });
+                  }, 1);
+                }
+              }
+              
+              if (!window.cancelIdleCallback) {
+                window.cancelIdleCallback = function (id) {
+                  clearTimeout(id);
+                }
+              }
+            `
+          }}
+        />
       </head>
       <body className={`${inter.className} antialiased bg-gray-50`}>
         <GoogleAnalytics />
