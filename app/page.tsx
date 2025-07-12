@@ -68,11 +68,10 @@ export default function Home() {
         </div>
         
         <div className="mx-auto max-w-7xl px-4 py-16 sm:px-6 sm:py-24 lg:px-8 relative">
-          <div className="lg:grid lg:grid-cols-2 lg:gap-12 lg:items-center">
+          <div className="text-center max-w-4xl mx-auto">
             <motion.div 
-              className="mb-12 lg:mb-0"
-              initial={{ opacity: 0, x: -50 }}
-              animate={{ opacity: 1, x: 0 }}
+              initial={{ opacity: 0, y: 50 }}
+              animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.8 }}
             >
               <h1 className="text-4xl font-bold tracking-tight text-white sm:text-5xl lg:text-6xl">
@@ -99,26 +98,26 @@ export default function Home() {
               
               {/* Trust Indicators */}
               <motion.div 
-                className="mt-8 grid grid-cols-2 gap-6 sm:flex sm:items-center sm:gap-8"
+                className="mt-8 grid grid-cols-1 gap-6 sm:grid-cols-3 sm:gap-8 justify-items-center"
                 {...fadeInUp}
                 transition={{ delay: 0.5 }}
               >
-                <div className="text-white">
+                <div className="text-white text-center">
                   <div className="text-3xl sm:text-4xl font-bold">$483M+</div>
                   <div className="text-sm opacity-90">in Transactions</div>
                 </div>
-                <div className="text-white">
+                <div className="text-white text-center">
                   <div className="text-3xl sm:text-4xl font-bold">15+</div>
                   <div className="text-sm opacity-90">Years Experience</div>
                 </div>
-                <div className="text-white col-span-2 sm:col-span-1">
+                <div className="text-white text-center">
                   <div className="text-3xl sm:text-4xl font-bold">1,200+</div>
                   <div className="text-sm opacity-90">Projects Analyzed</div>
                 </div>
               </motion.div>
               
               <motion.div 
-                className="mt-10 flex flex-col sm:flex-row sm:space-x-4 space-y-4 sm:space-y-0"
+                className="mt-10 flex flex-col sm:flex-row sm:justify-center sm:space-x-4 space-y-4 sm:space-y-0"
                 {...fadeInUp}
                 transition={{ delay: 0.6 }}
               >
@@ -141,7 +140,7 @@ export default function Home() {
                 </motion.div>
               </motion.div>
               <motion.div 
-                className="mt-6 flex flex-wrap items-center gap-6"
+                className="mt-6 flex flex-wrap justify-center items-center gap-6"
                 {...fadeInUp}
                 transition={{ delay: 0.7 }}
               >
@@ -158,40 +157,6 @@ export default function Home() {
                   <span>Instant results</span>
                 </div>
               </motion.div>
-            </motion.div>
-            <motion.div 
-              className="relative rounded-3xl p-8 shadow-2xl"
-              initial={{ opacity: 0, x: 50 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ duration: 0.8, delay: 0.2 }}
-              whileHover={{ scale: 1.02 }}
-              style={{
-                background: 'rgba(255, 255, 255, 0.03)',
-                backdropFilter: 'blur(30px)',
-                border: '1px solid rgba(255, 255, 255, 0.12)',
-                boxShadow: '0 32px 64px -12px rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(255, 255, 255, 0.05) inset',
-                WebkitBackdropFilter: 'blur(30px)'
-              }}
-            >
-              <div className="text-center mb-6">
-                <h3 className="text-2xl font-bold text-white mb-2">
-                  Get Your Free Analysis
-                </h3>
-                <p className="text-white/80">
-                  Instant access to ROI calculations and market insights
-                </p>
-              </div>
-              <LeadCaptureForm source="HERO_FORM" glassmorphism={true} />
-              <div className="mt-6 pt-6 border-t border-white/20">
-                <div className="flex items-center justify-center gap-4 text-sm text-white/70">
-                  <div className="flex items-center">
-                    <svg className="w-4 h-4 mr-1 text-green-400" fill="currentColor" viewBox="0 0 20 20">
-                      <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
-                    </svg>
-                    <span>Trusted by 500+ developers</span>
-                  </div>
-                </div>
-              </div>
             </motion.div>
           </div>
         </div>
@@ -361,6 +326,76 @@ export default function Home() {
               <div className="flex items-center">
                 <CheckCircle className="h-5 w-5 text-green-300 mr-2" />
                 <span>No obligation</span>
+              </div>
+            </motion.div>
+          </motion.div>
+        </div>
+      </motion.section>
+
+      {/* Lead Capture Section */}
+      <motion.section 
+        className="relative py-20 overflow-hidden"
+        initial={{ opacity: 0 }}
+        whileInView={{ opacity: 1 }}
+        viewport={{ once: true }}
+        transition={{ duration: 0.6 }}
+      >
+        {/* Background with gradient */}
+        <div className="absolute inset-0 bg-gradient-to-br from-gray-900 via-gray-800 to-green-900" />
+        
+        {/* Pattern Overlay */}
+        <div className="absolute inset-0 opacity-5">
+          <div className="absolute inset-0" style={{
+            backgroundImage: `url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.1'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")`,
+          }} />
+        </div>
+        
+        <div className="mx-auto max-w-4xl px-4 sm:px-6 lg:px-8 relative">
+          <motion.div 
+            className="text-center mb-12"
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.6 }}
+          >
+            <h2 className="text-3xl font-bold tracking-tight text-white sm:text-4xl lg:text-5xl mb-4">
+              Get Your Free Analysis
+            </h2>
+            <p className="text-lg text-gray-300 max-w-2xl mx-auto">
+              Instant access to ROI calculations and market insights for your next Houston development project
+            </p>
+          </motion.div>
+          
+          <motion.div 
+            className="max-w-xl mx-auto"
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.8, delay: 0.2 }}
+          >
+            <motion.div 
+              className="relative rounded-3xl p-8 shadow-2xl"
+              whileHover={{ scale: 1.02 }}
+              transition={{ duration: 0.3 }}
+              style={{
+                background: 'rgba(255, 255, 255, 0.03)',
+                backdropFilter: 'blur(30px)',
+                border: '1px solid rgba(255, 255, 255, 0.12)',
+                boxShadow: '0 32px 64px -12px rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(255, 255, 255, 0.05) inset',
+                WebkitBackdropFilter: 'blur(30px)'
+              }}
+            >
+              <LeadCaptureForm source="BOTTOM_FORM" glassmorphism={true} />
+              
+              <div className="mt-6 pt-6 border-t border-white/20">
+                <div className="flex items-center justify-center gap-4 text-sm text-white/70">
+                  <div className="flex items-center">
+                    <svg className="w-4 h-4 mr-1 text-green-400" fill="currentColor" viewBox="0 0 20 20">
+                      <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
+                    </svg>
+                    <span>Trusted by 500+ developers</span>
+                  </div>
+                </div>
               </div>
             </motion.div>
           </motion.div>
