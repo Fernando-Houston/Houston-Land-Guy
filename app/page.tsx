@@ -1,9 +1,10 @@
 'use client'
 
 import Link from "next/link";
-import { ArrowRight, Calculator, TrendingUp, Building2, BarChart3, Users, CheckCircle } from "lucide-react";
+import { ArrowRight, Calculator, TrendingUp, Building2, BarChart3, Users, CheckCircle, Volume2, VolumeX } from "lucide-react";
 import { LeadCaptureForm } from "@/components/forms/LeadCaptureForm";
 import { motion } from 'framer-motion';
+import { useState } from 'react';
 
 const fadeInUp = {
   initial: { opacity: 0, y: 20 },
@@ -20,20 +21,57 @@ const staggerChildren = {
 };
 
 export default function Home() {
+  const [isMuted, setIsMuted] = useState(true);
+
   return (
     <>
       {/* Hero Section */}
-      <section className="relative overflow-hidden">
-        {/* Gradient Background */}
-        <motion.div 
-          className="absolute inset-0 bg-gradient-to-br from-green-500 via-emerald-600 to-gray-900"
+      <section className="relative overflow-hidden min-h-[80vh]">
+        {/* Video Background */}
+        <div className="absolute inset-0 w-full h-full">
+          <video
+            id="hero-video"
+            className="absolute inset-0 w-full h-full object-cover"
+            autoPlay
+            muted={isMuted}
+            loop
+            playsInline
+            poster="https://customer-6njalxhlz5ulnoaq.cloudflarestream.com/df599a037464f8c9e45dc495484035ee/thumbnails/thumbnail.jpg"
+          >
+            <source 
+              src="https://customer-6njalxhlz5ulnoaq.cloudflarestream.com/df599a037464f8c9e45dc495484035ee/manifest/video.m3u8" 
+              type="application/x-mpegURL" 
+            />
+            <source 
+              src="https://customer-6njalxhlz5ulnoaq.cloudflarestream.com/df599a037464f8c9e45dc495484035ee/watch" 
+              type="video/mp4" 
+            />
+          </video>
+        </div>
+        
+        {/* Video Controls */}
+        <motion.button
+          onClick={() => setIsMuted(!isMuted)}
+          className="absolute top-6 right-6 z-10 bg-black/50 backdrop-blur-sm text-white p-3 rounded-full hover:bg-black/70 transition-colors"
+          whileHover={{ scale: 1.1 }}
+          whileTap={{ scale: 0.95 }}
           initial={{ opacity: 0 }}
-          animate={{ opacity: 0.95 }}
-          transition={{ duration: 1 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 2 }}
+        >
+          {isMuted ? <VolumeX size={20} /> : <Volume2 size={20} />}
+        </motion.button>
+        
+        {/* Video Overlay */}
+        <motion.div 
+          className="absolute inset-0 bg-gradient-to-r from-black/70 via-black/50 to-black/60"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 1.5 }}
         />
         
-        {/* Pattern Overlay */}
-        <div className="absolute inset-0 opacity-10">
+        {/* Subtle Pattern Overlay for texture */}
+        <div className="absolute inset-0 opacity-5">
           <div className="absolute inset-0" style={{
             backgroundImage: `url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.1'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")`,
           }} />
@@ -132,7 +170,7 @@ export default function Home() {
               </motion.div>
             </motion.div>
             <motion.div 
-              className="feature-card shadow-2xl"
+              className="feature-card shadow-2xl bg-white/95 backdrop-blur-sm border border-white/20"
               initial={{ opacity: 0, x: 50 }}
               animate={{ opacity: 1, x: 0 }}
               transition={{ duration: 0.8, delay: 0.2 }}
