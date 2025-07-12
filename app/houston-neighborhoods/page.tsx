@@ -1,6 +1,5 @@
 import { Metadata } from 'next'
 import Link from 'next/link'
-import { motion } from 'framer-motion'
 import { MapPin, TrendingUp, Home, Users, School, DollarSign, ArrowRight } from 'lucide-react'
 import { coreAgentsClient } from '@/lib/core-agents/client'
 
@@ -55,7 +54,7 @@ async function NeighborhoodGrid() {
         if (!data) return null
         
         return (
-          <motion.div
+          <div
             key={neighborhood.slug}
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
@@ -129,7 +128,7 @@ async function NeighborhoodGrid() {
                 </div>
               </div>
             </Link>
-          </motion.div>
+          </div>
         )
       })}
     </div>
@@ -142,7 +141,7 @@ export default function HoustonNeighborhoodsPage() {
       {/* Hero Section */}
       <section className="bg-gradient-to-br from-green-50 via-emerald-50 to-teal-50 py-16">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          <motion.div
+          <div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6 }}
@@ -170,7 +169,7 @@ export default function HoustonNeighborhoodsPage() {
                 Compare Neighborhoods
               </Link>
             </div>
-          </motion.div>
+          </div>
         </div>
       </section>
 
@@ -208,7 +207,7 @@ export default function HoustonNeighborhoodsPage() {
       {/* CTA Section */}
       <section className="py-16 bg-gradient-to-br from-green-600 to-emerald-700">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          <motion.div
+          <div
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
@@ -229,7 +228,7 @@ export default function HoustonNeighborhoodsPage() {
               Get Your Custom Report
               <ArrowRight className="ml-2 h-5 w-5" />
             </Link>
-          </motion.div>
+          </div>
         </div>
       </section>
     </>
