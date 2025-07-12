@@ -108,7 +108,7 @@ export default function AdminLayout({
   return (
     <div className="min-h-screen bg-gray-50 flex">
       {/* Sidebar */}
-      <div className={`${sidebarOpen ? 'w-64' : 'w-16'} bg-gray-900 transition-all duration-300`}>
+      <div className={`${sidebarOpen ? 'w-64' : 'w-16'} bg-gray-900 transition-all duration-300 fixed inset-y-0 left-0 z-50`}>
         <div className="h-full flex flex-col">
           {/* Logo */}
           <div className="flex items-center justify-between h-16 px-4 bg-gray-800">
@@ -160,9 +160,9 @@ export default function AdminLayout({
       </div>
 
       {/* Main Content */}
-      <div className="flex-1 flex flex-col">
+      <div className={`flex-1 ${sidebarOpen ? 'ml-64' : 'ml-16'} transition-all duration-300`}>
         {/* Top Bar */}
-        <header className="bg-white shadow-sm">
+        <header className="bg-white shadow-sm sticky top-0 z-40">
           <div className="px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
             <h1 className="text-xl font-semibold text-gray-900">
               Houston Development Intelligence - Admin
@@ -171,6 +171,7 @@ export default function AdminLayout({
               <Link
                 href="/"
                 className="text-sm text-gray-600 hover:text-gray-900"
+                target="_blank"
               >
                 View Site
               </Link>

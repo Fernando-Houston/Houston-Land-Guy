@@ -91,14 +91,7 @@ export function Header() {
                 initial={{ opacity: 0, scale: 0.8 }}
                 animate={{ opacity: 1, scale: 1 }}
                 transition={{ delay: 0.5 }}
-                className="flex items-center gap-2"
               >
-                <Link
-                  href="/admin"
-                  className="inline-block rounded-md bg-gray-700 px-3 py-2 text-sm font-medium text-white hover:bg-gray-800 transition-colors"
-                >
-                  Admin
-                </Link>
                 <Link
                   href="/consultation"
                   className="inline-block rounded-md bg-green-500 px-4 py-2 text-sm font-medium text-white hover:bg-green-600 transition-colors"
