@@ -46,7 +46,7 @@ export function Header() {
       <nav className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8" aria-label="Top">
         <div className="flex h-16 items-center justify-between">
           <div className="flex items-center">
-            <Logo variant="auto" showText={true} />
+            <Logo variant="auto" showText={false} />
           </div>
           
           <div className="hidden md:block">
