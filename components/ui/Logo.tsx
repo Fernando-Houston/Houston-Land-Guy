@@ -36,7 +36,7 @@ export function Logo({ className = '', showText = true, variant = 'auto' }: Logo
               alt="Houston Land Group Logo"
               width={240}
               height={90}
-              className="h-16 w-auto transition-all duration-200 drop-shadow-sm hover:drop-shadow-md hover:scale-105 filter brightness-100 contrast-110"
+              className="h-16 w-auto transition-all duration-200 drop-shadow-sm hover:drop-shadow-md hover:scale-105 filter brightness-100 contrast-110 border-2 border-green-500 rounded-lg p-2 bg-white"
               onError={() => setImageError(true)}
               priority
             />
