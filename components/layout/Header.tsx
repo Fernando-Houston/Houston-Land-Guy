@@ -12,8 +12,29 @@ const navigation = [
   { name: 'Developers', href: '/developers', icon: Building2 },
   { name: 'Sellers', href: '/sellers', icon: Home },
   { name: 'Investors', href: '/investment-opportunities', icon: DollarSign },
-  { name: 'Tools', href: '/tools', icon: Calculator },
-  { name: 'Market Intelligence', href: '/intelligence', icon: TrendingUp },
+  { 
+    name: 'Tools', 
+    href: '/tools', 
+    icon: Calculator,
+    subItems: [
+      { name: 'ROI Calculator', href: '/roi-calculator' },
+      { name: 'Cost Calculator', href: '/development-cost-calculator' },
+      { name: 'Neighborhood Comparison', href: '/neighborhood-comparison' },
+      { name: 'Opportunity Finder', href: '/opportunity-finder' }
+    ]
+  },
+  { 
+    name: 'Market Intelligence', 
+    href: '/market-intelligence', 
+    icon: TrendingUp,
+    subItems: [
+      { name: 'Intelligence Hub', href: '/market-intelligence' },
+      { name: 'Weekly Reports', href: '/market-intelligence/weekly-reports' },
+      { name: 'Permit Tracker', href: '/market-intelligence/permit-tracker' },
+      { name: 'Market Timing', href: '/market-intelligence/market-timing' },
+      { name: 'Neighborhoods', href: '/houston-neighborhoods' }
+    ]
+  },
   { name: 'Blog', href: '/blog', icon: FileText },
   { name: 'Services', href: '/services', icon: Briefcase },
   { name: 'About', href: '/about', icon: Info },
@@ -23,6 +44,7 @@ const navigation = [
 export function Header() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
   const [scrolled, setScrolled] = useState(false)
+  const [openDropdown, setOpenDropdown] = useState<string | null>(null)
   const pathname = usePathname()
 
   useEffect(() => {
@@ -53,28 +75,58 @@ export function Header() {
             <div className="ml-10 flex items-center space-x-8">
               {navigation.map((item, index) => {
                 const isActive = pathname === item.href || pathname.startsWith(item.href + '/')
+                const hasSubItems = item.subItems && item.subItems.length > 0
+                
                 return (
                   <motion.div
                     key={item.name}
                     initial={{ opacity: 0, y: -20 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: index * 0.1 }}
+                    className="relative"
+                    onMouseEnter={() => hasSubItems && setOpenDropdown(item.name)}
+                    onMouseLeave={() => hasSubItems && setOpenDropdown(null)}
                   >
                     <Link
                       href={item.href}
                       className={cn(
-                        "text-sm font-medium transition-colors relative group",
+                        "text-sm font-medium transition-colors relative group flex items-center",
                         isActive ? "text-green-600" : "text-gray-700 hover:text-green-600"
                       )}
                     >
                       {item.name}
-                      {isActive && (
+                      {hasSubItems && (
+                        <svg className="ml-1 h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                        </svg>
+                      )}
+                      {isActive && !hasSubItems && (
                         <motion.div
                           className="absolute -bottom-1 left-0 right-0 h-0.5 bg-green-600"
                           layoutId="navbar-indicator"
                         />
                       )}
                     </Link>
+                    
+                    {hasSubItems && openDropdown === item.name && (
+                      <motion.div
+                        initial={{ opacity: 0, y: -10 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        exit={{ opacity: 0, y: -10 }}
+                        transition={{ duration: 0.2 }}
+                        className="absolute top-full left-0 mt-2 w-56 bg-white rounded-lg shadow-lg border border-gray-200 py-2 z-50"
+                      >
+                        {item.subItems.map((subItem) => (
+                          <Link
+                            key={subItem.href}
+                            href={subItem.href}
+                            className="block px-4 py-2 text-sm text-gray-700 hover:bg-green-50 hover:text-green-600 transition-colors"
+                          >
+                            {subItem.name}
+                          </Link>
+                        ))}
+                      </motion.div>
+                    )}
                   </motion.div>
                 )
               })}
@@ -143,6 +195,8 @@ export function Header() {
               {navigation.map((item, index) => {
                 const Icon = item.icon
                 const isActive = pathname === item.href || pathname.startsWith(item.href + '/')
+                const hasSubItems = item.subItems && item.subItems.length > 0
+                
                 return (
                   <motion.div
                     key={item.name}
@@ -158,11 +212,26 @@ export function Header() {
                           ? "bg-green-50 text-green-600" 
                           : "text-gray-700 hover:bg-gray-100 hover:text-gray-900"
                       )}
-                      onClick={() => setMobileMenuOpen(false)}
+                      onClick={() => !hasSubItems && setMobileMenuOpen(false)}
                     >
                       <Icon className="h-5 w-5 mr-3" />
                       {item.name}
                     </Link>
+                    
+                    {hasSubItems && (
+                      <div className="ml-8 space-y-1 mt-1">
+                        {item.subItems.map((subItem) => (
+                          <Link
+                            key={subItem.href}
+                            href={subItem.href}
+                            className="block px-3 py-2 text-sm text-gray-600 hover:text-green-600 transition-colors"
+                            onClick={() => setMobileMenuOpen(false)}
+                          >
+                            {subItem.name}
+                          </Link>
+                        ))}
+                      </div>
+                    )}
                   </motion.div>
                 )
               })}

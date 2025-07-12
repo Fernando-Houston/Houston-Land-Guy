@@ -3,26 +3,36 @@ import Link from 'next/link'
 const footerNavigation = {
   tools: [
     { name: 'ROI Calculator', href: '/roi-calculator' },
-    { name: 'Market Dashboard', href: '/tools#market-dashboard' },
-    { name: 'Zoning Explorer', href: '/tools#zoning-explorer' },
-    { name: 'Financing Calculator', href: '/tools#financing-calculator' },
+    { name: 'Cost Calculator', href: '/development-cost-calculator' },
+    { name: 'Neighborhood Comparison', href: '/neighborhood-comparison' },
+    { name: 'Opportunity Finder', href: '/opportunity-finder' },
+    { name: 'Development Timeline', href: '/houston-development-timeline' },
   ],
   intelligence: [
-    { name: 'Developers', href: '/developers' },
-    { name: 'Sellers', href: '/sellers' },
-    { name: 'Investment Opportunities', href: '/investment-opportunities' },
-    { name: 'Market Reports', href: '/blog' },
-    { name: 'Resources', href: '/resources' },
-    { name: 'Neighborhood Analysis', href: '/intelligence#neighborhoods' },
-    { name: 'Development Opportunities', href: '/intelligence#opportunities' },
+    { name: 'Market Intelligence Hub', href: '/market-intelligence' },
+    { name: 'Weekly Reports', href: '/market-intelligence/weekly-reports' },
+    { name: 'Permit Tracker', href: '/market-intelligence/permit-tracker' },
+    { name: 'Market Timing', href: '/market-intelligence/market-timing' },
+    { name: 'Investment Opportunities', href: '/market-intelligence/investment-opportunities' },
+    { name: 'All Neighborhoods', href: '/houston-neighborhoods' },
+  ],
+  neighborhoods: [
+    { name: 'Cypress', href: '/houston-neighborhoods/cypress' },
+    { name: 'Pearland', href: '/houston-neighborhoods/pearland' },
+    { name: 'Memorial', href: '/houston-neighborhoods/memorial' },
+    { name: 'Spring', href: '/houston-neighborhoods/spring' },
+    { name: 'The Woodlands', href: '/woodlands-development-land' },
+    { name: 'Katy', href: '/katy-development-opportunities' },
   ],
   company: [
     { name: 'About', href: '/about' },
     { name: 'Services', href: '/services' },
     { name: 'FAQ', href: '/faq' },
     { name: 'Contact', href: '/contact' },
+    { name: 'Blog', href: '/blog' },
+    { name: 'Resources', href: '/resources' },
     { name: 'Local Citations', href: '/local-citations' },
-    { name: 'Privacy Policy', href: '/privacy' },
+    { name: 'Houston vs Texas', href: '/houston-vs-texas' },
   ],
   social: [
     { name: 'LinkedIn', href: 'https://www.linkedin.com/company/houston-land-guy' },
@@ -113,7 +123,23 @@ export function Footer() {
             </div>
           </div>
         </div>
-        <div className="mt-12 border-t border-gray-800 pt-8">
+        <div className="mt-8 border-t border-gray-800 pt-8">
+          <div>
+            <h3 className="text-sm font-semibold uppercase tracking-wider text-white mb-4">
+              Popular Neighborhoods
+            </h3>
+            <ul className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
+              {footerNavigation.neighborhoods.map((item) => (
+                <li key={item.name}>
+                  <Link href={item.href} className="text-sm text-gray-400 hover:text-white">
+                    {item.name}
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </div>
+        </div>
+        <div className="mt-8 border-t border-gray-800 pt-8">
           <p className="text-sm text-gray-400 xl:text-center">
             &copy; {new Date().getFullYear()} Houston Development Intelligence. All rights reserved.
           </p>
