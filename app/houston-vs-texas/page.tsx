@@ -1,7 +1,6 @@
 'use client'
 
 import { useState } from 'react'
-import { motion } from 'framer-motion'
 import Link from 'next/link'
 import { 
   TrendingUp, DollarSign, Building2, Users, MapPin, 
@@ -107,7 +106,7 @@ const MetricBar = ({ value, maxValue, color = "green", label }: any) => {
         <span className="font-semibold">{value.toLocaleString()}</span>
       </div>
       <div className="h-3 bg-gray-200 rounded-full overflow-hidden">
-        <motion.div 
+        <div 
           className={`h-full bg-${color}-500`}
           initial={{ width: 0 }}
           animate={{ width: `${percentage}%` }}
@@ -192,7 +191,7 @@ export default function HoustonVsTexasPage() {
         </div>
 
         <div className="relative max-w-7xl mx-auto px-4 py-20 sm:px-6 lg:px-8">
-          <motion.div 
+          <div 
             className="text-center"
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
@@ -210,7 +209,7 @@ export default function HoustonVsTexasPage() {
             
             {/* Quick Visual Stats */}
             <div className="grid grid-cols-2 md:grid-cols-4 gap-6 max-w-4xl mx-auto">
-              <motion.div 
+              <div 
                 className="bg-white/10 backdrop-blur-sm rounded-xl p-6 border border-white/20"
                 initial={{ opacity: 0, scale: 0.9 }}
                 animate={{ opacity: 1, scale: 1 }}
@@ -218,8 +217,8 @@ export default function HoustonVsTexasPage() {
               >
                 <div className="text-4xl font-bold text-green-400">50%</div>
                 <div className="text-sm mt-2">Lower than Austin</div>
-              </motion.div>
-              <motion.div 
+              </div>
+              <div 
                 className="bg-white/10 backdrop-blur-sm rounded-xl p-6 border border-white/20"
                 initial={{ opacity: 0, scale: 0.9 }}
                 animate={{ opacity: 1, scale: 1 }}
@@ -227,8 +226,8 @@ export default function HoustonVsTexasPage() {
               >
                 <div className="text-4xl font-bold text-green-400">3x</div>
                 <div className="text-sm mt-2">Faster Permits</div>
-              </motion.div>
-              <motion.div 
+              </div>
+              <div 
                 className="bg-white/10 backdrop-blur-sm rounded-xl p-6 border border-white/20"
                 initial={{ opacity: 0, scale: 0.9 }}
                 animate={{ opacity: 1, scale: 1 }}
@@ -236,8 +235,8 @@ export default function HoustonVsTexasPage() {
               >
                 <div className="text-4xl font-bold text-green-400">Zero</div>
                 <div className="text-sm mt-2">Zoning Laws</div>
-              </motion.div>
-              <motion.div 
+              </div>
+              <div 
                 className="bg-white/10 backdrop-blur-sm rounded-xl p-6 border border-white/20"
                 initial={{ opacity: 0, scale: 0.9 }}
                 animate={{ opacity: 1, scale: 1 }}
@@ -245,9 +244,9 @@ export default function HoustonVsTexasPage() {
               >
                 <div className="text-4xl font-bold text-green-400">22%</div>
                 <div className="text-sm mt-2">Average ROI</div>
-              </motion.div>
+              </div>
             </div>
-          </motion.div>
+          </div>
         </div>
       </section>
 
@@ -282,7 +281,7 @@ export default function HoustonVsTexasPage() {
 
           {/* Visual Comparison */}
           <div className="grid lg:grid-cols-2 gap-12">
-            <motion.div 
+            <div 
               className="bg-white rounded-2xl p-8 shadow-xl"
               initial={{ opacity: 0, x: -20 }}
               animate={{ opacity: 1, x: 0 }}
@@ -323,9 +322,9 @@ export default function HoustonVsTexasPage() {
                   </div>
                 ))}
               </div>
-            </motion.div>
+            </div>
 
-            <motion.div 
+            <div 
               className="bg-white rounded-2xl p-8 shadow-xl"
               initial={{ opacity: 0, x: 20 }}
               animate={{ opacity: 1, x: 0 }}
@@ -378,11 +377,11 @@ export default function HoustonVsTexasPage() {
                   <li>• {cityData.houston.metrics.roi - cityData[selectedCity as keyof typeof cityData].metrics.roi}% higher ROI</li>
                 </ul>
               </div>
-            </motion.div>
+            </div>
           </div>
 
           {/* Visual Comparison Chart */}
-          <motion.div 
+          <div 
             className="mt-12 bg-white rounded-2xl p-8 shadow-xl"
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
@@ -392,7 +391,7 @@ export default function HoustonVsTexasPage() {
               city1={cityData.houston} 
               city2={cityData[selectedCity as keyof typeof cityData]} 
             />
-          </motion.div>
+          </div>
         </div>
       </section>
 
@@ -475,7 +474,7 @@ export default function HoustonVsTexasPage() {
 
           {/* Visual Winner Indicators */}
           <div className="mt-8 grid md:grid-cols-3 gap-6">
-            <motion.div 
+            <div 
               className="bg-green-50 rounded-lg p-6 text-center"
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
@@ -485,9 +484,9 @@ export default function HoustonVsTexasPage() {
               <h3 className="font-bold text-lg mb-2">Best ROI</h3>
               <p className="text-3xl font-bold text-green-600">Houston</p>
               <p className="text-sm text-gray-600 mt-1">22% average returns</p>
-            </motion.div>
+            </div>
             
-            <motion.div 
+            <div 
               className="bg-green-50 rounded-lg p-6 text-center"
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
@@ -498,9 +497,9 @@ export default function HoustonVsTexasPage() {
               <h3 className="font-bold text-lg mb-2">Fastest Permits</h3>
               <p className="text-3xl font-bold text-green-600">Houston</p>
               <p className="text-sm text-gray-600 mt-1">30-day average</p>
-            </motion.div>
+            </div>
             
-            <motion.div 
+            <div 
               className="bg-green-50 rounded-lg p-6 text-center"
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
@@ -511,7 +510,7 @@ export default function HoustonVsTexasPage() {
               <h3 className="font-bold text-lg mb-2">Most Flexible</h3>
               <p className="text-3xl font-bold text-green-600">Houston</p>
               <p className="text-sm text-gray-600 mt-1">No zoning restrictions</p>
-            </motion.div>
+            </div>
           </div>
         </div>
       </section>
@@ -528,7 +527,7 @@ export default function HoustonVsTexasPage() {
             </p>
           </div>
 
-          <motion.div 
+          <div 
             className="bg-white rounded-2xl shadow-xl p-8"
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
@@ -595,7 +594,7 @@ export default function HoustonVsTexasPage() {
                 </Link>
               </div>
             )}
-          </motion.div>
+          </div>
         </div>
       </section>
 
@@ -609,7 +608,7 @@ export default function HoustonVsTexasPage() {
           </div>
 
           <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
-            <motion.div 
+            <div 
               className="bg-white rounded-xl p-6 shadow-lg hover:shadow-xl transition-shadow"
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
@@ -623,9 +622,9 @@ export default function HoustonVsTexasPage() {
                   Learn more →
                 </Link>
               </p>
-            </motion.div>
+            </div>
 
-            <motion.div 
+            <div 
               className="bg-white rounded-xl p-6 shadow-lg hover:shadow-xl transition-shadow"
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
@@ -637,9 +636,9 @@ export default function HoustonVsTexasPage() {
               <p className="text-gray-600 text-sm">
                 2nd largest US port. No other Texas city offers international shipping advantages.
               </p>
-            </motion.div>
+            </div>
 
-            <motion.div 
+            <div 
               className="bg-white rounded-xl p-6 shadow-lg hover:shadow-xl transition-shadow"
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
@@ -651,9 +650,9 @@ export default function HoustonVsTexasPage() {
               <p className="text-gray-600 text-sm">
                 100K+ new residents annually. More than Austin & San Antonio combined.
               </p>
-            </motion.div>
+            </div>
 
-            <motion.div 
+            <div 
               className="bg-white rounded-xl p-6 shadow-lg hover:shadow-xl transition-shadow"
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
@@ -668,7 +667,7 @@ export default function HoustonVsTexasPage() {
                   See full analysis →
                 </Link>
               </p>
-            </motion.div>
+            </div>
           </div>
         </div>
       </section>
@@ -676,7 +675,7 @@ export default function HoustonVsTexasPage() {
       {/* CTA Section */}
       <section className="py-20 bg-gradient-to-br from-green-600 to-emerald-700 text-white">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <motion.div
+          <div
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
@@ -704,7 +703,7 @@ export default function HoustonVsTexasPage() {
                 <DollarSign className="ml-2 w-5 h-5" />
               </Link>
             </div>
-          </motion.div>
+          </div>
         </div>
       </section>
     </>
