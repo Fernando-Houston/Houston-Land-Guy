@@ -9,131 +9,295 @@
 <!-- Houston Development Intelligence - Main Pages -->
 <url>
   <loc>https://houstonlandguy.com/</loc>
-  <lastmod>2024-01-15T00:00:00+00:00</lastmod>
+  <lastmod>2025-07-12T00:00:00+00:00</lastmod>
   <changefreq>weekly</changefreq>
   <priority>1.0</priority>
+</url>
+
+<!-- Market Intelligence Hub -->
+<url>
+  <loc>https://houstonlandguy.com/market-intelligence/</loc>
+  <lastmod>2025-07-12T00:00:00+00:00</lastmod>
+  <changefreq>daily</changefreq>
+  <priority>1.0</priority>
+</url>
+
+<url>
+  <loc>https://houstonlandguy.com/market-intelligence/weekly-reports/</loc>
+  <lastmod>2025-07-12T00:00:00+00:00</lastmod>
+  <changefreq>weekly</changefreq>
+  <priority>0.9</priority>
+</url>
+
+<url>
+  <loc>https://houstonlandguy.com/market-intelligence/permit-tracker/</loc>
+  <lastmod>2025-07-12T00:00:00+00:00</lastmod>
+  <changefreq>daily</changefreq>
+  <priority>0.9</priority>
+</url>
+
+<url>
+  <loc>https://houstonlandguy.com/market-intelligence/market-timing/</loc>
+  <lastmod>2025-07-12T00:00:00+00:00</lastmod>
+  <changefreq>daily</changefreq>
+  <priority>0.9</priority>
+</url>
+
+<url>
+  <loc>https://houstonlandguy.com/market-intelligence/investment-opportunities/</loc>
+  <lastmod>2025-07-12T00:00:00+00:00</lastmod>
+  <changefreq>daily</changefreq>
+  <priority>0.9</priority>
 </url>
 
 <!-- High Priority Tools & Calculators -->
 <url>
   <loc>https://houstonlandguy.com/roi-calculator/</loc>
-  <lastmod>2024-01-15T00:00:00+00:00</lastmod>
+  <lastmod>2025-07-12T00:00:00+00:00</lastmod>
   <changefreq>monthly</changefreq>
   <priority>0.9</priority>
 </url>
 
 <url>
   <loc>https://houstonlandguy.com/development-cost-calculator/</loc>
-  <lastmod>2024-01-15T00:00:00+00:00</lastmod>
+  <lastmod>2025-07-12T00:00:00+00:00</lastmod>
   <changefreq>monthly</changefreq>
   <priority>0.9</priority>
 </url>
 
-<!-- Investment & Market Intelligence -->
+<url>
+  <loc>https://houstonlandguy.com/neighborhood-comparison/</loc>
+  <lastmod>2025-07-12T00:00:00+00:00</lastmod>
+  <changefreq>weekly</changefreq>
+  <priority>0.9</priority>
+</url>
+
+<url>
+  <loc>https://houstonlandguy.com/opportunity-finder/</loc>
+  <lastmod>2025-07-12T00:00:00+00:00</lastmod>
+  <changefreq>daily</changefreq>
+  <priority>0.9</priority>
+</url>
+
+<!-- Houston Neighborhoods Hub -->
+<url>
+  <loc>https://houstonlandguy.com/houston-neighborhoods/</loc>
+  <lastmod>2025-07-12T00:00:00+00:00</lastmod>
+  <changefreq>weekly</changefreq>
+  <priority>0.9</priority>
+</url>
+
+<!-- Dynamic Neighborhood Pages -->
+<url>
+  <loc>https://houstonlandguy.com/houston-neighborhoods/cypress/</loc>
+  <lastmod>2025-07-12T00:00:00+00:00</lastmod>
+  <changefreq>weekly</changefreq>
+  <priority>0.8</priority>
+</url>
+
+<url>
+  <loc>https://houstonlandguy.com/houston-neighborhoods/pearland/</loc>
+  <lastmod>2025-07-12T00:00:00+00:00</lastmod>
+  <changefreq>weekly</changefreq>
+  <priority>0.8</priority>
+</url>
+
+<url>
+  <loc>https://houstonlandguy.com/houston-neighborhoods/memorial/</loc>
+  <lastmod>2025-07-12T00:00:00+00:00</lastmod>
+  <changefreq>weekly</changefreq>
+  <priority>0.8</priority>
+</url>
+
+<url>
+  <loc>https://houstonlandguy.com/houston-neighborhoods/spring/</loc>
+  <lastmod>2025-07-12T00:00:00+00:00</lastmod>
+  <changefreq>weekly</changefreq>
+  <priority>0.8</priority>
+</url>
+
+<url>
+  <loc>https://houstonlandguy.com/houston-neighborhoods/conroe/</loc>
+  <lastmod>2025-07-12T00:00:00+00:00</lastmod>
+  <changefreq>weekly</changefreq>
+  <priority>0.8</priority>
+</url>
+
+<url>
+  <loc>https://houstonlandguy.com/houston-neighborhoods/richmond/</loc>
+  <lastmod>2025-07-12T00:00:00+00:00</lastmod>
+  <changefreq>weekly</changefreq>
+  <priority>0.8</priority>
+</url>
+
+<url>
+  <loc>https://houstonlandguy.com/houston-neighborhoods/friendswood/</loc>
+  <lastmod>2025-07-12T00:00:00+00:00</lastmod>
+  <changefreq>weekly</changefreq>
+  <priority>0.8</priority>
+</url>
+
+<url>
+  <loc>https://houstonlandguy.com/houston-neighborhoods/league-city/</loc>
+  <lastmod>2025-07-12T00:00:00+00:00</lastmod>
+  <changefreq>weekly</changefreq>
+  <priority>0.8</priority>
+</url>
+
+<url>
+  <loc>https://houstonlandguy.com/houston-neighborhoods/clear-lake/</loc>
+  <lastmod>2025-07-12T00:00:00+00:00</lastmod>
+  <changefreq>weekly</changefreq>
+  <priority>0.8</priority>
+</url>
+
+<url>
+  <loc>https://houstonlandguy.com/houston-neighborhoods/bellaire/</loc>
+  <lastmod>2025-07-12T00:00:00+00:00</lastmod>
+  <changefreq>weekly</changefreq>
+  <priority>0.8</priority>
+</url>
+
+<url>
+  <loc>https://houstonlandguy.com/houston-neighborhoods/river-oaks/</loc>
+  <lastmod>2025-07-12T00:00:00+00:00</lastmod>
+  <changefreq>weekly</changefreq>
+  <priority>0.8</priority>
+</url>
+
+<url>
+  <loc>https://houstonlandguy.com/houston-neighborhoods/heights/</loc>
+  <lastmod>2025-07-12T00:00:00+00:00</lastmod>
+  <changefreq>weekly</changefreq>
+  <priority>0.8</priority>
+</url>
+
+<url>
+  <loc>https://houstonlandguy.com/houston-neighborhoods/montrose/</loc>
+  <lastmod>2025-07-12T00:00:00+00:00</lastmod>
+  <changefreq>weekly</changefreq>
+  <priority>0.8</priority>
+</url>
+
+<url>
+  <loc>https://houstonlandguy.com/houston-neighborhoods/energy-corridor/</loc>
+  <lastmod>2025-07-12T00:00:00+00:00</lastmod>
+  <changefreq>weekly</changefreq>
+  <priority>0.8</priority>
+</url>
+
+<url>
+  <loc>https://houstonlandguy.com/houston-neighborhoods/champions/</loc>
+  <lastmod>2025-07-12T00:00:00+00:00</lastmod>
+  <changefreq>weekly</changefreq>
+  <priority>0.8</priority>
+</url>
+
+<!-- Investment & Service Pages -->
 <url>
   <loc>https://houstonlandguy.com/investment-opportunities/</loc>
-  <lastmod>2024-01-15T00:00:00+00:00</lastmod>
+  <lastmod>2025-07-12T00:00:00+00:00</lastmod>
   <changefreq>weekly</changefreq>
   <priority>0.9</priority>
 </url>
 
 <url>
-  <loc>https://houstonlandguy.com/intelligence/</loc>
-  <lastmod>2024-01-15T00:00:00+00:00</lastmod>
-  <changefreq>weekly</changefreq>
-  <priority>0.8</priority>
-</url>
-
-<!-- Blog & Content -->
-<url>
-  <loc>https://houstonlandguy.com/blog/</loc>
-  <lastmod>2024-01-15T00:00:00+00:00</lastmod>
-  <changefreq>weekly</changefreq>
-  <priority>0.8</priority>
-</url>
-
-<url>
-  <loc>https://houstonlandguy.com/blog/houston-development-market-report-q1-2024/</loc>
-  <lastmod>2024-01-15T00:00:00+00:00</lastmod>
-  <changefreq>monthly</changefreq>
-  <priority>0.8</priority>
-</url>
-
-<url>
-  <loc>https://houstonlandguy.com/blog/complete-guide-houston-development-regulations/</loc>
-  <lastmod>2024-01-10T00:00:00+00:00</lastmod>
-  <changefreq>monthly</changefreq>
-  <priority>0.8</priority>
-</url>
-
-<url>
-  <loc>https://houstonlandguy.com/blog/houston-vs-austin-development-comparison/</loc>
-  <lastmod>2024-01-08T00:00:00+00:00</lastmod>
-  <changefreq>monthly</changefreq>
-  <priority>0.7</priority>
-</url>
-
-<!-- Neighborhood-Specific Pages -->
-<url>
-  <loc>https://houstonlandguy.com/woodlands-development-land/</loc>
-  <lastmod>2024-01-15T00:00:00+00:00</lastmod>
-  <changefreq>monthly</changefreq>
-  <priority>0.8</priority>
-</url>
-
-<url>
-  <loc>https://houstonlandguy.com/katy-development-opportunities/</loc>
-  <lastmod>2024-01-15T00:00:00+00:00</lastmod>
-  <changefreq>monthly</changefreq>
-  <priority>0.8</priority>
-</url>
-
-<url>
-  <loc>https://houstonlandguy.com/sugar-land-development-sites/</loc>
-  <lastmod>2024-01-15T00:00:00+00:00</lastmod>
-  <changefreq>monthly</changefreq>
-  <priority>0.7</priority>
-</url>
-
-<!-- Service & Information Pages -->
-<url>
   <loc>https://houstonlandguy.com/sellers/</loc>
-  <lastmod>2024-01-15T00:00:00+00:00</lastmod>
+  <lastmod>2025-07-12T00:00:00+00:00</lastmod>
   <changefreq>weekly</changefreq>
   <priority>0.9</priority>
 </url>
 
 <url>
   <loc>https://houstonlandguy.com/developers/</loc>
-  <lastmod>2024-01-15T00:00:00+00:00</lastmod>
+  <lastmod>2025-07-12T00:00:00+00:00</lastmod>
   <changefreq>weekly</changefreq>
   <priority>0.9</priority>
 </url>
 
+<!-- Blog & Content -->
+<url>
+  <loc>https://houstonlandguy.com/blog/</loc>
+  <lastmod>2025-07-12T00:00:00+00:00</lastmod>
+  <changefreq>weekly</changefreq>
+  <priority>0.8</priority>
+</url>
+
+<url>
+  <loc>https://houstonlandguy.com/blog/houston-development-market-report-q1-2024/</loc>
+  <lastmod>2025-01-15T00:00:00+00:00</lastmod>
+  <changefreq>monthly</changefreq>
+  <priority>0.8</priority>
+</url>
+
+<url>
+  <loc>https://houstonlandguy.com/blog/complete-guide-houston-development-regulations/</loc>
+  <lastmod>2025-01-10T00:00:00+00:00</lastmod>
+  <changefreq>monthly</changefreq>
+  <priority>0.8</priority>
+</url>
+
+<url>
+  <loc>https://houstonlandguy.com/blog/houston-vs-austin-development-comparison/</loc>
+  <lastmod>2025-01-08T00:00:00+00:00</lastmod>
+  <changefreq>monthly</changefreq>
+  <priority>0.7</priority>
+</url>
+
+<url>
+  <loc>https://houstonlandguy.com/blog/why-invest-in-houston-real-estate/</loc>
+  <lastmod>2025-07-12T00:00:00+00:00</lastmod>
+  <changefreq>monthly</changefreq>
+  <priority>0.8</priority>
+</url>
+
+<!-- Legacy Neighborhood Pages -->
+<url>
+  <loc>https://houstonlandguy.com/woodlands-development-land/</loc>
+  <lastmod>2025-07-12T00:00:00+00:00</lastmod>
+  <changefreq>monthly</changefreq>
+  <priority>0.8</priority>
+</url>
+
+<url>
+  <loc>https://houstonlandguy.com/katy-development-opportunities/</loc>
+  <lastmod>2025-07-12T00:00:00+00:00</lastmod>
+  <changefreq>monthly</changefreq>
+  <priority>0.8</priority>
+</url>
+
+<url>
+  <loc>https://houstonlandguy.com/sugar-land-development-sites/</loc>
+  <lastmod>2025-07-12T00:00:00+00:00</lastmod>
+  <changefreq>monthly</changefreq>
+  <priority>0.7</priority>
+</url>
+
+<!-- Service & Information Pages -->
 <url>
   <loc>https://houstonlandguy.com/consultation/</loc>
-  <lastmod>2024-01-15T00:00:00+00:00</lastmod>
+  <lastmod>2025-07-12T00:00:00+00:00</lastmod>
   <changefreq>monthly</changefreq>
   <priority>0.7</priority>
 </url>
 
 <url>
   <loc>https://houstonlandguy.com/services/</loc>
-  <lastmod>2024-01-15T00:00:00+00:00</lastmod>
+  <lastmod>2025-07-12T00:00:00+00:00</lastmod>
   <changefreq>monthly</changefreq>
   <priority>0.7</priority>
 </url>
 
 <url>
   <loc>https://houstonlandguy.com/about/</loc>
-  <lastmod>2024-01-15T00:00:00+00:00</lastmod>
+  <lastmod>2025-07-12T00:00:00+00:00</lastmod>
   <changefreq>monthly</changefreq>
   <priority>0.6</priority>
 </url>
 
 <url>
   <loc>https://houstonlandguy.com/contact/</loc>
-  <lastmod>2024-01-15T00:00:00+00:00</lastmod>
+  <lastmod>2025-07-12T00:00:00+00:00</lastmod>
   <changefreq>monthly</changefreq>
   <priority>0.6</priority>
 </url>
@@ -141,72 +305,59 @@
 <!-- Resources & Tools -->
 <url>
   <loc>https://houstonlandguy.com/resources/</loc>
-  <lastmod>2024-01-15T00:00:00+00:00</lastmod>
+  <lastmod>2025-07-12T00:00:00+00:00</lastmod>
   <changefreq>monthly</changefreq>
   <priority>0.7</priority>
 </url>
 
 <url>
   <loc>https://houstonlandguy.com/faq/</loc>
-  <lastmod>2024-01-15T00:00:00+00:00</lastmod>
+  <lastmod>2025-07-12T00:00:00+00:00</lastmod>
   <changefreq>monthly</changefreq>
   <priority>0.7</priority>
 </url>
 
 <url>
   <loc>https://houstonlandguy.com/houston-development-timeline/</loc>
-  <lastmod>2024-01-15T00:00:00+00:00</lastmod>
+  <lastmod>2025-07-12T00:00:00+00:00</lastmod>
   <changefreq>monthly</changefreq>
   <priority>0.7</priority>
 </url>
 
 <url>
   <loc>https://houstonlandguy.com/tools/</loc>
-  <lastmod>2024-01-15T00:00:00+00:00</lastmod>
+  <lastmod>2025-07-12T00:00:00+00:00</lastmod>
   <changefreq>monthly</changefreq>
   <priority>0.6</priority>
 </url>
 
-<!-- Intelligence Sub-Pages -->
+<!-- Intelligence Sub-Pages (Legacy) -->
 <url>
-  <loc>https://houstonlandguy.com/intelligence/neighborhoods/</loc>
-  <lastmod>2024-01-15T00:00:00+00:00</lastmod>
-  <changefreq>monthly</changefreq>
-  <priority>0.6</priority>
-</url>
-
-<url>
-  <loc>https://houstonlandguy.com/intelligence/opportunities/</loc>
-  <lastmod>2024-01-15T00:00:00+00:00</lastmod>
+  <loc>https://houstonlandguy.com/intelligence/</loc>
+  <lastmod>2025-07-12T00:00:00+00:00</lastmod>
   <changefreq>weekly</changefreq>
-  <priority>0.6</priority>
+  <priority>0.8</priority>
 </url>
 
+<!-- Comparison Page -->
 <url>
-  <loc>https://houstonlandguy.com/intelligence/permits/</loc>
-  <lastmod>2024-01-15T00:00:00+00:00</lastmod>
-  <changefreq>weekly</changefreq>
-  <priority>0.5</priority>
-</url>
-
-<url>
-  <loc>https://houstonlandguy.com/intelligence/reports/</loc>
-  <lastmod>2024-01-15T00:00:00+00:00</lastmod>
+  <loc>https://houstonlandguy.com/houston-vs-texas/</loc>
+  <lastmod>2025-07-12T00:00:00+00:00</lastmod>
   <changefreq>monthly</changefreq>
-  <priority>0.5</priority>
+  <priority>0.8</priority>
 </url>
 
 <!-- Footer Pages -->
 <url>
   <loc>https://houstonlandguy.com/local-citations/</loc>
-  <lastmod>2024-01-15T00:00:00+00:00</lastmod>
+  <lastmod>2025-07-12T00:00:00+00:00</lastmod>
   <changefreq>monthly</changefreq>
   <priority>0.5</priority>
 </url>
 
 <url>
   <loc>https://houstonlandguy.com/privacy/</loc>
-  <lastmod>2024-01-15T00:00:00+00:00</lastmod>
+  <lastmod>2025-07-12T00:00:00+00:00</lastmod>
   <changefreq>yearly</changefreq>
   <priority>0.3</priority>
 </url>
