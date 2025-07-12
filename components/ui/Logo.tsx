@@ -16,8 +16,8 @@ export function Logo({ className = '', showText = true, variant = 'auto' }: Logo
         <Image
           src="/houston-land-guy-logo-header.png"
           alt="Houston Land Guy - Development Intelligence"
-          width={400}
-          height={133}
+          width={220}
+          height={70}
           className="h-14 w-auto"
           priority
         />
