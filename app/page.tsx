@@ -3,22 +3,7 @@
 import Link from "next/link";
 import { ArrowRight, Calculator, TrendingUp, Building2, BarChart3, Users, CheckCircle } from "lucide-react";
 import { LeadCaptureForm } from "@/components/forms/LeadCaptureForm";
-import { motion } from 'framer-motion';
 import { useState } from 'react';
-
-const fadeInUp = {
-  initial: { opacity: 0, y: 20 },
-  animate: { opacity: 1, y: 0 },
-  transition: { duration: 0.6 }
-};
-
-const staggerChildren = {
-  animate: {
-    transition: {
-      staggerChildren: 0.1
-    }
-  }
-};
 
 export default function Home() {
 
@@ -53,12 +38,7 @@ export default function Home() {
         
         
         {/* Video Overlay */}
-        <motion.div 
-          className="absolute inset-0 bg-gradient-to-r from-black/70 via-black/50 to-black/60"
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ duration: 1.5 }}
-        />
+        <div className="absolute inset-0 bg-gradient-to-r from-black/70 via-black/50 to-black/60" />
         
         {/* Subtle Pattern Overlay for texture */}
         <div className="absolute inset-0 opacity-5">
@@ -69,39 +49,22 @@ export default function Home() {
         
         <div className="mx-auto max-w-7xl px-4 py-16 sm:px-6 sm:py-24 lg:px-8 relative">
           <div className="text-center max-w-4xl mx-auto">
-            <motion.div 
-              initial={{ opacity: 0, y: 50 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.8 }}
-            >
+            <div>
               <h1 className="text-4xl font-bold tracking-tight text-white sm:text-5xl lg:text-6xl">
                 Houston&apos;s Premier Development
-                <motion.span 
-                  className="block text-3xl sm:text-4xl lg:text-5xl text-green-300 mt-2"
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  transition={{ delay: 0.3, duration: 0.6 }}
-                >
+                <span className="block text-3xl sm:text-4xl lg:text-5xl text-green-300 mt-2">
                   Intelligence Platform
-                </motion.span>
+                </span>
               </h1>
-              <motion.p 
-                className="mt-6 text-lg text-gray-100 lg:text-xl"
-                {...fadeInUp}
-                transition={{ delay: 0.4 }}
-              >
+              <p className="mt-6 text-lg text-gray-100 lg:text-xl">
                 Discover exclusive <strong>Houston development opportunities</strong> and <strong>off-market land deals</strong> across Harris County. 
                 Our advanced market intelligence platform provides <strong>Houston land development</strong> insights, 
                 ROI calculators, and comprehensive analysis tools for builders, developers, and investors seeking 
                 premium <strong>Harris County property</strong> investments.
-              </motion.p>
+              </p>
               
               {/* Trust Indicators */}
-              <motion.div 
-                className="mt-8 grid grid-cols-1 gap-6 sm:grid-cols-3 sm:gap-8 justify-items-center"
-                {...fadeInUp}
-                transition={{ delay: 0.5 }}
-              >
+              <div className="mt-8 grid grid-cols-1 gap-6 sm:grid-cols-3 sm:gap-8 justify-items-center">
                 <div className="text-white text-center">
                   <div className="text-3xl sm:text-4xl font-bold">$483M+</div>
                   <div className="text-sm opacity-90">in Transactions</div>
@@ -114,14 +77,10 @@ export default function Home() {
                   <div className="text-3xl sm:text-4xl font-bold">1,200+</div>
                   <div className="text-sm opacity-90">Projects Analyzed</div>
                 </div>
-              </motion.div>
+              </div>
               
-              <motion.div 
-                className="mt-10 flex flex-col sm:flex-row sm:justify-center sm:space-x-4 space-y-4 sm:space-y-0"
-                {...fadeInUp}
-                transition={{ delay: 0.6 }}
-              >
-                <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
+              <div className="mt-10 flex flex-col sm:flex-row sm:justify-center sm:space-x-4 space-y-4 sm:space-y-0">
+                <div>
                   <Link
                     href="/roi-calculator"
                     className="cta-primary w-full sm:w-auto inline-flex items-center justify-center"
@@ -129,21 +88,17 @@ export default function Home() {
                     Try ROI Calculator
                     <ArrowRight className="ml-2 h-5 w-5" />
                   </Link>
-                </motion.div>
-                <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
+                </div>
+                <div>
                   <Link
                     href="/intelligence"
                     className="cta-secondary w-full sm:w-auto inline-flex items-center justify-center bg-white/10 backdrop-blur-sm border-white/30 text-white hover:bg-white/20"
                   >
                     View Market Intelligence
                   </Link>
-                </motion.div>
-              </motion.div>
-              <motion.div 
-                className="mt-6 flex flex-wrap justify-center items-center gap-6"
-                {...fadeInUp}
-                transition={{ delay: 0.7 }}
-              >
+                </div>
+              </div>
+              <div className="mt-6 flex flex-wrap justify-center items-center gap-6">
                 <div className="trust-badge text-white/90">
                   <CheckCircle className="h-5 w-5 text-green-300" />
                   <span>No obligation</span>
@@ -156,8 +111,8 @@ export default function Home() {
                   <CheckCircle className="h-5 w-5 text-green-300" />
                   <span>Instant results</span>
                 </div>
-              </motion.div>
-            </motion.div>
+              </div>
+            </div>
           </div>
         </div>
       </section>
@@ -179,7 +134,7 @@ export default function Home() {
               Comprehensive <strong>Houston real estate</strong> intelligence and <strong>Harris County development</strong> tools 
               designed specifically for builders, developers, and investors in the Houston market.
             </p>
-          </motion.div>
+          </div>
           
           <motion.div 
             className="mt-12 grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-3"
@@ -243,20 +198,14 @@ export default function Home() {
                 </div>
                 <h3 className="text-lg font-semibold text-gray-900 mb-2">{feature.name}</h3>
                 <p className="text-gray-600">{feature.description}</p>
-              </motion.div>
+              </div>
             ))}
-          </motion.div>
+          </div>
         </div>
       </section>
 
       {/* CTA Section */}
-      <motion.section 
-        className="relative py-20 overflow-hidden"
-        initial={{ opacity: 0 }}
-        whileInView={{ opacity: 1 }}
-        viewport={{ once: true }}
-        transition={{ duration: 0.6 }}
-      >
+      <section className="relative py-20 overflow-hidden">
         {/* Gradient Background */}
         <div className="absolute inset-0 bg-gradient-to-r from-green-600 to-emerald-700" />
         
@@ -280,13 +229,13 @@ export default function Home() {
               variants={fadeInUp}
             >
               Ready to Transform Your Development Process?
-            </motion.h2>
+            </h2>
             <motion.p 
               className="mt-4 text-lg text-green-100 max-w-2xl mx-auto"
               variants={fadeInUp}
             >
               Join hundreds of Houston builders using data-driven insights to maximize ROI and minimize risk
-            </motion.p>
+            </p>
             <motion.div 
               className="mt-10 flex flex-col sm:flex-row gap-4 justify-center"
               variants={fadeInUp}
@@ -299,7 +248,7 @@ export default function Home() {
                   Schedule Free Consultation
                   <ArrowRight className="ml-2 h-5 w-5" />
                 </Link>
-              </motion.div>
+              </div>
               <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
                 <Link
                   href="/roi-calculator"
@@ -307,8 +256,8 @@ export default function Home() {
                 >
                   Try Calculator First
                 </Link>
-              </motion.div>
-            </motion.div>
+              </div>
+            </div>
             
             {/* Trust Indicators */}
             <motion.div 
@@ -327,19 +276,13 @@ export default function Home() {
                 <CheckCircle className="h-5 w-5 text-green-300 mr-2" />
                 <span>No obligation</span>
               </div>
-            </motion.div>
-          </motion.div>
+            </div>
+          </div>
         </div>
-      </motion.section>
+      </section>
 
       {/* Lead Capture Section */}
-      <motion.section 
-        className="relative py-20 overflow-hidden"
-        initial={{ opacity: 0 }}
-        whileInView={{ opacity: 1 }}
-        viewport={{ once: true }}
-        transition={{ duration: 0.6 }}
-      >
+      <section className="relative py-20 overflow-hidden">
         {/* Background with gradient */}
         <div className="absolute inset-0 bg-gradient-to-br from-gray-900 via-gray-800 to-green-900" />
         
@@ -351,13 +294,7 @@ export default function Home() {
         </div>
         
         <div className="mx-auto max-w-4xl px-4 sm:px-6 lg:px-8 relative">
-          <motion.div 
-            className="text-center mb-12"
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.6 }}
-          >
+          <div className="text-center mb-12">
             <h2 className="text-3xl font-bold tracking-tight text-white sm:text-4xl lg:text-5xl mb-4">
               Get Your Free Analysis
             </h2>
@@ -365,19 +302,11 @@ export default function Home() {
               Instant access to ROI calculations and market insights for your next Houston development project
             </p>
             {/* Deployment trigger after Git reconnection */}
-          </motion.div>
+          </div>
           
-          <motion.div 
-            className="max-w-xl mx-auto"
-            initial={{ opacity: 0, y: 30 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.8, delay: 0.2 }}
-          >
-            <motion.div 
+          <div className="max-w-xl mx-auto">
+            <div 
               className="relative rounded-3xl p-8 shadow-2xl"
-              whileHover={{ scale: 1.02 }}
-              transition={{ duration: 0.3 }}
               style={{
                 background: 'rgba(255, 255, 255, 0.03)',
                 backdropFilter: 'blur(30px)',
@@ -398,10 +327,10 @@ export default function Home() {
                   </div>
                 </div>
               </div>
-            </motion.div>
-          </motion.div>
+            </div>
+          </div>
         </div>
-      </motion.section>
+      </section>
     </>
   );
 }

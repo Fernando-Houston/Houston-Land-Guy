@@ -1,6 +1,5 @@
 'use client'
 
-import { motion } from 'framer-motion'
 import Link from 'next/link'
 import { ArrowRight, MapPin, TrendingUp, Building2, DollarSign, Users, CheckCircle, Award, Briefcase } from 'lucide-react'
 import { LeadCaptureForm } from '@/components/forms/LeadCaptureForm'
@@ -11,12 +10,7 @@ export default function SugarLandDevelopmentPage() {
       {/* Hero Section */}
       <section className="relative overflow-hidden">
         {/* Gradient Background */}
-        <motion.div 
-          className="absolute inset-0 bg-gradient-to-br from-teal-600 via-emerald-700 to-gray-900"
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 0.95 }}
-          transition={{ duration: 1 }}
-        />
+        <div className="absolute inset-0 bg-gradient-to-br from-teal-600 via-emerald-700 to-gray-900 opacity-95" />
         
         {/* Pattern Overlay */}
         <div className="absolute inset-0 opacity-10">
@@ -27,12 +21,7 @@ export default function SugarLandDevelopmentPage() {
         
         <div className="mx-auto max-w-7xl px-4 py-16 sm:px-6 sm:py-24 lg:px-8 relative">
           <div className="lg:grid lg:grid-cols-2 lg:gap-12 lg:items-center">
-            <motion.div 
-              className="mb-12 lg:mb-0"
-              initial={{ opacity: 0, x: -50 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ duration: 0.8 }}
-            >
+            <div className="mb-12 lg:mb-0">
               <div className="flex items-center mb-4">
                 <Award className="h-6 w-6 text-yellow-400 mr-2" />
                 <span className="text-teal-200 font-medium">Most Affluent Houston Suburb</span>
@@ -40,33 +29,18 @@ export default function SugarLandDevelopmentPage() {
               
               <h1 className="text-4xl font-bold tracking-tight text-white sm:text-5xl lg:text-6xl">
                 Sugar Land Development Sites
-                <motion.span 
-                  className="block text-3xl sm:text-4xl lg:text-5xl text-teal-300 mt-2"
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  transition={{ delay: 0.3, duration: 0.6 }}
-                >
+                <span className="block text-3xl sm:text-4xl lg:text-5xl text-teal-300 mt-2">
                   Premium Commercial Opportunities
-                </motion.span>
+                </span>
               </h1>
-              <motion.p 
-                className="mt-6 text-lg text-gray-100 lg:text-xl"
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.4 }}
-              >
+              <p className="mt-6 text-lg text-gray-100 lg:text-xl">
                 Discover exclusive <strong>Sugar Land development opportunities</strong> in Houston&apos;s most affluent suburb. 
                 Premium <strong>Sugar Land commercial real estate</strong> and <strong>investment properties</strong> in a market 
                 known for corporate headquarters, medical facilities, and high-end retail development.
-              </motion.p>
+              </p>
               
               {/* Sugar Land Market Stats */}
-              <motion.div 
-                className="mt-8 grid grid-cols-2 gap-6 sm:flex sm:items-center sm:gap-8"
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.5 }}
-              >
+              <div className="mt-8 grid grid-cols-2 gap-6 sm:flex sm:items-center sm:gap-8">
                 <div className="text-white">
                   <div className="text-3xl sm:text-4xl font-bold">$110K+</div>
                   <div className="text-sm opacity-90">Median Income</div>
@@ -79,15 +53,10 @@ export default function SugarLandDevelopmentPage() {
                   <div className="text-3xl sm:text-4xl font-bold">A+</div>
                   <div className="text-sm opacity-90">Business Climate</div>
                 </div>
-              </motion.div>
+              </div>
               
-              <motion.div 
-                className="mt-10 flex flex-col sm:flex-row sm:space-x-4 space-y-4 sm:space-y-0"
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.6 }}
-              >
-                <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
+              <div className="mt-10 flex flex-col sm:flex-row sm:space-x-4 space-y-4 sm:space-y-0">
+                <div>
                   <Link
                     href="/roi-calculator"
                     className="cta-primary w-full sm:w-auto inline-flex items-center justify-center"
@@ -95,25 +64,19 @@ export default function SugarLandDevelopmentPage() {
                     Calculate Sugar Land ROI
                     <ArrowRight className="ml-2 h-5 w-5" />
                   </Link>
-                </motion.div>
-                <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
+                </div>
+                <div>
                   <Link
                     href="#commercial-opportunities"
                     className="cta-secondary w-full sm:w-auto inline-flex items-center justify-center bg-white/10 backdrop-blur-sm border-white/30 text-white hover:bg-white/20"
                   >
                     View Commercial Sites
                   </Link>
-                </motion.div>
-              </motion.div>
-            </motion.div>
+                </div>
+              </div>
+            </div>
             
-            <motion.div 
-              className="feature-card shadow-2xl"
-              initial={{ opacity: 0, x: 50 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ duration: 0.8, delay: 0.2 }}
-              whileHover={{ scale: 1.02 }}
-            >
+            <div className="feature-card shadow-2xl">
               <div className="text-center mb-6">
                 <h3 className="text-2xl font-bold text-gray-900 mb-2">
                   Sugar Land Investment Analysis
@@ -131,7 +94,7 @@ export default function SugarLandDevelopmentPage() {
                   </div>
                 </div>
               </div>
-            </motion.div>
+            </div>
           </div>
         </div>
       </section>
@@ -139,13 +102,7 @@ export default function SugarLandDevelopmentPage() {
       {/* Sugar Land Market Advantages */}
       <section className="py-16 sm:py-24 bg-gradient-to-b from-gray-50 to-white">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          <motion.div 
-            className="text-center mb-16"
-            initial={{ opacity: 0 }}
-            whileInView={{ opacity: 1 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.6 }}
-          >
+          <div className="text-center mb-16">
             <h2 className="text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl">
               Why Sugar Land for <span className="gradient-text">Commercial Development</span>
             </h2>
@@ -154,7 +111,7 @@ export default function SugarLandDevelopmentPage() {
               Home to major corporations, world-class medical facilities, and affluent demographics, 
               <strong>Sugar Land commercial development</strong> delivers premium returns for sophisticated investors.
             </p>
-          </motion.div>
+          </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             {[
@@ -218,7 +175,7 @@ export default function SugarLandDevelopmentPage() {
                     </span>
                   </div>
                 )}
-              </motion.div>
+              </div>
             ))}
           </div>
         </div>
@@ -227,13 +184,7 @@ export default function SugarLandDevelopmentPage() {
       {/* Commercial Development Opportunities */}
       <section id="commercial-opportunities" className="py-16 sm:py-24 bg-white">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          <motion.div 
-            className="text-center mb-16"
-            initial={{ opacity: 0 }}
-            whileInView={{ opacity: 1 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.6 }}
-          >
+          <div className="text-center mb-16">
             <h2 className="text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl">
               Current <span className="gradient-text">Sugar Land Commercial Opportunities</span>
             </h2>
@@ -241,7 +192,7 @@ export default function SugarLandDevelopmentPage() {
               Premium <strong>Sugar Land commercial development</strong> sites and <strong>investment properties</strong> 
               in prime locations with established corporate presence and affluent demographics.
             </p>
-          </motion.div>
+          </div>
 
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center mb-16">
             <motion.div
@@ -282,7 +233,7 @@ export default function SugarLandDevelopmentPage() {
                   <div className="mt-2 text-teal-600 font-medium">3-15 acre sites • $8M-$30M range</div>
                 </div>
               </div>
-            </motion.div>
+            </div>
 
             <motion.div
               className="feature-card"
@@ -319,7 +270,7 @@ export default function SugarLandDevelopmentPage() {
               </div>
 
               <LeadCaptureForm source="SUGAR_LAND_COMMERCIAL" />
-            </motion.div>
+            </div>
           </div>
 
           {/* Success Metrics */}
@@ -353,24 +304,18 @@ export default function SugarLandDevelopmentPage() {
                 <div className="text-sm text-gray-600">Commercial development projects averaging 18% internal rate of return</div>
               </div>
             </div>
-          </motion.div>
+          </div>
         </div>
       </section>
 
       {/* Sugar Land Business Environment */}
       <section className="py-16 sm:py-24 bg-gradient-to-b from-gray-50 to-white">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          <motion.div 
-            className="text-center mb-16"
-            initial={{ opacity: 0 }}
-            whileInView={{ opacity: 1 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.6 }}
-          >
+          <div className="text-center mb-16">
             <h2 className="text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl">
               Sugar Land&apos;s <span className="gradient-text">Business-Friendly Environment</span>
             </h2>
-          </motion.div>
+          </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-12">
             <motion.div
@@ -423,7 +368,7 @@ export default function SugarLandDevelopmentPage() {
                   </div>
                 </div>
               </div>
-            </motion.div>
+            </div>
 
             <motion.div
               className="space-y-6"
@@ -455,7 +400,7 @@ export default function SugarLandDevelopmentPage() {
                   </li>
                 </ul>
               </div>
-            </motion.div>
+            </div>
           </div>
         </div>
       </section>
@@ -494,7 +439,7 @@ export default function SugarLandDevelopmentPage() {
                   Schedule Sugar Land Consultation
                   <ArrowRight className="ml-2 h-5 w-5" />
                 </Link>
-              </motion.div>
+              </div>
               <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
                 <Link
                   href="/roi-calculator"
@@ -502,9 +447,9 @@ export default function SugarLandDevelopmentPage() {
                 >
                   Calculate Commercial ROI
                 </Link>
-              </motion.div>
-            </motion.div>
-          </motion.div>
+              </div>
+            </div>
+          </div>
         </div>
       </section>
     </>
