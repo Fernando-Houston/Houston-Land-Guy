@@ -5,7 +5,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import { motion, AnimatePresence } from 'framer-motion';
 import { X, Mail, User, Phone, Building } from 'lucide-react';
-import { useLeadCapture } from '@/hooks/useAPI';
+import { useLeadCapture } from '@/src/hooks/useAPI';
 
 const leadSchema = z.object({
   firstName: z.string().min(1, 'First name is required'),

@@ -3,7 +3,7 @@
 import dynamic from 'next/dynamic';
 
 const MarketIntelligenceDashboard = dynamic(
-  () => import('@/components/dashboard/MarketIntelligenceDashboard'),
+  () => import('@/src/components/dashboard/MarketIntelligenceDashboard'),
   { 
     ssr: false,
     loading: () => (

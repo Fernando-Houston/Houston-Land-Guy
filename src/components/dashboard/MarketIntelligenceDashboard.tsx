@@ -34,9 +34,9 @@ import {
   Filter,
   RefreshCw
 } from 'lucide-react';
-import { useMarketData, useMarketTiming, useNeighborhoodComparison } from '@/hooks/useAPI';
-import { LoadingSkeleton } from '@/components/ui/LoadingSkeleton';
-import { LeadCaptureModal } from '@/components/forms/LeadCaptureModal';
+import { useMarketData, useMarketTiming, useNeighborhoodComparison } from '@/src/hooks/useAPI';
+import { LoadingSkeleton } from '@/src/components/ui/LoadingSkeleton';
+import { LeadCaptureModal } from '@/src/components/forms/LeadCaptureModal';
 import { PropertyTypeDistribution, MarketInsightData, NeighborhoodData } from '@/lib/types/tools';
 
 

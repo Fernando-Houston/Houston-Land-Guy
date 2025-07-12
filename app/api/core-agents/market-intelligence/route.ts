@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { CoreAgentsClient } from '@/lib/api/core-agents';
-import { prisma } from '@/lib/prisma';
+import { prisma } from '@/lib/db/prisma';
 
 export async function GET(request: NextRequest) {
   try {

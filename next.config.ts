@@ -13,8 +13,6 @@ const nextConfig: NextConfig = {
     // your project has type errors.
     ignoreBuildErrors: true,
   },
-  // Optimize for Vercel deployment
-  swcMinify: true,
   // Handle image domains if using next/image
   images: {
     domains: ['maps.googleapis.com'],

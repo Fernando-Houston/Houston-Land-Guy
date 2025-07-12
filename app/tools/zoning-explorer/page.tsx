@@ -4,7 +4,7 @@ import { useState, useCallback, useEffect } from 'react';
 import { GoogleMap, useJsApiLoader, Polygon, InfoWindow, Marker } from '@react-google-maps/api';
 import { Search, Layers, Info, Download, Filter, MapPin } from 'lucide-react';
 import { motion } from 'framer-motion';
-import { LeadCaptureModal } from '@/components/forms/LeadCaptureModal';
+import { LeadCaptureModal } from '@/src/components/forms/LeadCaptureModal';
 
 // Houston neighborhoods with deed restrictions
 const houstonZones = [
