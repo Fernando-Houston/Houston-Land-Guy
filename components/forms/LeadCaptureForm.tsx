@@ -13,6 +13,7 @@ interface LeadCaptureFormProps {
   className?: string
   buttonText?: string
   showProjectDetails?: boolean
+  glassmorphism?: boolean
 }
 
 interface FormData {
@@ -29,7 +30,7 @@ interface FormErrors {
   message?: string
 }
 
-export function LeadCaptureForm({ source, onSuccess, className, buttonText = "Get Started", showProjectDetails = false }: LeadCaptureFormProps) {
+export function LeadCaptureForm({ source, onSuccess, className, buttonText = "Get Started", showProjectDetails = false, glassmorphism = false }: LeadCaptureFormProps) {
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [errors, setErrors] = useState<FormErrors>({})
   const [formData, setFormData] = useState<FormData>({
@@ -130,7 +131,10 @@ export function LeadCaptureForm({ source, onSuccess, className, buttonText = "Ge
       className={cn('space-y-4', className)}
     >
       <div>
-        <label htmlFor="name" className="block text-sm font-medium text-gray-700">
+        <label htmlFor="name" className={cn(
+          "block text-sm font-medium",
+          glassmorphism ? "text-white/90" : "text-gray-700"
+        )}>
           Name
         </label>
         <input
@@ -141,9 +145,16 @@ export function LeadCaptureForm({ source, onSuccess, className, buttonText = "Ge
           onChange={handleChange}
           disabled={isSubmitting}
           className={cn(
-            "form-input mt-1",
-            errors.name ? "border-red-300" : "border-gray-300",
-            isSubmitting && "bg-gray-50 cursor-not-allowed"
+            "mt-1 block w-full rounded-lg px-4 py-3 text-sm transition-all duration-200",
+            glassmorphism ? [
+              "bg-white/10 border-white/20 text-white placeholder-white/60",
+              "backdrop-blur-sm focus:bg-white/20 focus:border-white/40",
+              errors.name ? "border-red-400" : "border-white/20"
+            ] : [
+              "form-input",
+              errors.name ? "border-red-300" : "border-gray-300"
+            ],
+            isSubmitting && "opacity-50 cursor-not-allowed"
           )}
         />
         {errors.name && (
@@ -158,8 +169,11 @@ export function LeadCaptureForm({ source, onSuccess, className, buttonText = "Ge
       </div>
 
       <div>
-        <label htmlFor="email" className="block text-sm font-medium text-gray-700">
-          Email <span className="text-red-500">*</span>
+        <label htmlFor="email" className={cn(
+          "block text-sm font-medium",
+          glassmorphism ? "text-white/90" : "text-gray-700"
+        )}>
+          Email <span className={glassmorphism ? "text-red-400" : "text-red-500"}>*</span>
         </label>
         <input
           type="email"
@@ -170,9 +184,16 @@ export function LeadCaptureForm({ source, onSuccess, className, buttonText = "Ge
           onChange={handleChange}
           disabled={isSubmitting}
           className={cn(
-            "form-input mt-1",
-            errors.email ? "border-red-300" : "border-gray-300",
-            isSubmitting && "bg-gray-50 cursor-not-allowed"
+            "mt-1 block w-full rounded-lg px-4 py-3 text-sm transition-all duration-200",
+            glassmorphism ? [
+              "bg-white/10 border-white/20 text-white placeholder-white/60",
+              "backdrop-blur-sm focus:bg-white/20 focus:border-white/40",
+              errors.email ? "border-red-400" : "border-white/20"
+            ] : [
+              "form-input",
+              errors.email ? "border-red-300" : "border-gray-300"
+            ],
+            isSubmitting && "opacity-50 cursor-not-allowed"
           )}
         />
         {errors.email && (
@@ -187,7 +208,10 @@ export function LeadCaptureForm({ source, onSuccess, className, buttonText = "Ge
       </div>
 
       <div>
-        <label htmlFor="phone" className="block text-sm font-medium text-gray-700">
+        <label htmlFor="phone" className={cn(
+          "block text-sm font-medium",
+          glassmorphism ? "text-white/90" : "text-gray-700"
+        )}>
           Phone (Optional)
         </label>
         <input
@@ -199,9 +223,16 @@ export function LeadCaptureForm({ source, onSuccess, className, buttonText = "Ge
           disabled={isSubmitting}
           placeholder="(123) 456-7890"
           className={cn(
-            "form-input mt-1",
-            errors.phone ? "border-red-300" : "border-gray-300",
-            isSubmitting && "bg-gray-50 cursor-not-allowed"
+            "mt-1 block w-full rounded-lg px-4 py-3 text-sm transition-all duration-200",
+            glassmorphism ? [
+              "bg-white/10 border-white/20 text-white placeholder-white/60",
+              "backdrop-blur-sm focus:bg-white/20 focus:border-white/40",
+              errors.phone ? "border-red-400" : "border-white/20"
+            ] : [
+              "form-input",
+              errors.phone ? "border-red-300" : "border-gray-300"
+            ],
+            isSubmitting && "opacity-50 cursor-not-allowed"
           )}
         />
         {errors.phone && (
@@ -216,7 +247,10 @@ export function LeadCaptureForm({ source, onSuccess, className, buttonText = "Ge
       </div>
 
       <div>
-        <label htmlFor="message" className="block text-sm font-medium text-gray-700">
+        <label htmlFor="message" className={cn(
+          "block text-sm font-medium",
+          glassmorphism ? "text-white/90" : "text-gray-700"
+        )}>
           Message (Optional)
         </label>
         <textarea
@@ -228,9 +262,16 @@ export function LeadCaptureForm({ source, onSuccess, className, buttonText = "Ge
           disabled={isSubmitting}
           placeholder="Tell us about your development project..."
           className={cn(
-            "form-input mt-1",
-            errors.message ? "border-red-300" : "border-gray-300",
-            isSubmitting && "bg-gray-50 cursor-not-allowed"
+            "mt-1 block w-full rounded-lg px-4 py-3 text-sm transition-all duration-200 resize-none",
+            glassmorphism ? [
+              "bg-white/10 border-white/20 text-white placeholder-white/60",
+              "backdrop-blur-sm focus:bg-white/20 focus:border-white/40",
+              errors.message ? "border-red-400" : "border-white/20"
+            ] : [
+              "form-input",
+              errors.message ? "border-red-300" : "border-gray-300"
+            ],
+            isSubmitting && "opacity-50 cursor-not-allowed"
           )}
         />
       </div>
@@ -241,7 +282,11 @@ export function LeadCaptureForm({ source, onSuccess, className, buttonText = "Ge
         type="submit"
         disabled={isSubmitting}
         className={cn(
-          'cta-primary w-full justify-center',
+          glassmorphism ? [
+            'w-full bg-white/20 hover:bg-white/30 text-white font-semibold py-3 px-6 rounded-lg',
+            'backdrop-blur-sm border border-white/30 transition-all duration-200',
+            'hover:border-white/50 focus:outline-none focus:ring-2 focus:ring-white/50'
+          ] : 'cta-primary w-full justify-center',
           isSubmitting && 'opacity-70 cursor-not-allowed'
         )}
       >
