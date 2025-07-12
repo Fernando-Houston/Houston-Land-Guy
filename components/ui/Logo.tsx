@@ -14,11 +14,11 @@ export function Logo({ className = '', showText = true, variant = 'auto' }: Logo
     <Link href="/" className={`flex items-center group ${className}`}>
       <div className="flex items-center hover:scale-105 transition-transform duration-200">
         <Image
-          src="/houston-land-guy-logo-transparent.png"
+          src="/houston-land-guy-logo-header.png"
           alt="Houston Land Guy - Development Intelligence"
-          width={300}
-          height={90}
-          className="h-12 w-auto"
+          width={400}
+          height={133}
+          className="h-14 w-auto"
           priority
         />
       </div>
