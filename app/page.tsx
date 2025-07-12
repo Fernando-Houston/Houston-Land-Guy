@@ -364,6 +364,7 @@ export default function Home() {
             <p className="text-lg text-gray-300 max-w-2xl mx-auto">
               Instant access to ROI calculations and market insights for your next Houston development project
             </p>
+            {/* Force deployment trigger */}
           </motion.div>
           
           <motion.div 
