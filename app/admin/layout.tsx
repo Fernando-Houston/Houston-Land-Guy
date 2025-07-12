@@ -114,7 +114,7 @@ export default function AdminLayout({
           <div className="flex items-center justify-between h-16 px-4 bg-gray-800">
             <Link href="/admin" className="flex items-center">
               <span className={`text-white font-bold ${sidebarOpen ? 'block' : 'hidden'}`}>
-                HDI Admin
+                HLG Admin
               </span>
             </Link>
             <button
