@@ -36,14 +36,17 @@ export function Logo({ className = '', showText = true, variant = 'auto' }: Logo
               <Image
                 src={logoImagePath}
                 alt="Houston Land Group Logo"
-                width={240}
-                height={90}
-                className="h-16 w-auto transition-all duration-200 drop-shadow-sm hover:drop-shadow-md hover:scale-105"
+                width={320}
+                height={100}
+                className="h-18 w-auto transition-all duration-200 drop-shadow-sm hover:drop-shadow-md hover:scale-105"
                 style={{
-                  filter: 'drop-shadow(1px 1px 0px #10b981) drop-shadow(-1px -1px 0px #10b981) drop-shadow(1px -1px 0px #10b981) drop-shadow(-1px 1px 0px #10b981)'
+                  imageRendering: 'crisp-edges',
+                  WebkitImageRendering: 'crisp-edges',
+                  msInterpolationMode: 'nearest-neighbor'
                 }}
                 onError={() => setImageError(true)}
                 priority
+                quality={100}
               />
             </div>
           </div>
