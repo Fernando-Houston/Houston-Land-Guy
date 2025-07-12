@@ -11,12 +11,7 @@ export default function WoodlandsDevelopmentPage() {
       {/* Hero Section */}
       <section className="relative overflow-hidden">
         {/* Gradient Background */}
-        <motion.div 
-          className="absolute inset-0 bg-gradient-to-br from-green-600 via-emerald-700 to-gray-900"
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 0.95 }}
-          transition={{ duration: 1 }}
-        />
+        <div className="absolute inset-0 bg-gradient-to-br from-green-600 via-emerald-700 to-gray-900 opacity-95" />
         
         {/* Pattern Overlay */}
         <div className="absolute inset-0 opacity-10">
@@ -27,41 +22,21 @@ export default function WoodlandsDevelopmentPage() {
         
         <div className="mx-auto max-w-7xl px-4 py-16 sm:px-6 sm:py-24 lg:px-8 relative">
           <div className="lg:grid lg:grid-cols-2 lg:gap-12 lg:items-center">
-            <motion.div 
-              className="mb-12 lg:mb-0"
-              initial={{ opacity: 0, x: -50 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ duration: 0.8 }}
-            >
+            <div className="mb-12 lg:mb-0">
               <h1 className="text-4xl font-bold tracking-tight text-white sm:text-5xl lg:text-6xl">
                 The Woodlands Development Land
-                <motion.span 
-                  className="block text-3xl sm:text-4xl lg:text-5xl text-green-300 mt-2"
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  transition={{ delay: 0.3, duration: 0.6 }}
-                >
+                <span className="block text-3xl sm:text-4xl lg:text-5xl text-green-300 mt-2">
                   Premium Investment Opportunities
-                </motion.span>
+                </span>
               </h1>
-              <motion.p 
-                className="mt-6 text-lg text-gray-100 lg:text-xl"
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.4 }}
-              >
+              <p className="mt-6 text-lg text-gray-100 lg:text-xl">
                 Discover exclusive <strong>Woodlands development opportunities</strong> in one of Houston&apos;s most prestigious master-planned communities. 
                 Access <strong>Woodlands commercial real estate</strong> and prime <strong>development sites</strong> with unmatched growth potential 
                 in Montgomery County&apos;s premier location.
-              </motion.p>
+              </p>
               
               {/* The Woodlands Stats */}
-              <motion.div 
-                className="mt-8 grid grid-cols-2 gap-6 sm:flex sm:items-center sm:gap-8"
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.5 }}
-              >
+              <div className="mt-8 grid grid-cols-2 gap-6 sm:flex sm:items-center sm:gap-8">
                 <div className="text-white">
                   <div className="text-3xl sm:text-4xl font-bold">28,000+</div>
                   <div className="text-sm opacity-90">Acres Master-Planned</div>
@@ -76,13 +51,8 @@ export default function WoodlandsDevelopmentPage() {
                 </div>
               </div>
               
-              <motion.div 
-                className="mt-10 flex flex-col sm:flex-row sm:space-x-4 space-y-4 sm:space-y-0"
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.6 }}
-              >
-                <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
+              <div className="mt-10 flex flex-col sm:flex-row sm:space-x-4 space-y-4 sm:space-y-0">
+                <div>
                   <Link
                     href="/roi-calculator"
                     className="cta-primary w-full sm:w-auto inline-flex items-center justify-center"
@@ -91,7 +61,7 @@ export default function WoodlandsDevelopmentPage() {
                     <ArrowRight className="ml-2 h-5 w-5" />
                   </Link>
                 </div>
-                <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
+                <div>
                   <Link
                     href="#opportunities"
                     className="cta-secondary w-full sm:w-auto inline-flex items-center justify-center bg-white/10 backdrop-blur-sm border-white/30 text-white hover:bg-white/20"
@@ -102,13 +72,7 @@ export default function WoodlandsDevelopmentPage() {
               </div>
             </div>
             
-            <motion.div 
-              className="feature-card shadow-2xl"
-              initial={{ opacity: 0, x: 50 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ duration: 0.8, delay: 0.2 }}
-              whileHover={{ scale: 1.02 }}
-            >
+            <div className="feature-card shadow-2xl">
               <div className="text-center mb-6">
                 <h3 className="text-2xl font-bold text-gray-900 mb-2">
                   Get Exclusive Woodlands Market Report
@@ -184,14 +148,9 @@ export default function WoodlandsDevelopmentPage() {
                 stats: "Streamlined Approvals"
               }
             ].map((feature, index) => (
-              <motion.div
+              <div
                 key={feature.title}
                 className="feature-card group"
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.5, delay: index * 0.1 }}
-                whileHover={{ scale: 1.03, transition: { duration: 0.2 } }}
               >
                 <div className="flex items-center justify-center h-12 w-12 rounded-md bg-green-100 text-green-600 mb-4 group-hover:scale-110 transition-transform">
                   <feature.icon className="h-6 w-6" />
@@ -219,12 +178,7 @@ export default function WoodlandsDevelopmentPage() {
           </div>
 
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
-            <motion.div
-              initial={{ opacity: 0, x: -30 }}
-              whileInView={{ opacity: 1, x: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.6 }}
-            >
+            <div>
               <h3 className="text-2xl font-bold text-gray-900 mb-6">
                 Available Development Categories
               </h3>
@@ -259,13 +213,7 @@ export default function WoodlandsDevelopmentPage() {
               </div>
             </div>
 
-            <motion.div
-              className="feature-card"
-              initial={{ opacity: 0, x: 30 }}
-              whileInView={{ opacity: 1, x: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.6 }}
-            >
+            <div className="feature-card">
               <h3 className="text-xl font-bold text-gray-900 mb-4">
                 Get Exclusive Woodlands Opportunities
               </h3>
@@ -304,13 +252,7 @@ export default function WoodlandsDevelopmentPage() {
         <div className="absolute inset-0 bg-gradient-to-r from-green-600 to-emerald-700" />
         
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 relative">
-          <motion.div 
-            className="text-center"
-            initial={{ opacity: 0 }}
-            whileInView={{ opacity: 1 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.6 }}
-          >
+          <div className="text-center">
             <h2 className="text-3xl font-bold tracking-tight text-white sm:text-4xl lg:text-5xl">
               Ready to Invest in Woodlands Development?
             </h2>
@@ -318,14 +260,8 @@ export default function WoodlandsDevelopmentPage() {
               Join successful developers who have generated exceptional returns through strategic 
               <strong> Woodlands development investments</strong>
             </p>
-            <motion.div 
-              className="mt-10 flex flex-col sm:flex-row gap-4 justify-center"
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.6, delay: 0.2 }}
-            >
-              <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
+            <div className="mt-10 flex flex-col sm:flex-row gap-4 justify-center">
+              <div>
                 <Link
                   href="/consultation"
                   className="inline-flex items-center justify-center px-8 py-4 border border-transparent text-base font-semibold rounded-lg text-green-600 bg-white hover:bg-gray-50 transition-all shadow-lg"
@@ -334,7 +270,7 @@ export default function WoodlandsDevelopmentPage() {
                   <ArrowRight className="ml-2 h-5 w-5" />
                 </Link>
               </div>
-              <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
+              <div>
                 <Link
                   href="/roi-calculator"
                   className="inline-flex items-center justify-center px-8 py-4 border-2 border-white text-base font-semibold rounded-lg text-white bg-transparent hover:bg-white hover:text-green-600 transition-all"

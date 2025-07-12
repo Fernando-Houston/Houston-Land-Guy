@@ -120,13 +120,7 @@ export default function Home() {
       {/* Features Section */}
       <section className="py-16 sm:py-24 bg-gradient-to-b from-gray-50 to-white">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          <motion.div 
-            className="text-center"
-            initial={{ opacity: 0 }}
-            whileInView={{ opacity: 1 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.6 }}
-          >
+          <div className="text-center">
             <h2 className="text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl">
               Exclusive <span className="gradient-text">Houston Development Opportunities</span>
             </h2>
@@ -136,13 +130,7 @@ export default function Home() {
             </p>
           </div>
           
-          <motion.div 
-            className="mt-12 grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-3"
-            variants={staggerChildren}
-            initial="initial"
-            whileInView="animate"
-            viewport={{ once: true }}
-          >
+          <div className="mt-12 grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-3">
             {[
               {
                 name: 'Houston Land Development ROI Calculator',
@@ -187,12 +175,7 @@ export default function Home() {
                 iconClass: 'text-green-800',
               },
             ].map((feature) => (
-              <motion.div
-                key={feature.name}
-                className="feature-card group"
-                variants={fadeInUp}
-                whileHover={{ scale: 1.03, transition: { duration: 0.2 } }}
-              >
+              <div className="feature-card group">
                 <div className={`flex items-center justify-center h-12 w-12 rounded-md ${feature.bgClass} ${feature.iconClass} mb-4 group-hover:scale-110 transition-transform`}>
                   <feature.icon className="h-6 w-6" />
                 </div>
@@ -217,30 +200,15 @@ export default function Home() {
         </div>
         
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 relative">
-          <motion.div 
-            className="text-center"
-            variants={staggerChildren}
-            initial="initial"
-            whileInView="animate"
-            viewport={{ once: true }}
-          >
-            <motion.h2 
-              className="text-3xl font-bold tracking-tight text-white sm:text-4xl lg:text-5xl"
-              variants={fadeInUp}
-            >
+          <div className="text-center">
+            <h2 className="text-3xl font-bold tracking-tight text-white sm:text-4xl lg:text-5xl">
               Ready to Transform Your Development Process?
             </h2>
-            <motion.p 
-              className="mt-4 text-lg text-green-100 max-w-2xl mx-auto"
-              variants={fadeInUp}
-            >
+            <p className="mt-4 text-lg text-green-100 max-w-2xl mx-auto">
               Join hundreds of Houston builders using data-driven insights to maximize ROI and minimize risk
             </p>
-            <motion.div 
-              className="mt-10 flex flex-col sm:flex-row gap-4 justify-center"
-              variants={fadeInUp}
-            >
-              <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
+            <div className="mt-10 flex flex-col sm:flex-row gap-4 justify-center">
+              <div>
                 <Link
                   href="/consultation"
                   className="inline-flex items-center justify-center px-8 py-4 border border-transparent text-base font-semibold rounded-lg text-green-600 bg-white hover:bg-gray-50 transition-all shadow-lg"
@@ -249,7 +217,7 @@ export default function Home() {
                   <ArrowRight className="ml-2 h-5 w-5" />
                 </Link>
               </div>
-              <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
+              <div>
                 <Link
                   href="/roi-calculator"
                   className="inline-flex items-center justify-center px-8 py-4 border-2 border-white text-base font-semibold rounded-lg text-white bg-transparent hover:bg-white hover:text-green-600 transition-all"
@@ -260,10 +228,7 @@ export default function Home() {
             </div>
             
             {/* Trust Indicators */}
-            <motion.div 
-              className="mt-12 flex flex-wrap justify-center gap-8 text-white/90"
-              variants={fadeInUp}
-            >
+            <div className="mt-12 flex flex-wrap justify-center gap-8 text-white/90">
               <div className="flex items-center">
                 <CheckCircle className="h-5 w-5 text-green-300 mr-2" />
                 <span>30-minute consultation</span>

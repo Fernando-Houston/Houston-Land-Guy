@@ -153,15 +153,7 @@ export default function SugarLandDevelopmentPage() {
                 stats: "12% Annual Growth"
               }
             ].map((feature, index) => (
-              <motion.div
-                key={feature.title}
-                className={`feature-card group ${feature.highlight ? 'ring-2 ring-teal-500' : ''}`}
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.5, delay: index * 0.1 }}
-                whileHover={{ scale: 1.03, transition: { duration: 0.2 } }}
-              >
+              <div>
                 <div className="flex items-center justify-center h-12 w-12 rounded-md bg-teal-100 text-teal-600 mb-4 group-hover:scale-110 transition-transform">
                   <feature.icon className="h-6 w-6" />
                 </div>
@@ -195,12 +187,7 @@ export default function SugarLandDevelopmentPage() {
           </div>
 
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center mb-16">
-            <motion.div
-              initial={{ opacity: 0, x: -30 }}
-              whileInView={{ opacity: 1, x: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.6 }}
-            >
+            <div>
               <h3 className="text-2xl font-bold text-gray-900 mb-6">
                 Sugar Land Development Categories
               </h3>
@@ -235,13 +222,7 @@ export default function SugarLandDevelopmentPage() {
               </div>
             </div>
 
-            <motion.div
-              className="feature-card"
-              initial={{ opacity: 0, x: 30 }}
-              whileInView={{ opacity: 1, x: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.6 }}
-            >
+            <div className="feature-card">
               <h3 className="text-xl font-bold text-gray-900 mb-4">
                 Exclusive Sugar Land Opportunities
               </h3>
@@ -274,13 +255,7 @@ export default function SugarLandDevelopmentPage() {
           </div>
 
           {/* Success Metrics */}
-          <motion.div
-            className="bg-teal-50 rounded-2xl p-8"
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.6 }}
-          >
+          <div className="bg-teal-50 rounded-2xl p-8">
             <h3 className="text-2xl font-bold text-gray-900 mb-6 text-center">
               Sugar Land Development Success Metrics
             </h3>
@@ -318,13 +293,7 @@ export default function SugarLandDevelopmentPage() {
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-12">
-            <motion.div
-              className="space-y-6"
-              initial={{ opacity: 0, x: -30 }}
-              whileInView={{ opacity: 1, x: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.6 }}
-            >
+            <div className="space-y-6">
               <h3 className="text-2xl font-semibold text-gray-900">Major Employers & Corporate Presence</h3>
               
               <div className="space-y-4">
@@ -370,13 +339,7 @@ export default function SugarLandDevelopmentPage() {
               </div>
             </div>
 
-            <motion.div
-              className="space-y-6"
-              initial={{ opacity: 0, x: 30 }}
-              whileInView={{ opacity: 1, x: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.6 }}
-            >
+            <div className="space-y-6">
               <h3 className="text-2xl font-semibold text-gray-900">Development Incentives</h3>
               
               <div className="bg-teal-50 rounded-lg p-6">
@@ -410,13 +373,7 @@ export default function SugarLandDevelopmentPage() {
         <div className="absolute inset-0 bg-gradient-to-r from-teal-600 to-emerald-700" />
         
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 relative">
-          <motion.div 
-            className="text-center"
-            initial={{ opacity: 0 }}
-            whileInView={{ opacity: 1 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.6 }}
-          >
+          <div className="text-center">
             <h2 className="text-3xl font-bold tracking-tight text-white sm:text-4xl lg:text-5xl">
               Ready to Develop in Sugar Land?
             </h2>
@@ -424,14 +381,8 @@ export default function SugarLandDevelopmentPage() {
               Join Fortune 500 companies and successful developers in Sugar Land&apos;s 
               <strong> premium commercial market</strong>
             </p>
-            <motion.div 
-              className="mt-10 flex flex-col sm:flex-row gap-4 justify-center"
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.6, delay: 0.2 }}
-            >
-              <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
+            <div className="mt-10 flex flex-col sm:flex-row gap-4 justify-center">
+              <div>
                 <Link
                   href="/consultation"
                   className="inline-flex items-center justify-center px-8 py-4 border border-transparent text-base font-semibold rounded-lg text-teal-600 bg-white hover:bg-gray-50 transition-all shadow-lg"
@@ -440,7 +391,7 @@ export default function SugarLandDevelopmentPage() {
                   <ArrowRight className="ml-2 h-5 w-5" />
                 </Link>
               </div>
-              <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
+              <div>
                 <Link
                   href="/roi-calculator"
                   className="inline-flex items-center justify-center px-8 py-4 border-2 border-white text-base font-semibold rounded-lg text-white bg-transparent hover:bg-white hover:text-teal-600 transition-all"

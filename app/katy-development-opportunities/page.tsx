@@ -11,12 +11,7 @@ export default function KatyDevelopmentPage() {
       {/* Hero Section */}
       <section className="relative overflow-hidden">
         {/* Gradient Background */}
-        <motion.div 
-          className="absolute inset-0 bg-gradient-to-br from-emerald-600 via-green-700 to-gray-900"
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 0.95 }}
-          transition={{ duration: 1 }}
-        />
+        <div className="absolute inset-0 bg-gradient-to-br from-emerald-600 via-green-700 to-gray-900" />
         
         {/* Pattern Overlay */}
         <div className="absolute inset-0 opacity-10">
@@ -27,12 +22,7 @@ export default function KatyDevelopmentPage() {
         
         <div className="mx-auto max-w-7xl px-4 py-16 sm:px-6 sm:py-24 lg:px-8 relative">
           <div className="lg:grid lg:grid-cols-2 lg:gap-12 lg:items-center">
-            <motion.div 
-              className="mb-12 lg:mb-0"
-              initial={{ opacity: 0, x: -50 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ duration: 0.8 }}
-            >
+            <div className="mb-12 lg:mb-0">
               <div className="flex items-center mb-4">
                 <Star className="h-6 w-6 text-yellow-400 mr-2" />
                 <span className="text-green-200 font-medium">Top Growth Market 2024</span>
@@ -40,33 +30,18 @@ export default function KatyDevelopmentPage() {
               
               <h1 className="text-4xl font-bold tracking-tight text-white sm:text-5xl lg:text-6xl">
                 Katy Texas Land Development
-                <motion.span 
-                  className="block text-3xl sm:text-4xl lg:text-5xl text-green-300 mt-2"
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  transition={{ delay: 0.3, duration: 0.6 }}
-                >
+                <span className="block text-3xl sm:text-4xl lg:text-5xl text-green-300 mt-2">
                   Prime Development Opportunities
-                </motion.span>
+                </span>
               </h1>
-              <motion.p 
-                className="mt-6 text-lg text-gray-100 lg:text-xl"
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.4 }}
-              >
+              <p className="mt-6 text-lg text-gray-100 lg:text-xl">
                 Capitalize on <strong>Katy Texas land development</strong> in one of America&apos;s fastest-growing suburbs. 
                 Access exclusive <strong>Katy development opportunities</strong> and <strong>commercial real estate</strong> in 
                 Fort Bend County&apos;s most sought-after location with top-rated schools and master-planned communities.
-              </motion.p>
+              </p>
               
               {/* Katy Market Stats */}
-              <motion.div 
-                className="mt-8 grid grid-cols-2 gap-6 sm:flex sm:items-center sm:gap-8"
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.5 }}
-              >
+              <div className="mt-8 grid grid-cols-2 gap-6 sm:flex sm:items-center sm:gap-8">
                 <div className="text-white">
                   <div className="text-3xl sm:text-4xl font-bold">25%</div>
                   <div className="text-sm opacity-90">5-Year Growth Rate</div>
@@ -79,14 +54,9 @@ export default function KatyDevelopmentPage() {
                   <div className="text-3xl sm:text-4xl font-bold">#1</div>
                   <div className="text-sm opacity-90">Texas School Districts</div>
                 </div>
-              </motion.div>
+              </div>
               
-              <motion.div 
-                className="mt-10 flex flex-col sm:flex-row sm:space-x-4 space-y-4 sm:space-y-0"
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.6 }}
-              >
+              <div className="mt-10 flex flex-col sm:flex-row sm:space-x-4 space-y-4 sm:space-y-0">
                 <div>
                   <Link
                     href="/roi-calculator"
@@ -95,7 +65,7 @@ export default function KatyDevelopmentPage() {
                     Calculate Katy ROI
                     <ArrowRight className="ml-2 h-5 w-5" />
                   </Link>
-                </motion.div>
+                </div>
                 <div>
                   <Link
                     href="#development-sites"
@@ -103,17 +73,11 @@ export default function KatyDevelopmentPage() {
                   >
                     View Katy Development Sites
                   </Link>
-                </motion.div>
-              </motion.div>
-            </motion.div>
+                </div>
+              </div>
+            </div>
             
-            <motion.div 
-              className="feature-card shadow-2xl"
-              initial={{ opacity: 0, x: 50 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ duration: 0.8, delay: 0.2 }}
-              whileHover={{ scale: 1.02 }}
-            >
+            <div className="feature-card shadow-2xl">
               <div className="text-center mb-6">
                 <h3 className="text-2xl font-bold text-gray-900 mb-2">
                   Exclusive Katy Market Intelligence
@@ -131,7 +95,7 @@ export default function KatyDevelopmentPage() {
                   </div>
                 </div>
               </div>
-            </motion.div>
+            </div>
           </div>
         </div>
       </section>
@@ -148,7 +112,7 @@ export default function KatyDevelopmentPage() {
               With exceptional schools, family-friendly communities, and strategic corporate relocations, 
               <strong>Katy real estate investment</strong> delivers consistent returns for forward-thinking developers.
             </p>
-          </motion.div>
+          </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             {[
@@ -207,7 +171,7 @@ export default function KatyDevelopmentPage() {
                     </span>
                   </div>
                 )}
-              </motion.div>
+              </div>
             ))}
           </div>
         </div>
@@ -224,7 +188,7 @@ export default function KatyDevelopmentPage() {
               Premium <strong>Katy development sites</strong> and <strong>land investment</strong> opportunities 
               strategically located in high-growth corridors with established infrastructure and market demand.
             </p>
-          </motion.div>
+          </div>
 
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center mb-16">
             <div>
@@ -260,7 +224,7 @@ export default function KatyDevelopmentPage() {
                   <div className="mt-2 text-emerald-600 font-medium">10-100 acre sites • $2M-$25M range</div>
                 </div>
               </div>
-            </motion.div>
+            </div>
 
             <div className="feature-card">
               <h3 className="text-xl font-bold text-gray-900 mb-4">
@@ -291,7 +255,7 @@ export default function KatyDevelopmentPage() {
               </div>
 
               <LeadCaptureForm source="KATY_DEVELOPMENT_SITES" />
-            </motion.div>
+            </div>
           </div>
 
           {/* Success Stories */}
@@ -319,7 +283,7 @@ export default function KatyDevelopmentPage() {
                 <div className="text-sm text-gray-600">From land acquisition to certificate of occupancy</div>
               </div>
             </div>
-          </motion.div>
+          </div>
         </div>
       </section>
 
@@ -337,7 +301,7 @@ export default function KatyDevelopmentPage() {
               <strong> land development investments</strong>
             </p>
             <div className="mt-10 flex flex-col sm:flex-row gap-4 justify-center">
-              <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
+              <div>
                 <Link
                   href="/consultation"
                   className="inline-flex items-center justify-center px-8 py-4 border border-transparent text-base font-semibold rounded-lg text-emerald-600 bg-white hover:bg-gray-50 transition-all shadow-lg"
@@ -345,17 +309,17 @@ export default function KatyDevelopmentPage() {
                   Schedule Katy Market Consultation
                   <ArrowRight className="ml-2 h-5 w-5" />
                 </Link>
-              </motion.div>
-              <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
+              </div>
+              <div>
                 <Link
                   href="/roi-calculator"
                   className="inline-flex items-center justify-center px-8 py-4 border-2 border-white text-base font-semibold rounded-lg text-white bg-transparent hover:bg-white hover:text-emerald-600 transition-all"
                 >
                   Calculate Katy Development ROI
                 </Link>
-              </motion.div>
-            </motion.div>
-          </motion.div>
+              </div>
+            </div>
+          </div>
         </div>
       </section>
     </>
