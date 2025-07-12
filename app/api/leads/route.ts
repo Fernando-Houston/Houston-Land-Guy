@@ -8,22 +8,35 @@ export async function GET(request: NextRequest) {
   try {
     const searchParams = request.nextUrl.searchParams
     const page = parseInt(searchParams.get('page') || '1')
-    const limit = parseInt(searchParams.get('limit') || '10')
+    const limit = parseInt(searchParams.get('limit') || '100')
     const status = searchParams.get('status')
     const source = searchParams.get('source')
+    const days = searchParams.get('days')
+    const sort = searchParams.get('sort') || 'createdAt'
     
     const skip = (page - 1) * limit
     
     const where: any = {}
-    if (status) where.status = status
-    if (source) where.source = source
+    if (status && status !== 'all') where.status = status
+    if (source && source !== 'all') where.source = source
+    
+    // Date range filter
+    if (days && days !== 'all') {
+      const daysNum = parseInt(days)
+      const dateFrom = new Date()
+      dateFrom.setDate(dateFrom.getDate() - daysNum)
+      where.createdAt = { gte: dateFrom }
+    }
     
     const [leads, total] = await Promise.all([
       prisma.lead.findMany({
         where,
         skip,
         take: limit,
-        orderBy: { createdAt: 'desc' },
+        orderBy: sort === 'score' ? { score: 'desc' } : 
+                 sort === 'name' ? { name: 'asc' } :
+                 sort === 'updatedAt' ? { updatedAt: 'desc' } :
+                 { createdAt: 'desc' },
         include: {
           _count: {
             select: {
@@ -37,7 +50,7 @@ export async function GET(request: NextRequest) {
     ])
     
     return NextResponse.json({
-      data: leads,
+      leads,
       pagination: {
         page,
         limit,

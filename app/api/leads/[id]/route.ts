@@ -26,7 +26,7 @@ export async function GET(
       throw new APIError('Lead not found', 404, 'LEAD_NOT_FOUND')
     }
     
-    return NextResponse.json({ data: lead })
+    return NextResponse.json(lead)
   } catch (error) {
     return handleAPIError(error)
   }
@@ -75,7 +75,7 @@ export async function PATCH(
       })
     }
     
-    return NextResponse.json({ data: updatedLead })
+    return NextResponse.json(updatedLead)
   } catch (error) {
     if (error instanceof z.ZodError) {
       return NextResponse.json(
