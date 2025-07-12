@@ -1,7 +1,5 @@
 'use client';
 
-import { useState } from 'react';
-import Image from 'next/image';
 import Link from 'next/link';
 import { motion } from 'framer-motion';
 
@@ -12,16 +10,6 @@ interface LogoProps {
 }
 
 export function Logo({ className = '', showText = true, variant = 'auto' }: LogoProps) {
-  const [imageError, setImageError] = useState(false);
-
-  // Use the actual Houston Land Group logo with outlined text option
-  const logoImagePath = '/houston-land-group-logo-outlined.svg'; // SVG with green text outline
-  // Alternative: '/houston-land-group-logo.png' for original PNG
-  
-  const textColor = variant === 'light' ? 'text-white' : 
-                   variant === 'dark' ? 'text-gray-900' : 
-                   'text-gray-900'; // default
-
   return (
     <Link href="/" className={`flex items-center group ${className}`}>
       <motion.div
@@ -29,37 +17,36 @@ export function Logo({ className = '', showText = true, variant = 'auto' }: Logo
         whileHover={{ scale: 1.02 }}
         transition={{ duration: 0.2 }}
       >
-        {/* Try to show image logo first */}
-        {!imageError && (
-          <div className="relative mr-4 flex items-center">
-            <div className="relative">
-              <Image
-                src={logoImagePath}
-                alt="Houston Land Group Logo"
-                width={240}
-                height={90}
-                className="h-16 w-auto transition-all duration-200 drop-shadow-sm hover:drop-shadow-md hover:scale-105"
-                style={{
-                  filter: 'drop-shadow(1px 1px 0px #10b981) drop-shadow(-1px -1px 0px #10b981) drop-shadow(1px -1px 0px #10b981) drop-shadow(-1px 1px 0px #10b981)'
-                }}
-                onError={() => setImageError(true)}
-                priority
-              />
+        {/* Custom CSS Logo */}
+        <div className="flex items-center space-x-3">
+          {/* Location Pin Icon */}
+          <div className="relative">
+            <div className="w-8 h-8 bg-gradient-to-br from-green-500 to-green-600 rounded-full flex items-center justify-center shadow-lg">
+              <div className="w-3 h-3 bg-white rounded-full"></div>
             </div>
+            <div className="absolute -bottom-1 left-1/2 transform -translate-x-1/2 w-0 h-0 border-l-2 border-r-2 border-t-4 border-transparent border-t-green-600"></div>
           </div>
-        )}
-        
-        {/* Fallback text logo if image fails to load */}
-        {imageError && (
+          
+          {/* Company Text */}
           <div className="flex flex-col">
-            <span className={`text-lg font-bold ${textColor} group-hover:text-green-600 transition-colors`}>
-              Houston Land Group
-            </span>
-            <span className="text-sm text-gray-600 -mt-1">
+            <div className="flex flex-col">
+              <span className="text-xl font-black text-gray-900 tracking-wide leading-none group-hover:text-green-600 transition-colors duration-200">
+                HOUSTON
+              </span>
+              <span className="text-xl font-black text-gray-900 tracking-wide leading-none group-hover:text-green-600 transition-colors duration-200">
+                LAND GROUP
+              </span>
+            </div>
+            <span className="text-xs font-semibold text-green-700 tracking-wider mt-0.5 opacity-90">
               Development Intelligence
             </span>
           </div>
-        )}
+          
+          {/* Texas Icon */}
+          <div className="w-6 h-6 bg-gradient-to-br from-green-500 to-green-600 transform rotate-12 rounded-sm shadow-md flex items-center justify-center">
+            <div className="w-2 h-2 bg-white rounded-full opacity-80"></div>
+          </div>
+        </div>
       </motion.div>
     </Link>
   );
