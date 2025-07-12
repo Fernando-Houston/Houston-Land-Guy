@@ -6,7 +6,7 @@ import {
   TrendingUp, DollarSign, Building2, Users, MapPin, 
   Calculator, CheckCircle, ArrowRight, Globe, Ship,
   Zap, Shield, Clock, BarChart3, Award, Target,
-  Lightbulb, ChevronRight, AlertCircle
+  Lightbulb, ChevronRight, AlertCircle, Home
 } from 'lucide-react'
 
 const fadeInUp = {
