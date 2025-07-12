@@ -1,7 +1,7 @@
 'use client'
 
 import Link from "next/link";
-import { ArrowRight, Calculator, TrendingUp, Building2, BarChart3, Users, CheckCircle, Volume2, VolumeX } from "lucide-react";
+import { ArrowRight, Calculator, TrendingUp, Building2, BarChart3, Users, CheckCircle } from "lucide-react";
 import { LeadCaptureForm } from "@/components/forms/LeadCaptureForm";
 import { motion } from 'framer-motion';
 import { useState } from 'react';
@@ -21,7 +21,6 @@ const staggerChildren = {
 };
 
 export default function Home() {
-  const [isMuted, setIsMuted] = useState(true);
 
   return (
     <>
@@ -33,7 +32,7 @@ export default function Home() {
             id="hero-video"
             className="absolute inset-0 w-full h-full object-cover"
             autoPlay
-            muted={isMuted}
+            muted
             loop
             playsInline
             poster="https://customer-6njalxhlz5ulnoaq.cloudflarestream.com/df599a037464f8c9e45dc495484035ee/thumbnails/thumbnail.jpg"
@@ -52,18 +51,6 @@ export default function Home() {
         {/* Mobile Background - Static gradient */}
         <div className="absolute inset-0 w-full h-full md:hidden bg-gradient-to-br from-green-500 via-emerald-600 to-gray-900"></div>
         
-        {/* Video Controls - Hidden on mobile */}
-        <motion.button
-          onClick={() => setIsMuted(!isMuted)}
-          className="absolute top-6 right-6 z-10 bg-black/50 backdrop-blur-sm text-white p-3 rounded-full hover:bg-black/70 transition-colors hidden md:flex items-center justify-center"
-          whileHover={{ scale: 1.1 }}
-          whileTap={{ scale: 0.95 }}
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ delay: 2 }}
-        >
-          {isMuted ? <VolumeX size={20} /> : <Volume2 size={20} />}
-        </motion.button>
         
         {/* Video Overlay */}
         <motion.div 
@@ -173,16 +160,17 @@ export default function Home() {
               </motion.div>
             </motion.div>
             <motion.div 
-              className="relative backdrop-blur-xl bg-white/10 border border-white/20 rounded-2xl p-8 shadow-2xl"
+              className="relative rounded-3xl p-8 shadow-2xl"
               initial={{ opacity: 0, x: 50 }}
               animate={{ opacity: 1, x: 0 }}
               transition={{ duration: 0.8, delay: 0.2 }}
               whileHover={{ scale: 1.02 }}
               style={{
-                background: 'rgba(255, 255, 255, 0.08)',
-                backdropFilter: 'blur(20px)',
-                border: '1px solid rgba(255, 255, 255, 0.2)',
-                boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.25), 0 0 0 1px rgba(255, 255, 255, 0.1) inset'
+                background: 'rgba(255, 255, 255, 0.05)',
+                backdropFilter: 'blur(25px)',
+                border: '1px solid rgba(255, 255, 255, 0.15)',
+                boxShadow: '0 32px 64px -12px rgba(0, 0, 0, 0.4), 0 0 0 1px rgba(255, 255, 255, 0.08) inset, 0 0 0 1px rgba(0, 0, 0, 0.1)',
+                WebkitBackdropFilter: 'blur(25px)'
               }}
             >
               <div className="text-center mb-6">

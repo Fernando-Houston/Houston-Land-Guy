@@ -145,10 +145,10 @@ export function LeadCaptureForm({ source, onSuccess, className, buttonText = "Ge
           onChange={handleChange}
           disabled={isSubmitting}
           className={cn(
-            "mt-1 block w-full rounded-lg px-4 py-3 text-sm transition-all duration-200",
+            "mt-1 block w-full rounded-lg px-4 py-3 text-sm transition-all duration-200 border",
             glassmorphism ? [
               "bg-white/10 border-white/20 text-white placeholder-white/60",
-              "backdrop-blur-sm focus:bg-white/20 focus:border-white/40",
+              "backdrop-blur-sm focus:bg-white/20 focus:border-white/40 focus:outline-none focus:ring-2 focus:ring-white/30",
               errors.name ? "border-red-400" : "border-white/20"
             ] : [
               "form-input",
@@ -184,10 +184,10 @@ export function LeadCaptureForm({ source, onSuccess, className, buttonText = "Ge
           onChange={handleChange}
           disabled={isSubmitting}
           className={cn(
-            "mt-1 block w-full rounded-lg px-4 py-3 text-sm transition-all duration-200",
+            "mt-1 block w-full rounded-lg px-4 py-3 text-sm transition-all duration-200 border",
             glassmorphism ? [
               "bg-white/10 border-white/20 text-white placeholder-white/60",
-              "backdrop-blur-sm focus:bg-white/20 focus:border-white/40",
+              "backdrop-blur-sm focus:bg-white/20 focus:border-white/40 focus:outline-none focus:ring-2 focus:ring-white/30",
               errors.email ? "border-red-400" : "border-white/20"
             ] : [
               "form-input",
@@ -223,10 +223,10 @@ export function LeadCaptureForm({ source, onSuccess, className, buttonText = "Ge
           disabled={isSubmitting}
           placeholder="(123) 456-7890"
           className={cn(
-            "mt-1 block w-full rounded-lg px-4 py-3 text-sm transition-all duration-200",
+            "mt-1 block w-full rounded-lg px-4 py-3 text-sm transition-all duration-200 border",
             glassmorphism ? [
               "bg-white/10 border-white/20 text-white placeholder-white/60",
-              "backdrop-blur-sm focus:bg-white/20 focus:border-white/40",
+              "backdrop-blur-sm focus:bg-white/20 focus:border-white/40 focus:outline-none focus:ring-2 focus:ring-white/30",
               errors.phone ? "border-red-400" : "border-white/20"
             ] : [
               "form-input",
@@ -262,10 +262,10 @@ export function LeadCaptureForm({ source, onSuccess, className, buttonText = "Ge
           disabled={isSubmitting}
           placeholder="Tell us about your development project..."
           className={cn(
-            "mt-1 block w-full rounded-lg px-4 py-3 text-sm transition-all duration-200 resize-none",
+            "mt-1 block w-full rounded-lg px-4 py-3 text-sm transition-all duration-200 resize-none border",
             glassmorphism ? [
               "bg-white/10 border-white/20 text-white placeholder-white/60",
-              "backdrop-blur-sm focus:bg-white/20 focus:border-white/40",
+              "backdrop-blur-sm focus:bg-white/20 focus:border-white/40 focus:outline-none focus:ring-2 focus:ring-white/30",
               errors.message ? "border-red-400" : "border-white/20"
             ] : [
               "form-input",
