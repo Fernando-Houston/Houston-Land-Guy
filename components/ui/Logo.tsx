@@ -31,15 +31,20 @@ export function Logo({ className = '', showText = true, variant = 'auto' }: Logo
         {/* Try to show image logo first */}
         {!imageError && (
           <div className="relative mr-4 flex items-center">
-            <Image
-              src={logoImagePath}
-              alt="Houston Land Group Logo"
-              width={240}
-              height={90}
-              className="h-16 w-auto transition-all duration-200 drop-shadow-sm hover:drop-shadow-md hover:scale-105 filter brightness-100 contrast-110 border-2 border-green-500 rounded-lg p-2 bg-white"
-              onError={() => setImageError(true)}
-              priority
-            />
+            <div className="relative">
+              <Image
+                src={logoImagePath}
+                alt="Houston Land Group Logo"
+                width={240}
+                height={90}
+                className="h-16 w-auto transition-all duration-200 drop-shadow-sm hover:drop-shadow-md hover:scale-105"
+                style={{
+                  filter: 'drop-shadow(1px 1px 0px #10b981) drop-shadow(-1px -1px 0px #10b981) drop-shadow(1px -1px 0px #10b981) drop-shadow(-1px 1px 0px #10b981)'
+                }}
+                onError={() => setImageError(true)}
+                priority
+              />
+            </div>
           </div>
         )}
         
