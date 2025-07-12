@@ -24,18 +24,25 @@ export async function POST(request: NextRequest) {
     for (const neighborhood of neighborhoods) {
       const neighborhoodData: Record<string, any> = {}
       
-      // Check cache for each data type
+      // Check cache for each data type (with database fallback)
       for (const dataType of dataTypes) {
+        let cached = null
+        
         if (useCache) {
-          const cached = await prisma.marketData.findFirst({
-            where: {
-              neighborhood,
-              dataType,
-              lastUpdated: {
-                gt: new Date(Date.now() - 24 * 60 * 60 * 1000) // 24 hour cache
+          try {
+            cached = await prisma.marketData.findFirst({
+              where: {
+                neighborhood,
+                dataType,
+                lastUpdated: {
+                  gt: new Date(Date.now() - 24 * 60 * 60 * 1000) // 24 hour cache
+                }
               }
-            }
-          })
+            })
+          } catch (dbError) {
+            console.warn('Database connection failed, skipping cache check:', dbError)
+            // Continue without cache
+          }
           
           if (cached) {
             neighborhoodData[dataType] = cached.data
@@ -75,26 +82,31 @@ export async function POST(request: NextRequest) {
               break
           }
           
-          // Cache the fresh data
-          await prisma.marketData.upsert({
-            where: {
-              neighborhood_dataType: {
+          // Cache the fresh data (with database fallback)
+          try {
+            await prisma.marketData.upsert({
+              where: {
+                neighborhood_dataType: {
+                  neighborhood,
+                  dataType
+                }
+              },
+              update: {
+                data: freshData as any,
+                source: 'core_agents',
+                lastUpdated: new Date()
+              },
+              create: {
                 neighborhood,
-                dataType
+                dataType,
+                data: freshData as any,
+                source: 'core_agents'
               }
-            },
-            update: {
-              data: freshData as any,
-              source: 'core_agents',
-              lastUpdated: new Date()
-            },
-            create: {
-              neighborhood,
-              dataType,
-              data: freshData as any,
-              source: 'core_agents'
-            }
-          })
+            })
+          } catch (dbError) {
+            console.warn('Failed to cache data in database:', dbError)
+            // Continue without caching
+          }
           
           neighborhoodData[dataType] = freshData
         } catch (error) {
