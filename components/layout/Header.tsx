@@ -44,8 +44,8 @@ export function Header() {
       transition={{ duration: 0.3 }}
     >
       <nav className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8" aria-label="Top">
-        <div className="flex h-16 items-center justify-between">
-          <div className="flex items-center">
+        <div className="flex h-20 items-center justify-between">
+          <div className="flex items-center min-w-0 flex-shrink-0">
             <Logo variant="auto" showText={false} />
           </div>
           
