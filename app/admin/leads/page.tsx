@@ -21,7 +21,10 @@ import {
   Eye,
   MessageSquare,
   Star,
-  MoreVertical
+  MoreVertical,
+  Plus,
+  X,
+  Save
 } from 'lucide-react';
 import Link from 'next/link';
 import { format } from 'date-fns';
@@ -83,6 +86,21 @@ export default function LeadsPage() {
   const [sortBy, setSortBy] = useState('createdAt');
   const [selectedLeads, setSelectedLeads] = useState<string[]>([]);
   const [showFilters, setShowFilters] = useState(false);
+  const [showCreateModal, setShowCreateModal] = useState(false);
+  const [isCreatingLead, setIsCreatingLead] = useState(false);
+
+  // Create lead form data
+  const [newLead, setNewLead] = useState({
+    name: '',
+    email: '',
+    phone: '',
+    company: '',
+    source: 'MANUAL_ENTRY',
+    message: '',
+    budgetMin: '',
+    budgetMax: '',
+    timeline: ''
+  });
 
   // Metrics
   const [metrics, setMetrics] = useState({
@@ -209,28 +227,86 @@ export default function LeadsPage() {
     return 'text-red-600';
   };
 
+  const createLead = async () => {
+    setIsCreatingLead(true);
+    try {
+      const response = await fetch('/api/leads', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          ...newLead,
+          budgetMin: newLead.budgetMin ? parseInt(newLead.budgetMin) : undefined,
+          budgetMax: newLead.budgetMax ? parseInt(newLead.budgetMax) : undefined
+        })
+      });
+
+      if (response.ok) {
+        setShowCreateModal(false);
+        setNewLead({
+          name: '',
+          email: '',
+          phone: '',
+          company: '',
+          source: 'MANUAL_ENTRY',
+          message: '',
+          budgetMin: '',
+          budgetMax: '',
+          timeline: ''
+        });
+        fetchLeads(); // Refresh the list
+      } else {
+        const error = await response.json();
+        alert(error.error || 'Failed to create lead');
+      }
+    } catch (error) {
+      console.error('Error creating lead:', error);
+      alert('Failed to create lead');
+    } finally {
+      setIsCreatingLead(false);
+    }
+  };
+
+  const handleCreateLeadChange = (field: string, value: string) => {
+    setNewLead(prev => ({
+      ...prev,
+      [field]: value
+    }));
+  };
+
   return (
     <div className="min-h-screen bg-gray-50">
-      <div className="max-w-7xl mx-auto px-4 py-8">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 sm:py-8">
         {/* Header */}
-        <div className="mb-8">
-          <h1 className="text-3xl font-bold text-gray-900">Lead Management</h1>
-          <p className="text-gray-600 mt-2">Track and manage your development leads</p>
+        <div className="mb-6 sm:mb-8">
+          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+            <div>
+              <h1 className="text-2xl sm:text-3xl font-bold text-gray-900">Lead Management</h1>
+              <p className="text-gray-600 mt-1 sm:mt-2">Track and manage your development leads</p>
+            </div>
+            <button
+              onClick={() => setShowCreateModal(true)}
+              className="flex items-center gap-2 px-4 py-2 bg-green-500 text-white rounded-lg hover:bg-green-600 transition-colors self-start sm:self-auto"
+            >
+              <Plus className="w-4 h-4" />
+              <span className="hidden sm:inline">Create New Lead</span>
+              <span className="sm:hidden">New Lead</span>
+            </button>
+          </div>
         </div>
 
         {/* Metrics Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-6 gap-4 mb-8">
+        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3 sm:gap-4 mb-6 sm:mb-8">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            className="bg-white rounded-lg shadow p-6"
+            className="bg-white rounded-lg shadow p-3 sm:p-6"
           >
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm text-gray-600">Total Leads</p>
-                <p className="text-2xl font-bold text-gray-900">{metrics.totalLeads}</p>
+                <p className="text-xs sm:text-sm text-gray-600">Total Leads</p>
+                <p className="text-lg sm:text-2xl font-bold text-gray-900">{metrics.totalLeads}</p>
               </div>
-              <User className="w-8 h-8 text-gray-400" />
+              <User className="w-6 h-6 sm:w-8 sm:h-8 text-gray-400" />
             </div>
           </motion.div>
 
@@ -238,14 +314,14 @@ export default function LeadsPage() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.1 }}
-            className="bg-white rounded-lg shadow p-6"
+            className="bg-white rounded-lg shadow p-3 sm:p-6"
           >
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm text-gray-600">New Leads</p>
-                <p className="text-2xl font-bold text-blue-600">{metrics.newLeads}</p>
+                <p className="text-xs sm:text-sm text-gray-600">New Leads</p>
+                <p className="text-lg sm:text-2xl font-bold text-blue-600">{metrics.newLeads}</p>
               </div>
-              <AlertCircle className="w-8 h-8 text-blue-400" />
+              <AlertCircle className="w-6 h-6 sm:w-8 sm:h-8 text-blue-400" />
             </div>
           </motion.div>
 
@@ -253,14 +329,14 @@ export default function LeadsPage() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.2 }}
-            className="bg-white rounded-lg shadow p-6"
+            className="bg-white rounded-lg shadow p-3 sm:p-6"
           >
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm text-gray-600">Qualified</p>
-                <p className="text-2xl font-bold text-green-600">{metrics.qualifiedLeads}</p>
+                <p className="text-xs sm:text-sm text-gray-600">Qualified</p>
+                <p className="text-lg sm:text-2xl font-bold text-green-600">{metrics.qualifiedLeads}</p>
               </div>
-              <CheckCircle className="w-8 h-8 text-green-400" />
+              <CheckCircle className="w-6 h-6 sm:w-8 sm:h-8 text-green-400" />
             </div>
           </motion.div>
 
@@ -268,14 +344,14 @@ export default function LeadsPage() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.3 }}
-            className="bg-white rounded-lg shadow p-6"
+            className="bg-white rounded-lg shadow p-3 sm:p-6"
           >
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm text-gray-600">Conversion</p>
-                <p className="text-2xl font-bold text-purple-600">{metrics.conversionRate.toFixed(1)}%</p>
+                <p className="text-xs sm:text-sm text-gray-600">Conversion</p>
+                <p className="text-lg sm:text-2xl font-bold text-purple-600">{metrics.conversionRate.toFixed(1)}%</p>
               </div>
-              <TrendingUp className="w-8 h-8 text-purple-400" />
+              <TrendingUp className="w-6 h-6 sm:w-8 sm:h-8 text-purple-400" />
             </div>
           </motion.div>
 
@@ -283,14 +359,14 @@ export default function LeadsPage() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.4 }}
-            className="bg-white rounded-lg shadow p-6"
+            className="bg-white rounded-lg shadow p-3 sm:p-6"
           >
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm text-gray-600">Avg Score</p>
-                <p className="text-2xl font-bold text-orange-600">{metrics.avgScore}</p>
+                <p className="text-xs sm:text-sm text-gray-600">Avg Score</p>
+                <p className="text-lg sm:text-2xl font-bold text-orange-600">{metrics.avgScore}</p>
               </div>
-              <Star className="w-8 h-8 text-orange-400" />
+              <Star className="w-6 h-6 sm:w-8 sm:h-8 text-orange-400" />
             </div>
           </motion.div>
 
@@ -298,54 +374,54 @@ export default function LeadsPage() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.5 }}
-            className="bg-white rounded-lg shadow p-6"
+            className="bg-white rounded-lg shadow p-3 sm:p-6"
           >
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm text-gray-600">Top Source</p>
-                <p className="text-sm font-bold text-gray-900 truncate">
+                <p className="text-xs sm:text-sm text-gray-600">Top Source</p>
+                <p className="text-xs sm:text-sm font-bold text-gray-900 truncate">
                   {sourceLabels[metrics.topSource] || metrics.topSource}
                 </p>
               </div>
-              <Building className="w-8 h-8 text-gray-400" />
+              <Building className="w-6 h-6 sm:w-8 sm:h-8 text-gray-400" />
             </div>
           </motion.div>
         </div>
 
         {/* Filters and Search */}
         <div className="bg-white rounded-lg shadow mb-6">
-          <div className="p-4 border-b">
-            <div className="flex flex-col lg:flex-row gap-4">
+          <div className="p-3 sm:p-4 border-b">
+            <div className="flex flex-col sm:flex-row gap-3 sm:gap-4">
               {/* Search */}
               <div className="flex-1">
                 <div className="relative">
                   <Search className="absolute left-3 top-3 w-5 h-5 text-gray-400" />
                   <input
                     type="text"
-                    placeholder="Search by name, email, phone, or company..."
+                    placeholder="Search leads..."
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
-                    className="pl-10 w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent"
+                    className="pl-10 w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent text-sm sm:text-base"
                   />
                 </div>
               </div>
 
               {/* Filter Buttons */}
-              <div className="flex gap-2">
+              <div className="flex gap-2 flex-shrink-0">
                 <button
                   onClick={() => setShowFilters(!showFilters)}
-                  className="flex items-center gap-2 px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50"
+                  className="flex items-center gap-2 px-3 sm:px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 text-sm"
                 >
                   <Filter className="w-4 h-4" />
-                  Filters
+                  <span className="hidden sm:inline">Filters</span>
                   <ChevronDown className={`w-4 h-4 transition-transform ${showFilters ? 'rotate-180' : ''}`} />
                 </button>
                 <button
                   onClick={exportLeads}
-                  className="flex items-center gap-2 px-4 py-2 bg-green-500 text-white rounded-lg hover:bg-green-600"
+                  className="flex items-center gap-2 px-3 sm:px-4 py-2 bg-green-500 text-white rounded-lg hover:bg-green-600 text-sm"
                 >
                   <Download className="w-4 h-4" />
-                  Export
+                  <span className="hidden sm:inline">Export</span>
                 </button>
               </div>
             </div>
@@ -582,6 +658,182 @@ export default function LeadsPage() {
             </table>
           </div>
         </div>
+
+        {/* Create Lead Modal */}
+        {showCreateModal && (
+          <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+            <div className="bg-white rounded-lg max-w-md w-full max-h-[90vh] overflow-y-auto">
+              <div className="p-4 sm:p-6">
+                <div className="flex justify-between items-center mb-6">
+                  <h2 className="text-xl font-bold text-gray-900">Create New Lead</h2>
+                  <button
+                    onClick={() => setShowCreateModal(false)}
+                    className="text-gray-400 hover:text-gray-600"
+                  >
+                    <X className="w-6 h-6" />
+                  </button>
+                </div>
+
+                <form onSubmit={(e) => { e.preventDefault(); createLead(); }} className="space-y-4">
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                      Name
+                    </label>
+                    <input
+                      type="text"
+                      value={newLead.name}
+                      onChange={(e) => handleCreateLeadChange('name', e.target.value)}
+                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent"
+                      placeholder="Lead's full name"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                      Email <span className="text-red-500">*</span>
+                    </label>
+                    <input
+                      type="email"
+                      required
+                      value={newLead.email}
+                      onChange={(e) => handleCreateLeadChange('email', e.target.value)}
+                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent"
+                      placeholder="lead@example.com"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                      Phone
+                    </label>
+                    <input
+                      type="tel"
+                      value={newLead.phone}
+                      onChange={(e) => handleCreateLeadChange('phone', e.target.value)}
+                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent"
+                      placeholder="(555) 123-4567"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                      Company
+                    </label>
+                    <input
+                      type="text"
+                      value={newLead.company}
+                      onChange={(e) => handleCreateLeadChange('company', e.target.value)}
+                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent"
+                      placeholder="Company name"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                      Source
+                    </label>
+                    <select
+                      value={newLead.source}
+                      onChange={(e) => handleCreateLeadChange('source', e.target.value)}
+                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent"
+                    >
+                      <option value="MANUAL_ENTRY">Manual Entry</option>
+                      <option value="WEBSITE_CONTACT">Website Contact</option>
+                      <option value="PHONE_INQUIRY">Phone Inquiry</option>
+                      <option value="EMAIL_INQUIRY">Email Inquiry</option>
+                      <option value="REFERRAL">Referral</option>
+                      <option value="SOCIAL_MEDIA">Social Media</option>
+                    </select>
+                  </div>
+
+                  <div className="grid grid-cols-2 gap-3">
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-1">
+                        Budget Min
+                      </label>
+                      <input
+                        type="number"
+                        value={newLead.budgetMin}
+                        onChange={(e) => handleCreateLeadChange('budgetMin', e.target.value)}
+                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent"
+                        placeholder="Min budget"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-1">
+                        Budget Max
+                      </label>
+                      <input
+                        type="number"
+                        value={newLead.budgetMax}
+                        onChange={(e) => handleCreateLeadChange('budgetMax', e.target.value)}
+                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent"
+                        placeholder="Max budget"
+                      />
+                    </div>
+                  </div>
+
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                      Timeline
+                    </label>
+                    <select
+                      value={newLead.timeline}
+                      onChange={(e) => handleCreateLeadChange('timeline', e.target.value)}
+                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent"
+                    >
+                      <option value="">Select timeline</option>
+                      <option value="immediate">Immediate (0-3 months)</option>
+                      <option value="short">Short term (3-6 months)</option>
+                      <option value="medium">Medium term (6-12 months)</option>
+                      <option value="long">Long term (12+ months)</option>
+                    </select>
+                  </div>
+
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                      Message/Notes
+                    </label>
+                    <textarea
+                      rows={3}
+                      value={newLead.message}
+                      onChange={(e) => handleCreateLeadChange('message', e.target.value)}
+                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent"
+                      placeholder="Additional notes about the lead..."
+                    />
+                  </div>
+
+                  <div className="flex gap-3 pt-4">
+                    <button
+                      type="button"
+                      onClick={() => setShowCreateModal(false)}
+                      className="flex-1 px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50"
+                    >
+                      Cancel
+                    </button>
+                    <button
+                      type="submit"
+                      disabled={isCreatingLead || !newLead.email}
+                      className="flex-1 flex items-center justify-center gap-2 px-4 py-2 bg-green-500 text-white rounded-lg hover:bg-green-600 disabled:opacity-50 disabled:cursor-not-allowed"
+                    >
+                      {isCreatingLead ? (
+                        <>
+                          <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                          Creating...
+                        </>
+                      ) : (
+                        <>
+                          <Save className="w-4 h-4" />
+                          Create Lead
+                        </>
+                      )}
+                    </button>
+                  </div>
+                </form>
+              </div>
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );
