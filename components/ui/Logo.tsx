@@ -14,8 +14,9 @@ interface LogoProps {
 export function Logo({ className = '', showText = true, variant = 'auto' }: LogoProps) {
   const [imageError, setImageError] = useState(false);
 
-  // Use the actual Houston Land Group logo
-  const logoImagePath = '/houston-land-group-logo.png';
+  // Use the actual Houston Land Group logo with outlined text option
+  const logoImagePath = '/houston-land-group-logo-outlined.svg'; // SVG with green text outline
+  // Alternative: '/houston-land-group-logo.png' for original PNG
   
   const textColor = variant === 'light' ? 'text-white' : 
                    variant === 'dark' ? 'text-gray-900' : 
