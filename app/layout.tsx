@@ -4,6 +4,7 @@ import "./app.css";
 import { ConditionalLayout } from "@/components/layout/ConditionalLayout";
 import { Toaster } from 'react-hot-toast';
 import { Analytics } from '@vercel/analytics/react';
+import { SpeedInsights } from '@vercel/speed-insights/next';
 import { GoogleAnalytics } from '@/components/analytics/GoogleAnalytics';
 
 const inter = Inter({ subsets: ["latin"] });
@@ -204,6 +205,7 @@ export default function RootLayout({
         <GoogleAnalytics />
         <ConditionalLayout>{children}</ConditionalLayout>
         <Analytics />
+        <SpeedInsights />
         <Toaster
           position="top-right"
           reverseOrder={false}
