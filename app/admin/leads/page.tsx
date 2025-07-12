@@ -88,6 +88,7 @@ export default function LeadsPage() {
   const [showFilters, setShowFilters] = useState(false);
   const [showCreateModal, setShowCreateModal] = useState(false);
   const [isCreatingLead, setIsCreatingLead] = useState(false);
+  const [createError, setCreateError] = useState('');
 
   // Create lead form data
   const [newLead, setNewLead] = useState({
@@ -229,16 +230,32 @@ export default function LeadsPage() {
 
   const createLead = async () => {
     setIsCreatingLead(true);
+    setCreateError('');
+    
     try {
+      const leadData = {
+        ...newLead,
+        budgetMin: newLead.budgetMin ? parseInt(newLead.budgetMin) : undefined,
+        budgetMax: newLead.budgetMax ? parseInt(newLead.budgetMax) : undefined
+      };
+
+      // Remove empty fields
+      Object.keys(leadData).forEach(key => {
+        if (leadData[key] === '' || leadData[key] === undefined) {
+          delete leadData[key];
+        }
+      });
+
+      console.log('Creating lead with data:', leadData);
+
       const response = await fetch('/api/leads', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          ...newLead,
-          budgetMin: newLead.budgetMin ? parseInt(newLead.budgetMin) : undefined,
-          budgetMax: newLead.budgetMax ? parseInt(newLead.budgetMax) : undefined
-        })
+        body: JSON.stringify(leadData)
       });
+
+      const result = await response.json();
+      console.log('API Response:', result);
 
       if (response.ok) {
         setShowCreateModal(false);
@@ -254,13 +271,16 @@ export default function LeadsPage() {
           timeline: ''
         });
         fetchLeads(); // Refresh the list
+        alert('Lead created successfully!');
       } else {
-        const error = await response.json();
-        alert(error.error || 'Failed to create lead');
+        const errorMsg = result.details 
+          ? result.details.map(d => d.message).join(', ')
+          : result.error || 'Failed to create lead';
+        setCreateError(errorMsg);
       }
     } catch (error) {
       console.error('Error creating lead:', error);
-      alert('Failed to create lead');
+      setCreateError('Network error. Please try again.');
     } finally {
       setIsCreatingLead(false);
     }
@@ -490,8 +510,123 @@ export default function LeadsPage() {
             )}
           </div>
 
-          {/* Leads Table */}
-          <div className="overflow-x-auto">
+          {/* Mobile Lead Cards - Hidden on Desktop */}
+          <div className="block md:hidden space-y-4">
+            {loading ? (
+              <div className="flex justify-center py-8">
+                <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-green-500"></div>
+              </div>
+            ) : filteredLeads.length === 0 ? (
+              <div className="text-center py-8 text-gray-500">
+                No leads found matching your criteria
+              </div>
+            ) : (
+              filteredLeads.map((lead) => (
+                <motion.div
+                  key={lead.id}
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  className="bg-white rounded-lg shadow-sm border p-4"
+                >
+                  <div className="flex justify-between items-start mb-3">
+                    <div className="flex-1">
+                      <h3 className="font-medium text-gray-900">
+                        {lead.name || 'Anonymous Lead'}
+                      </h3>
+                      <p className="text-sm text-gray-600">{lead.email}</p>
+                      {lead.phone && (
+                        <p className="text-sm text-gray-600">{lead.phone}</p>
+                      )}
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <span className={`inline-flex items-center px-2 py-1 rounded-full text-xs font-medium ${
+                        lead.status === 'NEW' ? 'bg-blue-100 text-blue-800' :
+                        lead.status === 'QUALIFIED' ? 'bg-green-100 text-green-800' :
+                        lead.status === 'CONTACTED' ? 'bg-yellow-100 text-yellow-800' :
+                        'bg-purple-100 text-purple-800'
+                      }`}>
+                        {lead.status}
+                      </span>
+                      <Link
+                        href={`/admin/leads/${lead.id}`}
+                        className="text-green-600 hover:text-green-900"
+                      >
+                        <Eye className="w-4 h-4" />
+                      </Link>
+                    </div>
+                  </div>
+
+                  <div className="grid grid-cols-2 gap-4 text-sm">
+                    <div>
+                      <span className="text-gray-500">Source:</span>
+                      <span className="ml-1 font-medium">
+                        {sourceLabels[lead.source] || lead.source}
+                      </span>
+                    </div>
+                    <div>
+                      <span className="text-gray-500">Score:</span>
+                      <span className={`ml-1 font-medium ${getScoreColor(lead.score)}`}>
+                        {lead.score}
+                      </span>
+                    </div>
+                    <div>
+                      <span className="text-gray-500">Created:</span>
+                      <span className="ml-1">
+                        {format(new Date(lead.createdAt), 'MMM d, yyyy')}
+                      </span>
+                    </div>
+                    <div>
+                      <span className="text-gray-500">Budget:</span>
+                      <span className="ml-1">
+                        {lead.budgetMin && lead.budgetMax 
+                          ? `$${(lead.budgetMin / 1000)}K - $${(lead.budgetMax / 1000)}K`
+                          : 'Not specified'
+                        }
+                      </span>
+                    </div>
+                  </div>
+
+                  {lead.message && (
+                    <div className="mt-3 pt-3 border-t">
+                      <p className="text-sm text-gray-600 line-clamp-2">{lead.message}</p>
+                    </div>
+                  )}
+
+                  <div className="flex justify-between items-center mt-3 pt-3 border-t">
+                    <div className="flex gap-2">
+                      <a
+                        href={`mailto:${lead.email}`}
+                        className="text-blue-600 hover:text-blue-900"
+                      >
+                        <Mail className="w-4 h-4" />
+                      </a>
+                      {lead.phone && (
+                        <a
+                          href={`tel:${lead.phone}`}
+                          className="text-blue-600 hover:text-blue-900"
+                        >
+                          <Phone className="w-4 h-4" />
+                        </a>
+                      )}
+                    </div>
+                    <select
+                      value={lead.status}
+                      onChange={(e) => updateLeadStatus(lead.id, e.target.value)}
+                      className="text-xs border border-gray-300 rounded px-2 py-1 focus:ring-1 focus:ring-green-500"
+                    >
+                      <option value="NEW">New</option>
+                      <option value="QUALIFIED">Qualified</option>
+                      <option value="CONTACTED">Contacted</option>
+                      <option value="CONVERTED">Converted</option>
+                    </select>
+                  </div>
+                </motion.div>
+              ))
+            )}
+          </div>
+
+          {/* Desktop Table - Hidden on Mobile */}
+          <div className="hidden md:block overflow-x-auto">
             <table className="w-full">
               <thead className="bg-gray-50 border-b">
                 <tr>
@@ -673,6 +808,12 @@ export default function LeadsPage() {
                     <X className="w-6 h-6" />
                   </button>
                 </div>
+
+                {createError && (
+                  <div className="bg-red-50 border border-red-200 rounded-lg p-3 mb-4">
+                    <p className="text-sm text-red-600">{createError}</p>
+                  </div>
+                )}
 
                 <form onSubmit={(e) => { e.preventDefault(); createLead(); }} className="space-y-4">
                   <div>

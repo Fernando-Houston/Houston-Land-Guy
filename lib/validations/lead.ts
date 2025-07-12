@@ -18,7 +18,13 @@ export const createLeadSchema = z.object({
     'financing_calculator',
     'zoning_explorer',
     'market_intelligence_dashboard',
-    'development_timeline'
+    'development_timeline',
+    'MANUAL_ENTRY',
+    'WEBSITE_CONTACT',
+    'PHONE_INQUIRY',
+    'EMAIL_INQUIRY',
+    'REFERRAL',
+    'SOCIAL_MEDIA'
   ]),
   neighborhoods: z.array(z.string()).optional(),
   projectTypes: z.array(z.enum([
