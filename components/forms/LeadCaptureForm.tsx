@@ -31,6 +31,7 @@ interface FormErrors {
 }
 
 export function LeadCaptureForm({ source, onSuccess, className, buttonText = "Get Started", showProjectDetails = false, glassmorphism = false }: LeadCaptureFormProps) {
+  // Enhanced glassmorphism styling for modern UI
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [errors, setErrors] = useState<FormErrors>({})
   const [formData, setFormData] = useState<FormData>({

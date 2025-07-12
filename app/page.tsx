@@ -166,11 +166,11 @@ export default function Home() {
               transition={{ duration: 0.8, delay: 0.2 }}
               whileHover={{ scale: 1.02 }}
               style={{
-                background: 'rgba(255, 255, 255, 0.05)',
-                backdropFilter: 'blur(25px)',
-                border: '1px solid rgba(255, 255, 255, 0.15)',
-                boxShadow: '0 32px 64px -12px rgba(0, 0, 0, 0.4), 0 0 0 1px rgba(255, 255, 255, 0.08) inset, 0 0 0 1px rgba(0, 0, 0, 0.1)',
-                WebkitBackdropFilter: 'blur(25px)'
+                background: 'rgba(255, 255, 255, 0.03)',
+                backdropFilter: 'blur(30px)',
+                border: '1px solid rgba(255, 255, 255, 0.12)',
+                boxShadow: '0 32px 64px -12px rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(255, 255, 255, 0.05) inset',
+                WebkitBackdropFilter: 'blur(30px)'
               }}
             >
               <div className="text-center mb-6">
