@@ -5,7 +5,7 @@ import Link from 'next/link'
 import { 
   ArrowLeft, Clock, TrendingUp, TrendingDown, AlertCircle, 
   Target, Activity, BarChart3, DollarSign, Calendar,
-  ChevronUp, ChevronDown, Minus
+  ChevronUp, ChevronDown, Minus, ChevronRight, Building2
 } from 'lucide-react'
 import { MarketTiming, MarketMetrics, PermitActivity } from '@/lib/core-agents/types'
 import { LeadCaptureForm } from '@/components/forms/LeadCaptureForm'
