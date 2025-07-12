@@ -1,5 +1,5 @@
 import Link from 'next/link'
-import { Calculator, TrendingUp, Building2, DollarSign } from 'lucide-react'
+import { Calculator, TrendingUp, Building2, DollarSign, Calendar } from 'lucide-react'
 
 const tools = [
   {
@@ -14,21 +14,28 @@ const tools = [
     description: 'Real-time market data and trends for Houston neighborhoods',
     href: '/tools/market-dashboard',
     icon: TrendingUp,
-    available: false,
+    available: true,
   },
   {
     name: 'Zoning Explorer',
     description: 'Interactive zoning maps and regulation lookup',
     href: '/tools/zoning-explorer',
     icon: Building2,
-    available: false,
+    available: true,
   },
   {
     name: 'Financing Calculator',
     description: 'Compare financing options and estimate monthly payments',
     href: '/tools/financing-calculator',
     icon: DollarSign,
-    available: false,
+    available: true,
+  },
+  {
+    name: 'Development Timeline',
+    description: 'Create Gantt charts for project planning with Houston-specific phases',
+    href: '/tools/development-timeline',
+    icon: Calendar,
+    available: true,
   },
 ]
 
@@ -45,7 +52,7 @@ export default function ToolsPage() {
           </p>
         </div>
 
-        <div className="mt-12 grid gap-8 sm:grid-cols-2 lg:grid-cols-2">
+        <div className="mt-12 grid gap-8 sm:grid-cols-2 lg:grid-cols-3">
           {tools.map((tool) => (
             <div
               key={tool.name}
