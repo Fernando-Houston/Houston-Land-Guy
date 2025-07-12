@@ -34,7 +34,7 @@ export function Logo({ className = '', showText = true, variant = 'auto' }: Logo
                 HOUSTON
               </span>
               <span className="text-xl font-black text-gray-900 tracking-wide leading-none group-hover:text-green-600 transition-colors duration-200">
-                LAND GROUP
+                LAND GUY
               </span>
             </div>
             <span className="text-xs font-semibold text-green-700 tracking-wider mt-0.5 opacity-90">
