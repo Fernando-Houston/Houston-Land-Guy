@@ -5,6 +5,7 @@ import { cn } from '@/lib/utils/cn'
 import { motion } from 'framer-motion'
 import toast from 'react-hot-toast'
 import { Loader2 } from 'lucide-react'
+import { trackConversion } from '@/components/analytics/GoogleAnalytics'
 
 interface LeadCaptureFormProps {
   source: string
@@ -90,6 +91,10 @@ export function LeadCaptureForm({ source, onSuccess, className, buttonText = "Ge
       }
 
       toast.success('Thank you! We\'ll contact you within 24 hours.')
+      
+      // Track conversion in Google Analytics
+      trackConversion(`lead_${source}`, 100)
+      
       onSuccess?.(formData)
       setFormData({ name: '', email: '', phone: '', message: '' })
       setErrors({})

@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { DollarSign, TrendingUp, Calculator, FileText, Download, Info, PiggyBank, Building } from 'lucide-react';
+import { trackToolUsage } from '@/components/analytics/GoogleAnalytics';
 import {
   LineChart,
   Line,
@@ -151,6 +152,7 @@ export default function FinancingCalculatorPage() {
 
   const handleCalculate = () => {
     setShowResults(true);
+    trackToolUsage('Financing Calculator', 'calculate');
   };
 
   const handleLeadCapture = () => {

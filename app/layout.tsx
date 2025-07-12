@@ -3,6 +3,8 @@ import { Inter } from "next/font/google";
 import "./app.css";
 import { ConditionalLayout } from "@/components/layout/ConditionalLayout";
 import { Toaster } from 'react-hot-toast';
+import { Analytics } from '@vercel/analytics/react';
+import { GoogleAnalytics } from '@/components/analytics/GoogleAnalytics';
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -199,7 +201,9 @@ export default function RootLayout({
         />
       </head>
       <body className={`${inter.className} antialiased bg-gray-50`}>
+        <GoogleAnalytics />
         <ConditionalLayout>{children}</ConditionalLayout>
+        <Analytics />
         <Toaster
           position="top-right"
           reverseOrder={false}
