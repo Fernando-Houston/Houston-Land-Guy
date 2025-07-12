@@ -191,3 +191,72 @@
     border-color: var(--primary-green);
   }
 }
+
+/* Video optimization for mobile devices */
+@layer components {
+  /* Ensure video covers viewport properly on all devices */
+  video {
+    object-fit: cover;
+    object-position: center;
+  }
+  
+  /* Mobile-specific video optimizations */
+  @media (max-width: 768px) {
+    video {
+      /* Ensure video fills the container on mobile */
+      position: absolute !important;
+      top: 50% !important;
+      left: 50% !important;
+      min-width: 100% !important;
+      min-height: 100% !important;
+      width: auto !important;
+      height: auto !important;
+      transform: translate(-50%, -50%) !important;
+      z-index: 0;
+    }
+    
+    /* Fix for iOS Safari video controls */
+    video::-webkit-media-controls {
+      display: none !important;
+    }
+    
+    video::-webkit-media-controls-enclosure {
+      display: none !important;
+    }
+    
+    video::-webkit-media-controls-panel {
+      display: none !important;
+    }
+    
+    video::-webkit-media-controls-play-button {
+      display: none !important;
+    }
+    
+    video::-webkit-media-controls-start-playback-button {
+      display: none !important;
+    }
+    
+    /* iOS specific fixes */
+    .hero-section video {
+      -webkit-transform: translate(-50%, -50%) !important;
+      -webkit-backface-visibility: hidden !important;
+      -webkit-perspective: 1000 !important;
+    }
+    
+    /* Ensure parent container is properly sized */
+    .hero-section {
+      position: relative;
+      overflow: hidden;
+      min-height: 100vh;
+    }
+  }
+  
+  /* Prevent video download on mobile */
+  video::-internal-media-controls-download-button {
+    display: none;
+  }
+  
+  video::-webkit-media-controls-download-button {
+    display: none;
+  }
+}

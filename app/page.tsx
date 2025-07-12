@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { ArrowRight, Calculator, TrendingUp, Building2, BarChart3, Users, CheckCircle } from "lucide-react";
 import { LeadCaptureForm } from "@/components/forms/LeadCaptureForm";
+import { HeroVideo } from "@/components/ui/HeroVideo";
 import { useState } from 'react';
 
 export default function Home() {
@@ -10,31 +11,11 @@ export default function Home() {
   return (
     <>
       {/* Hero Section */}
-      <section className="relative overflow-hidden min-h-[80vh]">
-        {/* Video Background - Desktop Only */}
-        <div className="absolute inset-0 w-full h-full hidden md:block">
-          <video
-            id="hero-video"
-            className="absolute inset-0 w-full h-full object-cover"
-            autoPlay
-            muted
-            loop
-            playsInline
-            poster="https://customer-6njalxhlz5ulnoaq.cloudflarestream.com/df599a037464f8c9e45dc495484035ee/thumbnails/thumbnail.jpg"
-          >
-            <source 
-              src="https://customer-6njalxhlz5ulnoaq.cloudflarestream.com/df599a037464f8c9e45dc495484035ee/manifest/video.m3u8" 
-              type="application/x-mpegURL" 
-            />
-            <source 
-              src="https://customer-6njalxhlz5ulnoaq.cloudflarestream.com/df599a037464f8c9e45dc495484035ee/watch" 
-              type="video/mp4" 
-            />
-          </video>
+      <section className="hero-section relative overflow-hidden min-h-[80vh]">
+        {/* Video Background - All Devices */}
+        <div className="absolute inset-0 w-full h-full">
+          <HeroVideo />
         </div>
-        
-        {/* Mobile Background - Static gradient */}
-        <div className="absolute inset-0 w-full h-full md:hidden bg-gradient-to-br from-green-500 via-emerald-600 to-gray-900"></div>
         
         
         {/* Video Overlay */}
