@@ -2,13 +2,15 @@
 
 import Link from 'next/link'
 import { useState, useEffect } from 'react'
-import { Menu, X, Calculator, TrendingUp, Briefcase, Info, Phone, FileText, Building2 } from 'lucide-react'
+import { Menu, X, Calculator, TrendingUp, Briefcase, Info, Phone, FileText, Building2, DollarSign, Home } from 'lucide-react'
 import { cn } from '@/lib/utils/cn'
 import { motion, AnimatePresence } from 'framer-motion'
 import { usePathname } from 'next/navigation'
 
 const navigation = [
   { name: 'Developers', href: '/developers', icon: Building2 },
+  { name: 'Sellers', href: '/sellers', icon: Home },
+  { name: 'Investors', href: '/investment-opportunities', icon: DollarSign },
   { name: 'Tools', href: '/tools', icon: Calculator },
   { name: 'Market Intelligence', href: '/intelligence', icon: TrendingUp },
   { name: 'Blog', href: '/blog', icon: FileText },

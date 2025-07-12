@@ -8,6 +8,9 @@ const footerNavigation = {
     { name: 'Financing Calculator', href: '/tools#financing-calculator' },
   ],
   intelligence: [
+    { name: 'Developers', href: '/developers' },
+    { name: 'Sellers', href: '/sellers' },
+    { name: 'Investment Opportunities', href: '/investment-opportunities' },
     { name: 'Market Reports', href: '/blog' },
     { name: 'Resources', href: '/resources' },
     { name: 'Neighborhood Analysis', href: '/intelligence#neighborhoods' },
