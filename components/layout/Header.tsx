@@ -6,6 +6,7 @@ import { Menu, X, Calculator, TrendingUp, Briefcase, Info, Phone, FileText, Buil
 import { cn } from '@/lib/utils/cn'
 import { motion, AnimatePresence } from 'framer-motion'
 import { usePathname } from 'next/navigation'
+import { Logo } from '@/components/ui/Logo'
 
 const navigation = [
   { name: 'Developers', href: '/developers', icon: Building2 },
@@ -45,17 +46,7 @@ export function Header() {
       <nav className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8" aria-label="Top">
         <div className="flex h-16 items-center justify-between">
           <div className="flex items-center">
-            <Link href="/" className="flex items-center group">
-              <motion.span 
-                className="text-xl font-bold text-gray-900 group-hover:text-green-600 transition-colors"
-                whileHover={{ scale: 1.02 }}
-              >
-                Houston Development Intelligence
-              </motion.span>
-              <span className="ml-2 text-sm text-gray-600">
-                by Houston Land Guy
-              </span>
-            </Link>
+            <Logo variant="auto" showText={true} />
           </div>
           
           <div className="hidden md:block">
