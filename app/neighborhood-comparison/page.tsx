@@ -9,6 +9,7 @@ import {
 import { coreAgentsClient } from '@/lib/core-agents/client'
 import { NeighborhoodData } from '@/lib/core-agents/types'
 import { LeadCaptureForm } from '@/components/forms/LeadCaptureForm'
+import { PropertyMap } from '@/components/maps/MapWrapper'
 
 const availableNeighborhoods = [
   { slug: 'cypress', name: 'Cypress' },
@@ -27,6 +28,29 @@ const availableNeighborhoods = [
   { slug: 'energy-corridor', name: 'Energy Corridor' },
   { slug: 'champions', name: 'Champions' }
 ]
+
+// Helper function to get neighborhood center coordinates
+function getNeighborhoodCenter(slug: string): { lat: number; lng: number } {
+  const centers: Record<string, { lat: number; lng: number }> = {
+    'cypress': { lat: 29.9691, lng: -95.6972 },
+    'pearland': { lat: 29.5635, lng: -95.2860 },
+    'memorial': { lat: 29.7641, lng: -95.4674 },
+    'spring': { lat: 30.0799, lng: -95.4172 },
+    'conroe': { lat: 30.3119, lng: -95.4560 },
+    'richmond': { lat: 29.5819, lng: -95.7605 },
+    'friendswood': { lat: 29.5294, lng: -95.2010 },
+    'league-city': { lat: 29.5075, lng: -95.0949 },
+    'clear-lake': { lat: 29.5768, lng: -95.1204 },
+    'bellaire': { lat: 29.7058, lng: -95.4588 },
+    'river-oaks': { lat: 29.7573, lng: -95.4151 },
+    'heights': { lat: 29.7989, lng: -95.3987 },
+    'montrose': { lat: 29.7472, lng: -95.3902 },
+    'energy-corridor': { lat: 29.7836, lng: -95.6347 },
+    'champions': { lat: 30.0360, lng: -95.5087 }
+  }
+  
+  return centers[slug] || { lat: 29.7604, lng: -95.3698 }
+}
 
 export default function NeighborhoodComparison() {
   const [selectedNeighborhoods, setSelectedNeighborhoods] = useState<string[]>(['cypress', 'pearland'])
@@ -416,6 +440,44 @@ export default function NeighborhoodComparison() {
           )}
         </div>
       </section>
+
+      {/* Interactive Map */}
+      {!loading && Object.keys(neighborhoodData).length > 0 && (
+        <section className="py-12 bg-gray-50">
+          <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+            <div
+              initial={{ opacity: 0 }}
+              whileInView={{ opacity: 1 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.6 }}
+            >
+              <div className="text-center mb-8">
+                <h2 className="text-2xl font-bold text-gray-900 mb-2">Neighborhood Locations</h2>
+                <p className="text-gray-600">
+                  Compare geographic locations and proximity to major areas
+                </p>
+              </div>
+
+              <div className="bg-white rounded-xl shadow-lg overflow-hidden">
+                <PropertyMap
+                  height="500px"
+                  showSearch={false}
+                  markers={selectedNeighborhoods.map(slug => {
+                    const data = neighborhoodData[slug]
+                    return {
+                      id: slug,
+                      position: getNeighborhoodCenter(slug),
+                      title: data?.name || '',
+                      description: `Median: $${((data?.medianHomePrice || 0) / 1000).toFixed(0)}K • Growth: ${data?.growthRate || 0}%`
+                    }
+                  })}
+                  zoom={10}
+                />
+              </div>
+            </div>
+          </div>
+        </section>
+      )}
 
       {/* Key Insights */}
       {!loading && Object.keys(neighborhoodData).length > 0 && (

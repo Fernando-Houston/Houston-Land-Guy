@@ -9,6 +9,7 @@ import {
   ArrowRight, FileText, Calculator, Briefcase, Target
 } from 'lucide-react'
 import { LeadCaptureForm } from '@/components/forms/LeadCaptureForm'
+import { PropertyMap } from '@/components/maps/MapWrapper'
 
 interface InvestmentOpportunity {
   id: string
@@ -21,6 +22,19 @@ interface InvestmentOpportunity {
   status: 'active' | 'funded' | 'coming-soon'
   highlights: string[]
   minimumInvestment: number
+}
+
+// Helper function to get coordinates for investment locations
+function getInvestmentLocation(location: string): { lat: number; lng: number } {
+  const locationMap: Record<string, { lat: number; lng: number }> = {
+    'The Woodlands': { lat: 30.1658, lng: -95.4613 },
+    'Katy': { lat: 29.7858, lng: -95.8245 },
+    'East Houston': { lat: 29.7794, lng: -95.3271 },
+    'Sugar Land': { lat: 29.5994, lng: -95.6348 },
+    'Inner Loop': { lat: 29.7472, lng: -95.3902 }
+  }
+  
+  return locationMap[location] || { lat: 29.7604, lng: -95.3698 }
 }
 
 export default function InvestmentOpportunitiesPage() {
@@ -314,6 +328,39 @@ export default function InvestmentOpportunitiesPage() {
                   </div>
                 </motion.div>
               ))}
+            </div>
+          </motion.div>
+        </div>
+      </section>
+
+      {/* Investment Map */}
+      <section className="py-16 bg-gray-50">
+        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+          <motion.div
+            initial={{ opacity: 0 }}
+            whileInView={{ opacity: 1 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.6 }}
+          >
+            <div className="text-center mb-8">
+              <h2 className="text-3xl font-bold text-gray-900 mb-4">Investment Properties Map</h2>
+              <p className="text-lg text-gray-600 max-w-2xl mx-auto">
+                Explore investment opportunities across Houston's prime development corridors
+              </p>
+            </div>
+
+            <div className="bg-white rounded-xl shadow-lg overflow-hidden">
+              <PropertyMap
+                height="500px"
+                showSearch={true}
+                markers={filteredOpportunities.map(opp => ({
+                  id: opp.id,
+                  position: getInvestmentLocation(opp.location),
+                  title: opp.title,
+                  description: `${opp.type} • ${opp.investmentRange} • ${opp.targetROI} ROI`
+                }))}
+                zoom={10}
+              />
             </div>
           </motion.div>
         </div>

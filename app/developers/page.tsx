@@ -10,6 +10,7 @@ import {
   Lightbulb, Award, Target, Filter, Search
 } from 'lucide-react'
 import { LeadCaptureForm } from '@/components/forms/LeadCaptureForm'
+import { PropertyMap } from '@/components/maps/MapWrapper'
 
 const fadeInUp = {
   initial: { opacity: 0, y: 20 },
@@ -134,6 +135,20 @@ const testimonials = [
     image: "/developer-3.jpg"
   }
 ]
+
+// Helper function to get coordinates based on location
+function getPropertyCoordinates(location: string): { lat: number; lng: number } {
+  const locationMap: Record<string, { lat: number; lng: number }> = {
+    'Katy, TX 77494': { lat: 29.7858, lng: -95.8245 },
+    'The Woodlands, TX 77380': { lat: 30.1658, lng: -95.4613 },
+    'Houston, TX 77006': { lat: 29.7373, lng: -95.3903 },
+    'Houston, TX 77020': { lat: 29.7794, lng: -95.3271 },
+    'Sugar Land, TX 77479': { lat: 29.5994, lng: -95.6348 },
+    'Cypress, TX 77429': { lat: 29.9691, lng: -95.6972 }
+  }
+  
+  return locationMap[location] || { lat: 29.7604, lng: -95.3698 }
+}
 
 export default function DevelopersPage() {
   const [metrics, setMetrics] = useState({
@@ -512,6 +527,41 @@ export default function DevelopersPage() {
               <ArrowRight className="ml-2 w-5 h-5" />
             </Link>
           </div>
+        </div>
+      </section>
+
+      {/* Interactive Property Map */}
+      <section className="py-20 bg-gray-50">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <motion.div
+            initial={{ opacity: 0 }}
+            whileInView={{ opacity: 1 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.6 }}
+          >
+            <div className="text-center mb-12">
+              <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
+                Development Sites Across Houston
+              </h2>
+              <p className="text-xl text-gray-600 max-w-3xl mx-auto">
+                Interactive map showing current development opportunities in Houston's hottest submarkets
+              </p>
+            </div>
+
+            <div className="bg-white rounded-xl shadow-lg overflow-hidden">
+              <PropertyMap
+                height="600px"
+                showSearch={true}
+                markers={filteredOpportunities.map(opp => ({
+                  id: opp.id.toString(),
+                  position: getPropertyCoordinates(opp.location),
+                  title: opp.title,
+                  description: `${opp.acreage} • ${opp.price} • ${opp.zoning}`
+                }))}
+                zoom={10}
+              />
+            </div>
+          </motion.div>
         </div>
       </section>
 

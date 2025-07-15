@@ -10,6 +10,7 @@ import {
 import { coreAgentsClient } from '@/lib/core-agents/client'
 import { InvestmentOpportunity } from '@/lib/core-agents/types'
 import { LeadCaptureForm } from '@/components/forms/LeadCaptureForm'
+import { PropertyMap } from '@/components/maps/MapWrapper'
 
 interface SearchCriteria {
   priceMin: number
@@ -31,6 +32,23 @@ const defaultCriteria: SearchCriteria = {
   propertyTypes: [],
   neighborhoods: [],
   timeline: 'all'
+}
+
+// Helper function to get coordinates for neighborhoods
+function getOpportunityLocation(neighborhood: string): { lat: number; lng: number } {
+  const locationMap: Record<string, { lat: number; lng: number }> = {
+    'Cypress': { lat: 29.9691, lng: -95.6972 },
+    'Pearland': { lat: 29.5635, lng: -95.2860 },
+    'Memorial': { lat: 29.7641, lng: -95.4674 },
+    'Spring': { lat: 30.0799, lng: -95.4172 },
+    'Katy': { lat: 29.7858, lng: -95.8245 },
+    'Sugar Land': { lat: 29.5994, lng: -95.6348 },
+    'The Woodlands': { lat: 30.1658, lng: -95.4613 },
+    'Energy Corridor': { lat: 29.7836, lng: -95.6347 },
+    'Clear Lake': { lat: 29.5768, lng: -95.1204 }
+  }
+  
+  return locationMap[neighborhood] || { lat: 29.7604, lng: -95.3698 }
 }
 
 export default function OpportunityFinder() {
@@ -465,6 +483,40 @@ export default function OpportunityFinder() {
                 ))}
               </div>
             )}
+          </div>
+        </section>
+      )}
+
+      {/* Map View of Results */}
+      {searched && opportunities.length > 0 && (
+        <section className="py-12 bg-white">
+          <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+            <div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ duration: 0.6 }}
+            >
+              <div className="text-center mb-8">
+                <h2 className="text-2xl font-bold text-gray-900 mb-2">Map View</h2>
+                <p className="text-gray-600">
+                  Visualize all {opportunities.length} opportunities on an interactive map
+                </p>
+              </div>
+
+              <div className="bg-white rounded-xl shadow-lg overflow-hidden">
+                <PropertyMap
+                  height="600px"
+                  showSearch={false}
+                  markers={opportunities.map(opp => ({
+                    id: opp.id,
+                    position: getOpportunityLocation(opp.neighborhood),
+                    title: opp.title,
+                    description: `${opp.type} • $${(opp.price / 1000000).toFixed(1)}M • ${opp.projectedROI}% ROI`
+                  }))}
+                  zoom={10}
+                />
+              </div>
+            </div>
           </div>
         </section>
       )}

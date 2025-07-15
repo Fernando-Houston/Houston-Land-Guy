@@ -8,6 +8,7 @@ import { MarketMetricsCard } from '@/components/market/MarketMetricsCard'
 import { PermitActivityChart } from '@/components/market/PermitActivityChart'
 import { DemographicsCard } from '@/components/market/DemographicsCard'
 import { LeadCaptureForm } from '@/components/forms/LeadCaptureForm'
+import { PropertyMap } from '@/components/maps/MapWrapper'
 import Script from 'next/script'
 
 interface DynamicNeighborhoodPageProps {
@@ -15,6 +16,29 @@ interface DynamicNeighborhoodPageProps {
   marketMetrics: MarketMetrics
   marketTiming: MarketTiming
   permitData: PermitActivity
+}
+
+// Helper function to get neighborhood center coordinates
+function getNeighborhoodCenter(slug: string): { lat: number; lng: number } {
+  const centers: Record<string, { lat: number; lng: number }> = {
+    'cypress': { lat: 29.9691, lng: -95.6972 },
+    'pearland': { lat: 29.5635, lng: -95.2860 },
+    'memorial': { lat: 29.7641, lng: -95.4674 },
+    'spring': { lat: 30.0799, lng: -95.4172 },
+    'conroe': { lat: 30.3119, lng: -95.4560 },
+    'richmond': { lat: 29.5819, lng: -95.7605 },
+    'friendswood': { lat: 29.5294, lng: -95.2010 },
+    'league-city': { lat: 29.5075, lng: -95.0949 },
+    'clear-lake': { lat: 29.5768, lng: -95.1204 },
+    'bellaire': { lat: 29.7058, lng: -95.4588 },
+    'river-oaks': { lat: 29.7573, lng: -95.4151 },
+    'heights': { lat: 29.7989, lng: -95.3987 },
+    'montrose': { lat: 29.7472, lng: -95.3902 },
+    'energy-corridor': { lat: 29.7836, lng: -95.6347 },
+    'champions': { lat: 30.0360, lng: -95.5087 }
+  }
+  
+  return centers[slug] || { lat: 29.7604, lng: -95.3698 } // Default to Houston center
 }
 
 export function DynamicNeighborhoodPage({ 
@@ -175,6 +199,44 @@ export function DynamicNeighborhoodPage({
               <MarketMetricsCard metrics={marketMetrics} />
               <PermitActivityChart permitData={permitData} />
               <DemographicsCard demographics={neighborhoodData.demographics} />
+            </div>
+          </motion.div>
+        </div>
+      </section>
+
+      {/* Interactive Map */}
+      <section className="py-16 bg-gray-50">
+        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+          <motion.div
+            initial={{ opacity: 0 }}
+            whileInView={{ opacity: 1 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.6 }}
+          >
+            <div className="text-center mb-8">
+              <h2 className="text-3xl font-bold text-gray-900 mb-4">
+                {neighborhoodData.name} Interactive Map
+              </h2>
+              <p className="text-lg text-gray-600 max-w-3xl mx-auto">
+                Explore development opportunities, key landmarks, and infrastructure in {neighborhoodData.name}
+              </p>
+            </div>
+
+            <div className="bg-white rounded-xl shadow-lg overflow-hidden">
+              <PropertyMap
+                height="500px"
+                showSearch={true}
+                markers={[
+                  {
+                    id: 'center',
+                    position: getNeighborhoodCenter(neighborhoodData.slug),
+                    title: `${neighborhoodData.name} Center`,
+                    description: `Median Price: $${(neighborhoodData.medianHomePrice / 1000).toFixed(0)}K`
+                  }
+                ]}
+                center={getNeighborhoodCenter(neighborhoodData.slug)}
+                zoom={13}
+              />
             </div>
           </motion.div>
         </div>
