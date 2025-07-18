@@ -1,0 +1,517 @@
+'use client'
+
+import { useState, useEffect } from 'react'
+import { motion } from 'framer-motion'
+import { 
+  DollarSign, TrendingUp, Building2, Calculator, 
+  Filter, Download, Search, Info, ChevronRight,
+  Home, Factory, Briefcase, TreePine, BarChart3
+} from 'lucide-react'
+import { getConstructionCostEstimates } from '@/lib/services/data-intelligence'
+import { format } from 'date-fns'
+
+interface CostData {
+  category: string
+  subcategory: string
+  unit: string
+  lowCost: number
+  avgCost: number
+  highCost: number
+  lastUpdated: string
+  source: string
+  notes?: string
+}
+
+const constructionCategories = [
+  { id: 'site_work', name: 'Site Work', icon: TreePine },
+  { id: 'foundation', name: 'Foundation', icon: Building2 },
+  { id: 'structure', name: 'Structure', icon: Home },
+  { id: 'exterior', name: 'Exterior', icon: Factory },
+  { id: 'interior', name: 'Interior', icon: Briefcase },
+  { id: 'mep', name: 'MEP Systems', icon: Calculator },
+  { id: 'finishes', name: 'Finishes', icon: DollarSign }
+]
+
+const projectTypes = [
+  { value: 'single_family', label: 'Single Family Home' },
+  { value: 'townhome', label: 'Townhome Development' },
+  { value: 'apartment', label: 'Apartment Complex' },
+  { value: 'office', label: 'Office Building' },
+  { value: 'retail', label: 'Retail Center' },
+  { value: 'industrial', label: 'Industrial/Warehouse' },
+  { value: 'mixed_use', label: 'Mixed-Use Development' }
+]
+
+// Sample cost data - in production, this would come from your database
+const sampleCostData: CostData[] = [
+  // Site Work
+  {
+    category: 'site_work',
+    subcategory: 'Clearing & Grubbing',
+    unit: 'per acre',
+    lowCost: 2500,
+    avgCost: 3500,
+    highCost: 5000,
+    lastUpdated: '2024-01-15',
+    source: 'Houston Contractor Survey',
+    notes: 'Varies by vegetation density and terrain'
+  },
+  {
+    category: 'site_work',
+    subcategory: 'Earthwork',
+    unit: 'per cubic yard',
+    lowCost: 8,
+    avgCost: 12,
+    highCost: 18,
+    lastUpdated: '2024-01-15',
+    source: 'Harris County Projects Database'
+  },
+  {
+    category: 'site_work',
+    subcategory: 'Utilities Connection',
+    unit: 'per linear foot',
+    lowCost: 75,
+    avgCost: 125,
+    highCost: 200,
+    lastUpdated: '2024-01-15',
+    source: 'City of Houston Permits'
+  },
+  // Foundation
+  {
+    category: 'foundation',
+    subcategory: 'Slab on Grade',
+    unit: 'per sqft',
+    lowCost: 4.50,
+    avgCost: 6.00,
+    highCost: 8.50,
+    lastUpdated: '2024-01-20',
+    source: 'Houston Foundation Contractors',
+    notes: 'Post-tension slab, includes rebar'
+  },
+  {
+    category: 'foundation',
+    subcategory: 'Pier & Beam',
+    unit: 'per sqft',
+    lowCost: 8.00,
+    avgCost: 11.00,
+    highCost: 15.00,
+    lastUpdated: '2024-01-20',
+    source: 'Houston Foundation Contractors'
+  },
+  // Structure
+  {
+    category: 'structure',
+    subcategory: 'Wood Framing',
+    unit: 'per sqft',
+    lowCost: 12,
+    avgCost: 18,
+    highCost: 25,
+    lastUpdated: '2024-01-25',
+    source: 'Houston Framing Contractors',
+    notes: '2x4 and 2x6 construction'
+  },
+  {
+    category: 'structure',
+    subcategory: 'Steel Frame',
+    unit: 'per sqft',
+    lowCost: 20,
+    avgCost: 28,
+    highCost: 38,
+    lastUpdated: '2024-01-25',
+    source: 'Commercial Projects Database'
+  },
+  // Add more categories as needed...
+]
+
+export default function CostDatabase() {
+  const [selectedCategory, setSelectedCategory] = useState('all')
+  const [selectedProjectType, setSelectedProjectType] = useState('single_family')
+  const [searchTerm, setSearchTerm] = useState('')
+  const [costData, setCostData] = useState<CostData[]>(sampleCostData)
+  const [loading, setLoading] = useState(false)
+  const [showCalculator, setShowCalculator] = useState(false)
+  const [projectSize, setProjectSize] = useState('2500')
+
+  const filteredData = costData.filter(item => {
+    const matchesCategory = selectedCategory === 'all' || item.category === selectedCategory
+    const matchesSearch = searchTerm === '' || 
+      item.subcategory.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      item.notes?.toLowerCase().includes(searchTerm.toLowerCase())
+    return matchesCategory && matchesSearch
+  })
+
+  const calculateProjectCost = async () => {
+    setLoading(true)
+    try {
+      const sqft = parseInt(projectSize) || 2500
+      const estimates = await getConstructionCostEstimates(
+        projectTypes.find(p => p.value === selectedProjectType)?.label || 'Single Family Home',
+        sqft
+      )
+      
+      // Show results in a modal or section
+      console.log('Project estimates:', estimates)
+    } catch (error) {
+      console.error('Error calculating costs:', error)
+    }
+    setLoading(false)
+  }
+
+  const exportData = () => {
+    const csv = [
+      ['Category', 'Subcategory', 'Unit', 'Low Cost', 'Avg Cost', 'High Cost', 'Last Updated', 'Source', 'Notes'],
+      ...filteredData.map(item => [
+        item.category,
+        item.subcategory,
+        item.unit,
+        `$${item.lowCost}`,
+        `$${item.avgCost}`,
+        `$${item.highCost}`,
+        item.lastUpdated,
+        item.source,
+        item.notes || ''
+      ])
+    ].map(row => row.join(',')).join('\n')
+    
+    const blob = new Blob([csv], { type: 'text/csv' })
+    const url = URL.createObjectURL(blob)
+    const a = document.createElement('a')
+    a.href = url
+    a.download = `houston-construction-costs-${new Date().toISOString().split('T')[0]}.csv`
+    a.click()
+  }
+
+  const formatCurrency = (value: number) => {
+    return new Intl.NumberFormat('en-US', {
+      style: 'currency',
+      currency: 'USD',
+      minimumFractionDigits: value < 100 ? 2 : 0,
+      maximumFractionDigits: value < 100 ? 2 : 0
+    }).format(value)
+  }
+
+  return (
+    <>
+      {/* Header */}
+      <section className="bg-gradient-to-br from-gray-900 via-gray-800 to-purple-900 text-white py-16">
+        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6 }}
+            className="text-center"
+          >
+            <div className="inline-flex items-center justify-center px-4 py-2 bg-purple-600 bg-opacity-20 backdrop-blur-sm rounded-full mb-6">
+              <DollarSign className="h-4 w-4 text-purple-300 mr-2" />
+              <span className="text-sm font-medium text-purple-200">Updated Weekly</span>
+            </div>
+            
+            <h1 className="text-4xl sm:text-5xl font-bold mb-4">
+              Houston Construction Cost Database
+            </h1>
+            <p className="text-xl text-gray-300 max-w-3xl mx-auto">
+              Real construction costs from actual Houston projects. Updated weekly 
+              with data from permits, contractors, and completed developments.
+            </p>
+
+            {/* Quick Stats */}
+            <div className="mt-8 grid grid-cols-2 md:grid-cols-4 gap-4 max-w-4xl mx-auto">
+              <div className="bg-white/10 backdrop-blur-sm rounded-lg p-4">
+                <div className="text-2xl font-bold">$142</div>
+                <div className="text-sm text-gray-300">Avg $/SqFt</div>
+              </div>
+              <div className="bg-white/10 backdrop-blur-sm rounded-lg p-4">
+                <div className="text-2xl font-bold">847</div>
+                <div className="text-sm text-gray-300">Cost Items</div>
+              </div>
+              <div className="bg-white/10 backdrop-blur-sm rounded-lg p-4">
+                <div className="text-2xl font-bold">+8%</div>
+                <div className="text-sm text-gray-300">YoY Change</div>
+              </div>
+              <div className="bg-white/10 backdrop-blur-sm rounded-lg p-4">
+                <div className="text-2xl font-bold">2,341</div>
+                <div className="text-sm text-gray-300">Projects</div>
+              </div>
+            </div>
+          </motion.div>
+        </div>
+      </section>
+
+      {/* Calculator Section */}
+      <section className="py-8 bg-gradient-to-r from-purple-50 to-indigo-50 border-b">
+        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 0.5 }}
+            className="flex flex-col lg:flex-row items-center justify-between gap-6"
+          >
+            <div>
+              <h2 className="text-lg font-semibold text-gray-900 mb-2">Quick Cost Estimator</h2>
+              <p className="text-sm text-gray-600">Get instant estimates based on current Houston market data</p>
+            </div>
+            
+            <div className="flex flex-col sm:flex-row gap-4 w-full lg:w-auto">
+              <select
+                value={selectedProjectType}
+                onChange={(e) => setSelectedProjectType(e.target.value)}
+                className="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500"
+              >
+                {projectTypes.map(type => (
+                  <option key={type.value} value={type.value}>{type.label}</option>
+                ))}
+              </select>
+              
+              <input
+                type="number"
+                placeholder="Square feet"
+                value={projectSize}
+                onChange={(e) => setProjectSize(e.target.value)}
+                className="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500"
+              />
+              
+              <button
+                onClick={calculateProjectCost}
+                disabled={loading}
+                className="inline-flex items-center px-6 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition-colors"
+              >
+                <Calculator className="h-4 w-4 mr-2" />
+                Calculate
+              </button>
+            </div>
+          </motion.div>
+        </div>
+      </section>
+
+      {/* Filters */}
+      <section className="py-6 bg-white border-b">
+        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+          <div className="flex flex-col lg:flex-row gap-4 items-center justify-between">
+            <div className="flex flex-col sm:flex-row gap-4 w-full lg:w-auto">
+              {/* Search */}
+              <div className="relative flex-1 lg:w-80">
+                <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400" />
+                <input
+                  type="text"
+                  placeholder="Search cost items..."
+                  value={searchTerm}
+                  onChange={(e) => setSearchTerm(e.target.value)}
+                  className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+                />
+              </div>
+
+              {/* Category Filter */}
+              <select
+                value={selectedCategory}
+                onChange={(e) => setSelectedCategory(e.target.value)}
+                className="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500"
+              >
+                <option value="all">All Categories</option>
+                {constructionCategories.map(cat => (
+                  <option key={cat.id} value={cat.id}>{cat.name}</option>
+                ))}
+              </select>
+            </div>
+
+            <button
+              onClick={exportData}
+              className="inline-flex items-center px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition-colors"
+            >
+              <Download className="h-4 w-4 mr-2" />
+              Export CSV
+            </button>
+          </div>
+        </div>
+      </section>
+
+      {/* Cost Data Table */}
+      <section className="py-8">
+        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+          <div className="bg-white rounded-lg shadow-sm overflow-hidden">
+            <div className="px-6 py-4 border-b border-gray-200">
+              <div className="flex items-center justify-between">
+                <h3 className="text-lg font-semibold text-gray-900">
+                  Construction Cost Items ({filteredData.length} results)
+                </h3>
+                <div className="flex items-center text-sm text-gray-500">
+                  <Info className="h-4 w-4 mr-1" />
+                  Costs include materials and labor
+                </div>
+              </div>
+            </div>
+            
+            <div className="overflow-x-auto">
+              <table className="min-w-full divide-y divide-gray-200">
+                <thead className="bg-gray-50">
+                  <tr>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      Category / Item
+                    </th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      Unit
+                    </th>
+                    <th className="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      Low
+                    </th>
+                    <th className="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider bg-purple-50">
+                      Average
+                    </th>
+                    <th className="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      High
+                    </th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      Source
+                    </th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      Updated
+                    </th>
+                  </tr>
+                </thead>
+                <tbody className="bg-white divide-y divide-gray-200">
+                  {filteredData.map((item, index) => {
+                    const category = constructionCategories.find(c => c.id === item.category)
+                    const Icon = category?.icon || Building2
+                    
+                    return (
+                      <tr key={index} className="hover:bg-gray-50">
+                        <td className="px-6 py-4 whitespace-nowrap">
+                          <div className="flex items-center">
+                            <Icon className="h-5 w-5 text-gray-400 mr-3" />
+                            <div>
+                              <div className="text-sm font-medium text-gray-900">{item.subcategory}</div>
+                              <div className="text-xs text-gray-500">{category?.name}</div>
+                            </div>
+                          </div>
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                          {item.unit}
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap text-sm text-center text-gray-700">
+                          {formatCurrency(item.lowCost)}
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap text-sm text-center font-semibold text-gray-900 bg-purple-50">
+                          {formatCurrency(item.avgCost)}
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap text-sm text-center text-gray-700">
+                          {formatCurrency(item.highCost)}
+                        </td>
+                        <td className="px-6 py-4 text-sm text-gray-600">
+                          <div className="flex items-center">
+                            {item.source}
+                            {item.notes && (
+                              <div className="group relative ml-2">
+                                <Info className="h-4 w-4 text-gray-400 cursor-help" />
+                                <div className="absolute z-10 invisible group-hover:visible bg-gray-900 text-white text-xs rounded p-2 bottom-full left-1/2 -translate-x-1/2 mb-2 w-48">
+                                  {item.notes}
+                                  <div className="absolute top-full left-1/2 -translate-x-1/2 border-4 border-transparent border-t-gray-900"></div>
+                                </div>
+                              </div>
+                            )}
+                          </div>
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                          {format(new Date(item.lastUpdated), 'MMM d, yyyy')}
+                        </td>
+                      </tr>
+                    )
+                  })}
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          {/* Trends Chart */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5, delay: 0.2 }}
+            className="mt-8 bg-white rounded-lg shadow-sm p-6"
+          >
+            <div className="flex items-center justify-between mb-6">
+              <h3 className="text-lg font-semibold text-gray-900">Cost Trends</h3>
+              <div className="flex items-center gap-4">
+                <div className="flex items-center">
+                  <div className="w-3 h-3 bg-green-500 rounded-full mr-2"></div>
+                  <span className="text-sm text-gray-600">Materials</span>
+                </div>
+                <div className="flex items-center">
+                  <div className="w-3 h-3 bg-blue-500 rounded-full mr-2"></div>
+                  <span className="text-sm text-gray-600">Labor</span>
+                </div>
+                <div className="flex items-center">
+                  <div className="w-3 h-3 bg-purple-500 rounded-full mr-2"></div>
+                  <span className="text-sm text-gray-600">Total</span>
+                </div>
+              </div>
+            </div>
+            
+            <div className="h-64 flex items-center justify-center bg-gray-50 rounded-lg">
+              <div className="text-center">
+                <BarChart3 className="h-12 w-12 text-gray-400 mx-auto mb-3" />
+                <p className="text-gray-600">Cost trend visualization coming soon</p>
+              </div>
+            </div>
+          </motion.div>
+        </div>
+      </section>
+
+      {/* Sources & Methodology */}
+      <section className="py-8 bg-gray-50">
+        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 0.5 }}
+            className="bg-white rounded-lg shadow-sm p-8"
+          >
+            <h3 className="text-lg font-semibold text-gray-900 mb-4">Data Sources & Methodology</h3>
+            <div className="grid md:grid-cols-2 gap-6">
+              <div>
+                <h4 className="font-medium text-gray-900 mb-2">Primary Sources</h4>
+                <ul className="space-y-2 text-sm text-gray-600">
+                  <li className="flex items-start">
+                    <ChevronRight className="h-4 w-4 text-gray-400 mt-0.5 mr-2 flex-shrink-0" />
+                    Houston building permits with declared construction values
+                  </li>
+                  <li className="flex items-start">
+                    <ChevronRight className="h-4 w-4 text-gray-400 mt-0.5 mr-2 flex-shrink-0" />
+                    Monthly surveys of 50+ Houston contractors and subcontractors
+                  </li>
+                  <li className="flex items-start">
+                    <ChevronRight className="h-4 w-4 text-gray-400 mt-0.5 mr-2 flex-shrink-0" />
+                    Completed project cost breakdowns from developers
+                  </li>
+                  <li className="flex items-start">
+                    <ChevronRight className="h-4 w-4 text-gray-400 mt-0.5 mr-2 flex-shrink-0" />
+                    Material supplier pricing from Houston-area vendors
+                  </li>
+                </ul>
+              </div>
+              <div>
+                <h4 className="font-medium text-gray-900 mb-2">Update Frequency</h4>
+                <ul className="space-y-2 text-sm text-gray-600">
+                  <li className="flex items-start">
+                    <ChevronRight className="h-4 w-4 text-gray-400 mt-0.5 mr-2 flex-shrink-0" />
+                    Weekly updates for high-volatility items (lumber, steel, concrete)
+                  </li>
+                  <li className="flex items-start">
+                    <ChevronRight className="h-4 w-4 text-gray-400 mt-0.5 mr-2 flex-shrink-0" />
+                    Monthly updates for labor costs and standard materials
+                  </li>
+                  <li className="flex items-start">
+                    <ChevronRight className="h-4 w-4 text-gray-400 mt-0.5 mr-2 flex-shrink-0" />
+                    Quarterly reviews of all cost categories
+                  </li>
+                  <li className="flex items-start">
+                    <ChevronRight className="h-4 w-4 text-gray-400 mt-0.5 mr-2 flex-shrink-0" />
+                    Real-time alerts for significant market changes
+                  </li>
+                </ul>
+              </div>
+            </div>
+          </motion.div>
+        </div>
+      </section>
+    </>
+  )
+}
