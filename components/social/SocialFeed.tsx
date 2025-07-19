@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import {
-  Heart, MessageCircle, Share2, Send, Image, Hash,
+  Heart, MessageCircle, Share2, Send, Image as ImageIcon, Hash,
   Users, TrendingUp, Shield, MoreHorizontal,
   ThumbsUp, ThumbsDown, Bookmark, Eye, Building2
 } from 'lucide-react'
@@ -430,7 +430,7 @@ export default function SocialFeed() {
             <div className="flex items-center justify-between mt-3">
               <div className="flex items-center space-x-3">
                 <button className="p-2 hover:bg-gray-100 rounded-lg transition-colors">
-                  <Image className="h-5 w-5 text-gray-600" />
+                  <ImageIcon className="h-5 w-5 text-gray-600" />
                 </button>
                 <button className="p-2 hover:bg-gray-100 rounded-lg transition-colors">
                   <Hash className="h-5 w-5 text-gray-600" />
