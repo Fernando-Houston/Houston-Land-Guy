@@ -2,7 +2,7 @@
 
 import Link from 'next/link'
 import { useState, useEffect } from 'react'
-import { Menu, X, Calculator, TrendingUp, Briefcase, Info, Phone, FileText, Building2, DollarSign, Home, Brain } from 'lucide-react'
+import { Menu, X, Calculator, TrendingUp, Briefcase, Info, Phone, FileText, Building2, DollarSign, Home, Brain, Activity, Users } from 'lucide-react'
 import { cn } from '@/lib/utils/cn'
 import { motion, AnimatePresence } from 'framer-motion'
 import { usePathname } from 'next/navigation'
@@ -27,7 +27,8 @@ const navigation = [
       { name: 'Zoning Intelligence', href: '/intelligence/zoning' },
       { name: 'Permit Tracker', href: '/intelligence/permits' },
       { name: 'Cost Database', href: '/intelligence/costs' },
-      { name: 'Development Tools', href: '/developers' }
+      { name: 'Development Tools', href: '/developers' },
+      { name: 'Document Analysis', href: '/intelligence/documents' }
     ]
   },
   { 
@@ -48,6 +49,7 @@ const navigation = [
     subItems: [
       { name: 'Opportunities', href: '/investment-opportunities' },
       { name: 'Market Predictions', href: '/intelligence/predictions' },
+      { name: 'Predictive Analytics', href: '/intelligence/analytics' },
       { name: 'Portfolio Analytics', href: '/intelligence/portfolio' },
       { name: 'ROI Analysis', href: '/roi-calculator' }
     ]
@@ -59,9 +61,11 @@ const navigation = [
     subItems: [
       { name: 'Cost Calculator', href: '/development-cost-calculator' },
       { name: 'Neighborhood Comparison', href: '/neighborhood-comparison' },
-      { name: 'Opportunity Finder', href: '/opportunity-finder' }
+      { name: 'Opportunity Finder', href: '/opportunity-finder' },
+      { name: 'Document Analysis', href: '/intelligence/documents' }
     ]
   },
+  { name: 'Community', href: '/social', icon: Users },
   { name: 'About', href: '/about', icon: Info },
   { name: 'Contact', href: '/contact', icon: Phone },
 ]

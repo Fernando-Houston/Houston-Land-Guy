@@ -1,0 +1,324 @@
+'use client'
+
+import { useState, useEffect } from 'react'
+import { motion, AnimatePresence } from 'framer-motion'
+import Link from 'next/link'
+import {
+  Brain, Target, TrendingUp, MapPin, Home, DollarSign,
+  Star, Clock, AlertCircle, ChevronRight, Filter,
+  BarChart3, Heart, Eye, Calendar, Sparkles, Zap
+} from 'lucide-react'
+import { PropertyRecommendation } from '@/lib/services/ai-recommendations'
+
+interface AIPropertyRecommendationsProps {
+  userId?: string
+  onPropertyClick?: (property: any) => void
+}
+
+export default function AIPropertyRecommendations({ 
+  userId = 'demo-user',
+  onPropertyClick 
+}: AIPropertyRecommendationsProps) {
+  const [recommendations, setRecommendations] = useState<PropertyRecommendation[]>([])
+  const [loading, setLoading] = useState(true)
+  const [selectedCategory, setSelectedCategory] = useState('all')
+  const [savedProperties, setSavedProperties] = useState<Set<string>>(new Set())
+
+  useEffect(() => {
+    fetchRecommendations()
+  }, [userId, selectedCategory])
+
+  const fetchRecommendations = async () => {
+    try {
+      setLoading(true)
+      const response = await fetch('/api/ai/recommendations', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          userId,
+          category: selectedCategory,
+          limit: 10
+        })
+      })
+      
+      const data = await response.json()
+      setRecommendations(data.recommendations || [])
+    } catch (error) {
+      console.error('Error fetching recommendations:', error)
+      // Use mock data for demo
+      setRecommendations(getMockRecommendations())
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  const handleSaveProperty = (propertyId: string) => {
+    const newSaved = new Set(savedProperties)
+    if (newSaved.has(propertyId)) {
+      newSaved.delete(propertyId)
+    } else {
+      newSaved.add(propertyId)
+    }
+    setSavedProperties(newSaved)
+  }
+
+  const categories = [
+    { id: 'all', label: 'All Recommendations', icon: Sparkles },
+    { id: 'investment', label: 'Best ROI', icon: TrendingUp },
+    { id: 'development', label: 'Development', icon: Building2 },
+    { id: 'trending', label: 'Trending Now', icon: Zap }
+  ]
+
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center py-12">
+        <div className="text-center">
+          <Brain className="h-12 w-12 text-purple-600 animate-pulse mx-auto mb-4" />
+          <p className="text-gray-600">Fernando-X is analyzing properties for you...</p>
+        </div>
+      </div>
+    )
+  }
+
+  return (
+    <div className="space-y-6">
+      {/* Header */}
+      <div className="flex items-center justify-between">
+        <div>
+          <h2 className="text-2xl font-bold text-gray-900 flex items-center">
+            <Brain className="h-6 w-6 text-purple-600 mr-2" />
+            AI Property Recommendations
+          </h2>
+          <p className="text-gray-600 mt-1">
+            Personalized properties selected by Fernando-X based on your preferences
+          </p>
+        </div>
+        <button className="p-2 text-gray-600 hover:text-gray-900">
+          <Filter className="h-5 w-5" />
+        </button>
+      </div>
+
+      {/* Category Tabs */}
+      <div className="flex space-x-2 overflow-x-auto pb-2">
+        {categories.map((category) => {
+          const Icon = category.icon
+          return (
+            <button
+              key={category.id}
+              onClick={() => setSelectedCategory(category.id)}
+              className={`flex items-center px-4 py-2 rounded-lg font-medium whitespace-nowrap transition-all ${
+                selectedCategory === category.id
+                  ? 'bg-purple-600 text-white'
+                  : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+              }`}
+            >
+              <Icon className="h-4 w-4 mr-2" />
+              {category.label}
+            </button>
+          )
+        })}
+      </div>
+
+      {/* Recommendations Grid */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <AnimatePresence>
+          {recommendations.map((rec, index) => (
+            <motion.div
+              key={rec.id}
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.95 }}
+              transition={{ delay: index * 0.1 }}
+              className="bg-white rounded-xl shadow-sm hover:shadow-lg transition-all overflow-hidden group"
+            >
+              {/* Property Image */}
+              <div className="relative h-48 bg-gradient-to-br from-gray-200 to-gray-300">
+                {rec.property.imageUrl ? (
+                  <img 
+                    src={rec.property.imageUrl} 
+                    alt={rec.property.address}
+                    className="w-full h-full object-cover"
+                  />
+                ) : (
+                  <div className="w-full h-full flex items-center justify-center">
+                    <Home className="h-16 w-16 text-gray-400" />
+                  </div>
+                )}
+                
+                {/* Match Score Badge */}
+                <div className="absolute top-4 left-4 bg-purple-600 text-white px-3 py-1 rounded-full text-sm font-semibold flex items-center">
+                  <Target className="h-4 w-4 mr-1" />
+                  {rec.matchScore}% Match
+                </div>
+
+                {/* Save Button */}
+                <button
+                  onClick={() => handleSaveProperty(rec.property.id)}
+                  className="absolute top-4 right-4 p-2 bg-white/90 backdrop-blur-sm rounded-full hover:bg-white transition-colors"
+                >
+                  <Heart 
+                    className={`h-5 w-5 transition-colors ${
+                      savedProperties.has(rec.property.id)
+                        ? 'fill-red-500 text-red-500'
+                        : 'text-gray-600'
+                    }`}
+                  />
+                </button>
+
+                {/* Price */}
+                <div className="absolute bottom-4 left-4 bg-black/70 text-white px-3 py-1 rounded-lg">
+                  <span className="text-xl font-bold">
+                    ${rec.property.price.toLocaleString()}
+                  </span>
+                </div>
+              </div>
+
+              {/* Property Details */}
+              <div className="p-6">
+                <div className="mb-4">
+                  <h3 className="text-lg font-semibold text-gray-900 mb-1">
+                    {rec.property.address}
+                  </h3>
+                  <div className="flex items-center text-sm text-gray-600">
+                    <MapPin className="h-4 w-4 mr-1" />
+                    {rec.property.propertyType} • {rec.property.size}
+                  </div>
+                </div>
+
+                {/* AI Reasoning */}
+                <div className="mb-4 space-y-2">
+                  {rec.reasoning.slice(0, 2).map((reason, idx) => (
+                    <div key={idx} className="flex items-start text-sm">
+                      <Sparkles className="h-4 w-4 text-purple-500 mr-2 mt-0.5 flex-shrink-0" />
+                      <span className="text-gray-700">{reason}</span>
+                    </div>
+                  ))}
+                </div>
+
+                {/* Key Insights */}
+                <div className="grid grid-cols-2 gap-3 mb-4">
+                  <div className="bg-green-50 rounded-lg p-3">
+                    <div className="flex items-center text-green-700 text-xs font-medium mb-1">
+                      <TrendingUp className="h-3 w-3 mr-1" />
+                      Investment
+                    </div>
+                    <p className="text-sm text-green-900 font-semibold">
+                      {rec.insights.investmentPotential}
+                    </p>
+                  </div>
+                  <div className="bg-blue-50 rounded-lg p-3">
+                    <div className="flex items-center text-blue-700 text-xs font-medium mb-1">
+                      <Clock className="h-3 w-3 mr-1" />
+                      Timing
+                    </div>
+                    <p className="text-sm text-blue-900 font-semibold">
+                      {rec.insights.marketTiming}
+                    </p>
+                  </div>
+                </div>
+
+                {/* Actions */}
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center space-x-2">
+                    <Link
+                      href={rec.actions[0].href || '#'}
+                      className="px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition-colors text-sm font-medium"
+                    >
+                      View Details
+                    </Link>
+                    <button 
+                      className="p-2 text-gray-600 hover:text-gray-900"
+                      onClick={() => onPropertyClick?.(rec.property)}
+                    >
+                      <BarChart3 className="h-5 w-5" />
+                    </button>
+                  </div>
+                  <div className="flex items-center text-sm text-gray-500">
+                    <span>{Math.round(rec.confidence * 100)}% confidence</span>
+                  </div>
+                </div>
+              </div>
+            </motion.div>
+          ))}
+        </AnimatePresence>
+      </div>
+
+      {/* Load More */}
+      {recommendations.length > 0 && (
+        <div className="text-center pt-6">
+          <button className="inline-flex items-center px-6 py-3 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors font-medium">
+            Load More Recommendations
+            <ChevronRight className="ml-2 h-5 w-5" />
+          </button>
+        </div>
+      )}
+    </div>
+  )
+}
+
+function getMockRecommendations(): PropertyRecommendation[] {
+  return [
+    {
+      id: 'rec-1',
+      property: {
+        id: 'prop-1',
+        address: '15234 Cypress Woods Dr, Cypress, TX 77429',
+        price: 485000,
+        propertyType: 'Single Family',
+        size: '3,450 sqft',
+        coordinates: { lat: 29.9691, lng: -95.6972 },
+        features: ['Pool', 'Updated Kitchen', '3-Car Garage']
+      },
+      matchScore: 94,
+      reasoning: [
+        'Located in your preferred area of Cypress',
+        'Excellent schools rated 9/10 nearby',
+        'Price below market average by 8%',
+        'High appreciation potential in growing neighborhood'
+      ],
+      insights: {
+        marketTiming: 'Optimal buying window',
+        investmentPotential: '18% projected ROI',
+        riskAssessment: 'Low risk profile',
+        comparableAnalysis: 'Priced competitively'
+      },
+      actions: [
+        { label: 'View Details', type: 'view', href: '/properties/prop-1' },
+        { label: 'Calculate ROI', type: 'analyze' }
+      ],
+      confidence: 0.94,
+      timestamp: new Date()
+    },
+    {
+      id: 'rec-2',
+      property: {
+        id: 'prop-2',
+        address: '8901 Katy Fwy, Houston, TX 77024',
+        price: 1250000,
+        propertyType: 'Commercial',
+        size: '8,200 sqft',
+        coordinates: { lat: 29.7805, lng: -95.5505 },
+        features: ['Prime Location', 'High Traffic', 'Recent Renovation']
+      },
+      matchScore: 88,
+      reasoning: [
+        'High-traffic commercial corridor',
+        'Strong rental income potential',
+        'Near major business district',
+        'Excellent visibility from highway'
+      ],
+      insights: {
+        marketTiming: 'Strong demand period',
+        investmentPotential: '22% cap rate possible',
+        riskAssessment: 'Moderate risk, high reward',
+        comparableAnalysis: 'Premium location justifies price'
+      },
+      actions: [
+        { label: 'View Details', type: 'view', href: '/properties/prop-2' },
+        { label: 'Schedule Tour', type: 'schedule' }
+      ],
+      confidence: 0.88,
+      timestamp: new Date()
+    }
+  ]
+}

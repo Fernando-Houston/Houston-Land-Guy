@@ -185,6 +185,72 @@ Always provide quantitative analysis when possible and cite relevant data source
     }
   }
 
+  async generatePropertyRecommendations(context: {
+    userProfile: any
+    marketAnalysis: any
+    context: any
+  }): Promise<any[]> {
+    try {
+      const prompt = `
+        Based on the following user profile and market conditions, recommend properties:
+        
+        User Profile:
+        - Property Types: ${context.userProfile.preferences.propertyTypes.join(', ')}
+        - Price Range: $${context.userProfile.preferences.priceRange.min} - $${context.userProfile.preferences.priceRange.max}
+        - Locations: ${context.userProfile.preferences.locations.join(', ')}
+        - Investment Goals: ${context.userProfile.preferences.investmentGoals.join(', ')}
+        - Risk Tolerance: ${context.userProfile.preferences.riskTolerance}
+        
+        Market Conditions:
+        - Trending Areas: ${context.marketAnalysis.trends.join(', ')}
+        - Hot Areas: ${context.marketAnalysis.insights.hotAreas.join(', ')}
+        - Market Trend: ${context.marketAnalysis.insights.appreciationTrend}
+        
+        Return 10 property recommendations with reasoning for each.
+      `
+
+      // In production, this would call GPT-4
+      // For now, return mock recommendations
+      return this.getMockPropertyRecommendations(context)
+
+    } catch (error) {
+      console.error('Error generating recommendations:', error)
+      return this.getMockPropertyRecommendations(context)
+    }
+  }
+
+  private getMockPropertyRecommendations(context: any): any[] {
+    const locations = context.userProfile.preferences.locations
+    const propertyTypes = context.userProfile.preferences.propertyTypes
+    
+    return [
+      {
+        id: 'prop-ai-1',
+        address: `123 Main St, ${locations[0]}, TX`,
+        price: (context.userProfile.preferences.priceRange.min + context.userProfile.preferences.priceRange.max) / 2,
+        propertyType: propertyTypes[0],
+        size: '3,200 sqft',
+        coordinates: { lat: 29.7604, lng: -95.3698 },
+        neighborhood: locations[0],
+        capRate: 8.5,
+        projectedROI: 18.5,
+        features: ['Updated', 'Pool', 'Great Schools']
+      },
+      {
+        id: 'prop-ai-2',
+        address: `456 Oak Blvd, ${locations[1] || locations[0]}, TX`,
+        price: context.userProfile.preferences.priceRange.min * 1.2,
+        propertyType: propertyTypes[1] || propertyTypes[0],
+        size: '2,800 sqft',
+        coordinates: { lat: 29.7504, lng: -95.3598 },
+        neighborhood: locations[1] || locations[0],
+        capRate: 7.8,
+        projectedROI: 16.2,
+        features: ['New Construction', 'Energy Efficient']
+      }
+    ]
+  }
+
   async analyzeDevelopmentFeasibility(address: string, projectType: string, budget: number): Promise<{
     feasibilityScore: number
     analysis: string

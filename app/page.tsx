@@ -4,6 +4,7 @@ import Link from "next/link"
 import { ArrowRight, Brain, TrendingUp, Building2, BarChart3, MapPin, DollarSign, Users, Zap, Shield, Globe, Database, Activity, FileSearch, Bot, Cpu, Eye, Target, PieChart } from "lucide-react"
 import { motion } from "framer-motion"
 import { useState, useEffect } from 'react'
+import AISearchBar from '@/components/search/AISearchBar'
 
 export default function IntelligenceHub() {
   const [selectedCategory, setSelectedCategory] = useState<'all' | 'developers' | 'sellers' | 'investors'>('all')
@@ -280,6 +281,16 @@ export default function IntelligenceHub() {
               >
                 Investor Intel
               </button>
+            </motion.div>
+
+            {/* AI Search Bar */}
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.4 }}
+              className="mt-8 max-w-2xl mx-auto"
+            >
+              <AISearchBar />
             </motion.div>
 
             {/* Primary CTAs */}

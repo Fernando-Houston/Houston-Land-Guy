@@ -4,6 +4,7 @@ import "./app.css";
 import { ConditionalLayout } from "@/components/layout/ConditionalLayout";
 import { Toaster } from 'react-hot-toast';
 import { Analytics } from '@vercel/analytics/react';
+import InstallPrompt from '@/components/pwa/InstallPrompt';
 import { SpeedInsights } from '@vercel/speed-insights/next';
 import { GoogleAnalytics } from '@/components/analytics/GoogleAnalytics';
 
@@ -60,6 +61,13 @@ export default function RootLayout({
   return (
     <html lang="en">
       <head>
+        <link rel="manifest" href="/manifest.json" />
+        <meta name="theme-color" content="#7C3AED" />
+        <meta name="apple-mobile-web-app-capable" content="yes" />
+        <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+        <meta name="apple-mobile-web-app-title" content="Houston Intel" />
+        <link rel="apple-touch-icon" href="/icons/icon-192x192.png" />
+        <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=0, viewport-fit=cover" />
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{
@@ -230,6 +238,7 @@ export default function RootLayout({
       <body className={`${inter.className} antialiased bg-gray-50`}>
         <GoogleAnalytics />
         <ConditionalLayout>{children}</ConditionalLayout>
+        <InstallPrompt />
         <Analytics />
         <SpeedInsights />
         <Toaster
