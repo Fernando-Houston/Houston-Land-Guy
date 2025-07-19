@@ -9,36 +9,58 @@ import { usePathname } from 'next/navigation'
 import { Logo } from '@/components/ui/Logo'
 
 const navigation = [
+  { 
+    name: 'Intelligence Hub', 
+    href: '/', 
+    icon: TrendingUp,
+    highlight: true
+  },
   { name: 'Fernando-X', href: '/assistant', icon: Brain },
-  { name: 'Developers', href: '/developers', icon: Building2 },
-  { name: 'Sellers', href: '/sellers', icon: Home },
-  { name: 'Investors', href: '/investment-opportunities', icon: DollarSign },
+  { 
+    name: 'Developer Intel', 
+    href: '/developers', 
+    icon: Building2,
+    subItems: [
+      { name: 'ROI Calculator', href: '/roi-calculator' },
+      { name: 'AI Scout', href: '/intelligence/scout' },
+      { name: 'Zoning Intelligence', href: '/intelligence/zoning' },
+      { name: 'Permit Tracker', href: '/intelligence/permits' },
+      { name: 'Cost Database', href: '/intelligence/costs' },
+      { name: 'Development Tools', href: '/developers' }
+    ]
+  },
+  { 
+    name: 'Seller Intel', 
+    href: '/sellers', 
+    icon: Home,
+    subItems: [
+      { name: 'Property Valuation', href: '/sellers' },
+      { name: '3D Market Map', href: '/intelligence/map' },
+      { name: 'Market Timing', href: '/intelligence/market-timing' },
+      { name: 'Buyer Demand', href: '/intelligence/demand' }
+    ]
+  },
+  { 
+    name: 'Investor Intel', 
+    href: '/investment-opportunities', 
+    icon: DollarSign,
+    subItems: [
+      { name: 'Opportunities', href: '/investment-opportunities' },
+      { name: 'Market Predictions', href: '/intelligence/predictions' },
+      { name: 'Portfolio Analytics', href: '/intelligence/portfolio' },
+      { name: 'ROI Analysis', href: '/roi-calculator' }
+    ]
+  },
   { 
     name: 'Tools', 
     href: '/tools', 
     icon: Calculator,
     subItems: [
-      { name: 'ROI Calculator', href: '/roi-calculator' },
       { name: 'Cost Calculator', href: '/development-cost-calculator' },
       { name: 'Neighborhood Comparison', href: '/neighborhood-comparison' },
       { name: 'Opportunity Finder', href: '/opportunity-finder' }
     ]
   },
-  { 
-    name: 'Intelligence', 
-    href: '/intelligence', 
-    icon: TrendingUp,
-    subItems: [
-      { name: 'Intelligence Hub', href: '/intelligence' },
-      { name: 'AI Scout', href: '/intelligence/scout' },
-      { name: '3D Dev Map', href: '/intelligence/map' },
-      { name: 'Zoning AI', href: '/intelligence/zoning' },
-      { name: 'Permits', href: '/intelligence/permits' },
-      { name: 'Costs', href: '/intelligence/costs' }
-    ]
-  },
-  { name: 'Blog', href: '/blog', icon: FileText },
-  { name: 'Services', href: '/services', icon: Briefcase },
   { name: 'About', href: '/about', icon: Info },
   { name: 'Contact', href: '/contact', icon: Phone },
 ]
@@ -93,7 +115,8 @@ export function Header() {
                       href={item.href}
                       className={cn(
                         "text-sm font-medium transition-colors relative group flex items-center",
-                        isActive ? "text-green-600" : "text-gray-700 hover:text-green-600"
+                        item.highlight ? "text-purple-600 font-semibold" : "",
+                        isActive ? (item.highlight ? "text-purple-700" : "text-green-600") : (item.highlight ? "text-purple-600 hover:text-purple-700" : "text-gray-700 hover:text-green-600")
                       )}
                     >
                       {item.name}

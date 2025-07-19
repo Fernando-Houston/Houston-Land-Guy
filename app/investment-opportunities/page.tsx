@@ -1,760 +1,587 @@
 'use client'
 
-import { useState } from 'react'
-import { motion } from 'framer-motion'
-import Link from 'next/link'
-import { 
-  TrendingUp, DollarSign, Building2, MapPin, Clock, Users,
-  BarChart3, Shield, Download, CheckCircle, Star, Filter,
-  ArrowRight, FileText, Calculator, Briefcase, Target
-} from 'lucide-react'
-import { LeadCaptureForm } from '@/components/forms/LeadCaptureForm'
-import { PropertyMap } from '@/components/maps/MapWrapper'
+import Link from "next/link"
+import { ArrowRight, DollarSign, TrendingUp, PieChart, Brain, Activity, Shield, Target, BarChart3, Globe, Cpu, Eye, CheckCircle, Zap, Building2, Clock, Filter } from "lucide-react"
+import { motion } from "framer-motion"
+import { useState, useEffect } from 'react'
 
-interface InvestmentOpportunity {
-  id: string
-  title: string
-  location: string
-  type: string
-  investmentRange: string
-  targetROI: string
-  timeline: string
-  status: 'active' | 'funded' | 'coming-soon'
-  highlights: string[]
-  minimumInvestment: number
-}
+export default function InvestorIntelligence() {
+  const [metrics, setMetrics] = useState({
+    avgROI: 22.5,
+    dealsAnalyzed: 892,
+    successRate: 85,
+    activeFunds: 147
+  })
 
-// Helper function to get coordinates for investment locations
-function getInvestmentLocation(location: string): { lat: number; lng: number } {
-  const locationMap: Record<string, { lat: number; lng: number }> = {
-    'The Woodlands': { lat: 30.1658, lng: -95.4613 },
-    'Katy': { lat: 29.7858, lng: -95.8245 },
-    'East Houston': { lat: 29.7794, lng: -95.3271 },
-    'Sugar Land': { lat: 29.5994, lng: -95.6348 },
-    'Inner Loop': { lat: 29.7472, lng: -95.3902 }
-  }
-  
-  return locationMap[location] || { lat: 29.7604, lng: -95.3698 }
-}
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setMetrics(prev => ({
+        avgROI: +(prev.avgROI + (Math.random() * 0.3 - 0.15)).toFixed(1),
+        dealsAnalyzed: prev.dealsAnalyzed + Math.floor(Math.random() * 5),
+        successRate: Math.min(90, prev.successRate + (Math.random() > 0.5 ? 0.1 : 0)),
+        activeFunds: prev.activeFunds + Math.floor(Math.random() * 2)
+      }))
+    }, 5000)
+    return () => clearInterval(interval)
+  }, [])
 
-export default function InvestmentOpportunitiesPage() {
-  const [selectedType, setSelectedType] = useState('all')
-  const [selectedLocation, setSelectedLocation] = useState('all')
-
-  const opportunities: InvestmentOpportunity[] = [
+  const tools = [
     {
-      id: '001',
-      title: 'Woodlands Medical Plaza Development',
-      location: 'The Woodlands',
-      type: 'Medical Office',
-      investmentRange: '$2.5M - $4M',
-      targetROI: '22-25%',
-      timeline: '24 months',
-      status: 'active',
-      highlights: [
-        '45,000 sq ft medical office complex',
-        'Pre-leased 60% to major healthcare system',
-        'Adjacent to new hospital expansion'
-      ],
-      minimumInvestment: 100000
+      title: "Investment Opportunities",
+      description: "Curated Houston properties with AI-verified ROI projections and risk analysis.",
+      icon: DollarSign,
+      href: "/investment-opportunities/deals",
+      color: "from-green-600 to-emerald-600",
+      features: ["Pre-vetted deals", "ROI projections", "Risk scoring", "Exit strategies"],
+      stats: "22%+ avg returns"
     },
     {
-      id: '002',
-      title: 'Katy Master-Planned Community Phase II',
-      location: 'Katy',
-      type: 'Residential',
-      investmentRange: '$5M - $8M',
-      targetROI: '24-28%',
-      timeline: '36 months',
-      status: 'active',
-      highlights: [
-        '320 single-family lots',
-        'Top-rated Katy ISD schools',
-        'Phase I sold out in 18 months'
-      ],
-      minimumInvestment: 250000
+      title: "Market Predictions",
+      description: "AI-powered forecasts for Houston neighborhoods, property types, and sectors.",
+      icon: Cpu,
+      href: "/intelligence/predictions",
+      color: "from-purple-600 to-indigo-600",
+      features: ["Price forecasts", "Growth areas", "Market cycles", "Trend analysis"],
+      stats: "85% accuracy"
     },
     {
-      id: '003',
-      title: 'East Houston Industrial Park',
-      location: 'East Houston',
-      type: 'Industrial',
-      investmentRange: '$3M - $5M',
-      targetROI: '20-23%',
-      timeline: '18 months',
-      status: 'active',
-      highlights: [
-        '150,000 sq ft distribution facility',
-        '10 minutes from Port of Houston',
-        'Rail-served site'
-      ],
-      minimumInvestment: 150000
+      title: "Portfolio Analytics",
+      description: "Track performance, optimize allocation, and identify new opportunities.",
+      icon: PieChart,
+      href: "/intelligence/portfolio",
+      color: "from-blue-600 to-cyan-600",
+      features: ["Performance tracking", "Risk analysis", "Diversification", "Benchmarking"],
+      stats: "Real-time insights"
     },
     {
-      id: '004',
-      title: 'Sugar Land Corporate Campus',
-      location: 'Sugar Land',
-      type: 'Office',
-      investmentRange: '$6M - $10M',
-      targetROI: '18-21%',
-      timeline: '30 months',
-      status: 'coming-soon',
-      highlights: [
-        'Class A office development',
-        'Energy sector tenant focus',
-        'LEED Gold certification planned'
-      ],
-      minimumInvestment: 500000
+      title: "Deal Flow Engine",
+      description: "Automated deal sourcing based on your investment criteria and preferences.",
+      icon: Target,
+      href: "/intelligence/deal-flow",
+      color: "from-orange-600 to-red-600",
+      features: ["Custom alerts", "Auto-matching", "Due diligence", "Deal scoring"],
+      stats: "500+ deals/month"
+    },
+    {
+      title: "AI Risk Analysis",
+      description: "Deep risk assessment using market data, permits, and predictive modeling.",
+      icon: Shield,
+      href: "/intelligence/risk",
+      color: "from-teal-600 to-cyan-600",
+      features: ["Risk scoring", "Market volatility", "Exit timing", "Stress testing"],
+      stats: "15+ risk factors"
+    },
+    {
+      title: "Investment Calculator",
+      description: "Advanced modeling for cash flow, appreciation, tax benefits, and total returns.",
+      icon: BarChart3,
+      href: "/roi-calculator",
+      color: "from-indigo-600 to-purple-600",
+      features: ["Cash flow analysis", "Tax modeling", "Scenario planning", "IRR calculation"],
+      stats: "Institutional-grade"
     }
   ]
 
-  const performanceMetrics = {
-    totalDeployed: '$483M+',
-    avgReturns: '18.2%',
-    activeProjects: '12',
-    investorCount: '147'
-  }
+  const insights = [
+    {
+      icon: TrendingUp,
+      title: "Average ROI",
+      value: `${metrics.avgROI}%`,
+      label: "Portfolio Returns",
+      trend: "up"
+    },
+    {
+      icon: BarChart3,
+      title: "Deals Analyzed",
+      value: metrics.dealsAnalyzed,
+      label: "This Month",
+      trend: "up"
+    },
+    {
+      icon: Cpu,
+      title: "AI Accuracy",
+      value: `${metrics.successRate}%`,
+      label: "Prediction Rate",
+      trend: "stable"
+    },
+    {
+      icon: Activity,
+      title: "Active Funds",
+      value: `$${metrics.activeFunds}M`,
+      label: "Ready to Deploy",
+      trend: "up"
+    }
+  ]
 
   const investmentTypes = [
-    { value: 'all', label: 'All Types' },
-    { value: 'Residential', label: 'Residential' },
-    { value: 'Medical Office', label: 'Medical Office' },
-    { value: 'Office', label: 'Office' },
-    { value: 'Industrial', label: 'Industrial' },
-    { value: 'Mixed-Use', label: 'Mixed-Use' }
+    {
+      title: "Development Projects",
+      description: "Ground-up development opportunities with 20-30% projected returns",
+      minInvestment: "$250K",
+      timeline: "18-36 months",
+      icon: Building2
+    },
+    {
+      title: "Value-Add Properties",
+      description: "Existing properties with renovation and repositioning potential",
+      minInvestment: "$100K",
+      timeline: "12-24 months",
+      icon: TrendingUp
+    },
+    {
+      title: "Income Properties",
+      description: "Stabilized assets generating immediate cash flow",
+      minInvestment: "$50K",
+      timeline: "Long-term hold",
+      icon: DollarSign
+    },
+    {
+      title: "Land Banking",
+      description: "Strategic land acquisition in high-growth corridors",
+      minInvestment: "$500K",
+      timeline: "3-7 years",
+      icon: Globe
+    }
   ]
-
-  const locations = [
-    { value: 'all', label: 'All Locations' },
-    { value: 'The Woodlands', label: 'The Woodlands' },
-    { value: 'Katy', label: 'Katy' },
-    { value: 'Sugar Land', label: 'Sugar Land' },
-    { value: 'East Houston', label: 'East Houston' },
-    { value: 'Inner Loop', label: 'Inner Loop' }
-  ]
-
-  const filteredOpportunities = opportunities.filter(opp => {
-    const typeMatch = selectedType === 'all' || opp.type === selectedType
-    const locationMatch = selectedLocation === 'all' || opp.location === selectedLocation
-    return typeMatch && locationMatch
-  })
 
   return (
     <>
       {/* Hero Section */}
-      <section className="relative overflow-hidden bg-gradient-to-br from-gray-50 to-green-50 py-16 sm:py-24">
-        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          <motion.div 
-            className="text-center"
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6 }}
-          >
-            <div className="flex justify-center mb-6">
-              <div className="p-3 bg-green-100 rounded-full">
-                <TrendingUp className="h-8 w-8 text-green-600" />
-              </div>
-            </div>
-            <h1 className="text-4xl font-bold tracking-tight text-gray-900 sm:text-5xl lg:text-6xl">
-              Houston Development <span className="gradient-text">Investment Opportunities</span>
-            </h1>
-            <p className="mt-6 text-lg text-gray-600 max-w-3xl mx-auto">
-              Access exclusive, pre-vetted development projects in Houston's fastest-growing markets. 
-              Join sophisticated investors earning 18%+ returns through strategic land development partnerships.
-            </p>
-            <div className="mt-8 flex flex-wrap justify-center gap-4">
-              <Link 
-                href="#opportunities"
-                className="cta-primary"
+      <section className="relative overflow-hidden bg-gradient-to-br from-gray-900 via-green-900/20 to-gray-900 min-h-[60vh]">
+        <div className="absolute inset-0">
+          <motion.div
+            animate={{
+              backgroundPosition: ['0% 0%', '100% 100%'],
+            }}
+            transition={{ duration: 20, repeat: Infinity, repeatType: 'reverse' }}
+            className="absolute inset-0 opacity-30"
+            style={{
+              backgroundImage: 'radial-gradient(circle at 20% 50%, green 0%, transparent 50%), radial-gradient(circle at 80% 80%, emerald 0%, transparent 50%)'
+            }}
+          />
+        </div>
+
+        <div className="mx-auto max-w-7xl px-4 py-16 sm:px-6 sm:py-24 lg:px-8 relative z-10">
+          <div className="text-center max-w-4xl mx-auto">
+            <motion.div
+              initial={{ opacity: 0, y: -20 }}
+              animate={{ opacity: 1, y: 0 }}
+              className="inline-flex items-center justify-center px-4 py-2 bg-green-500/20 backdrop-blur-sm rounded-full mb-6"
+            >
+              <DollarSign className="h-5 w-5 text-green-400 mr-2" />
+              <span className="text-sm font-medium text-green-300">Investor Intelligence Platform</span>
+            </motion.div>
+            
+            <motion.h1
+              initial={{ opacity: 0, scale: 0.9 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ duration: 0.5 }}
+              className="text-5xl font-bold tracking-tight text-white sm:text-6xl lg:text-7xl"
+            >
+              Investor
+              <span className="block bg-gradient-to-r from-green-400 via-emerald-400 to-teal-400 bg-clip-text text-transparent">
+                Intelligence Suite
+              </span>
+            </motion.h1>
+            
+            <motion.p
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.2 }}
+              className="mt-6 text-xl text-gray-300 lg:text-2xl font-light"
+            >
+              AI-powered investment analysis and opportunity discovery for Houston real estate.
+              <span className="block mt-2">Maximize returns with predictive intelligence.</span>
+            </motion.p>
+
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.4 }}
+              className="mt-10 flex flex-col sm:flex-row sm:justify-center sm:space-x-4 space-y-4 sm:space-y-0"
+            >
+              <Link
+                href="/assistant"
+                className="group inline-flex items-center justify-center px-8 py-4 bg-gradient-to-r from-green-600 to-emerald-600 text-white font-semibold rounded-full hover:from-green-700 hover:to-emerald-700 transition-all transform hover:scale-105 shadow-xl"
               >
-                View Current Opportunities
-                <ArrowRight className="ml-2 h-5 w-5" />
+                <Brain className="mr-2 h-5 w-5" />
+                Ask Fernando-X
+                <ArrowRight className="ml-2 h-5 w-5 group-hover:translate-x-1 transition-transform" />
               </Link>
-              <button className="inline-flex items-center px-6 py-3 bg-white text-green-600 font-semibold rounded-lg border-2 border-green-600 hover:bg-green-50 transition-colors">
-                <Download className="h-5 w-5 mr-2" />
-                Download Investment Guide
-              </button>
-            </div>
-          </motion.div>
+              <Link
+                href="/investment-opportunities/deals"
+                className="group inline-flex items-center justify-center px-8 py-4 bg-white/10 backdrop-blur-sm border border-white/20 text-white font-semibold rounded-full hover:bg-white/20 transition-all"
+              >
+                <Eye className="mr-2 h-5 w-5" />
+                View Opportunities
+              </Link>
+            </motion.div>
+          </div>
         </div>
       </section>
 
-      {/* Performance Metrics */}
-      <section className="py-8 bg-white border-b border-gray-200">
-        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          <motion.div 
-            className="grid grid-cols-2 md:grid-cols-4 gap-8"
-            initial={{ opacity: 0 }}
-            whileInView={{ opacity: 1 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.6 }}
-          >
-            <div className="text-center">
-              <div className="text-3xl font-bold text-gray-900">{performanceMetrics.totalDeployed}</div>
-              <div className="text-sm text-gray-600 mt-1">Capital Deployed</div>
-            </div>
-            <div className="text-center">
-              <div className="text-3xl font-bold text-green-600">{performanceMetrics.avgReturns}</div>
-              <div className="text-sm text-gray-600 mt-1">Average IRR</div>
-            </div>
-            <div className="text-center">
-              <div className="text-3xl font-bold text-gray-900">{performanceMetrics.activeProjects}</div>
-              <div className="text-sm text-gray-600 mt-1">Active Projects</div>
-            </div>
-            <div className="text-center">
-              <div className="text-3xl font-bold text-gray-900">{performanceMetrics.investorCount}</div>
-              <div className="text-sm text-gray-600 mt-1">Investor Partners</div>
-            </div>
-          </motion.div>
+      {/* Live Metrics Bar */}
+      <section className="bg-gray-900 border-b border-gray-800">
+        <div className="mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8">
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-6">
+            {insights.map((insight, index) => (
+              <motion.div
+                key={insight.title}
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: index * 0.1 }}
+                className="bg-gray-800/50 backdrop-blur-sm rounded-lg p-4 border border-gray-700"
+              >
+                <div className="flex items-center justify-between mb-2">
+                  <insight.icon className="h-5 w-5 text-green-400" />
+                  <span className={`text-xs font-medium ${
+                    insight.trend === 'up' ? 'text-green-400' : 
+                    insight.trend === 'down' ? 'text-red-400' : 'text-gray-400'
+                  }`}>
+                    {insight.trend === 'up' ? '↑' : insight.trend === 'down' ? '↓' : '→'}
+                  </span>
+                </div>
+                <div className="text-2xl font-bold text-white">{insight.value}</div>
+                <div className="text-sm text-gray-400">{insight.label}</div>
+              </motion.div>
+            ))}
+          </div>
         </div>
       </section>
 
-      {/* Investment Opportunities */}
-      <section id="opportunities" className="py-16 bg-gradient-to-b from-gray-50 to-white">
-        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          <motion.div 
-            initial={{ opacity: 0 }}
-            whileInView={{ opacity: 1 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.6 }}
-          >
-            <div className="text-center mb-12">
-              <h2 className="text-3xl font-bold text-gray-900 mb-4">Current Investment Opportunities</h2>
-              <p className="text-lg text-gray-600 max-w-2xl mx-auto">
-                Pre-vetted development projects with strong fundamentals and experienced operating partners
-              </p>
-            </div>
-
-            {/* Filters */}
-            <div className="flex flex-wrap gap-4 mb-8 justify-center">
-              <div className="flex items-center gap-2">
-                <Filter className="h-5 w-5 text-gray-500" />
-                <select
-                  value={selectedType}
-                  onChange={(e) => setSelectedType(e.target.value)}
-                  className="form-input py-2"
-                >
-                  {investmentTypes.map(type => (
-                    <option key={type.value} value={type.value}>{type.label}</option>
-                  ))}
-                </select>
-              </div>
-              <div className="flex items-center gap-2">
-                <MapPin className="h-5 w-5 text-gray-500" />
-                <select
-                  value={selectedLocation}
-                  onChange={(e) => setSelectedLocation(e.target.value)}
-                  className="form-input py-2"
-                >
-                  {locations.map(location => (
-                    <option key={location.value} value={location.value}>{location.label}</option>
-                  ))}
-                </select>
-              </div>
-            </div>
-
-            {/* Opportunity Cards */}
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-              {filteredOpportunities.map((opportunity, index) => (
-                <motion.div
-                  key={opportunity.id}
-                  className="bg-white rounded-lg shadow-lg border border-gray-200 overflow-hidden"
-                  initial={{ opacity: 0, y: 20 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true }}
-                  transition={{ duration: 0.5, delay: index * 0.1 }}
-                >
-                  <div className="p-6">
-                    <div className="flex items-start justify-between mb-4">
-                      <div>
-                        <h3 className="text-xl font-bold text-gray-900 mb-1">{opportunity.title}</h3>
-                        <div className="flex items-center gap-4 text-sm text-gray-600">
-                          <span className="flex items-center">
-                            <MapPin className="h-4 w-4 mr-1" />
-                            {opportunity.location}
-                          </span>
-                          <span className="flex items-center">
-                            <Building2 className="h-4 w-4 mr-1" />
-                            {opportunity.type}
-                          </span>
-                        </div>
-                      </div>
-                      <span className={`inline-flex items-center px-3 py-1 rounded-full text-sm font-medium ${
-                        opportunity.status === 'active' 
-                          ? 'bg-green-100 text-green-800'
-                          : opportunity.status === 'funded'
-                          ? 'bg-gray-100 text-gray-800'
-                          : 'bg-yellow-100 text-yellow-800'
-                      }`}>
-                        {opportunity.status === 'active' ? 'Accepting Investors' : 
-                         opportunity.status === 'funded' ? 'Fully Funded' : 'Coming Soon'}
-                      </span>
-                    </div>
-
-                    <div className="grid grid-cols-2 gap-4 mb-4">
-                      <div className="bg-gradient-to-br from-green-50 to-emerald-50 rounded-lg p-3">
-                        <div className="text-sm text-gray-600">Target ROI</div>
-                        <div className="text-xl font-bold text-green-600">{opportunity.targetROI}</div>
-                      </div>
-                      <div className="bg-gradient-to-br from-blue-50 to-cyan-50 rounded-lg p-3">
-                        <div className="text-sm text-gray-600">Timeline</div>
-                        <div className="text-xl font-bold text-blue-600">{opportunity.timeline}</div>
-                      </div>
-                    </div>
-
-                    <div className="mb-4">
-                      <div className="text-sm font-medium text-gray-700 mb-2">Investment Range</div>
-                      <div className="text-lg font-semibold text-gray-900">{opportunity.investmentRange}</div>
-                      <div className="text-sm text-gray-600">Min. Investment: ${opportunity.minimumInvestment.toLocaleString()}</div>
-                    </div>
-
-                    <div className="mb-6">
-                      <div className="text-sm font-medium text-gray-700 mb-2">Key Highlights</div>
-                      <ul className="space-y-1">
-                        {opportunity.highlights.map((highlight, idx) => (
-                          <li key={idx} className="text-sm text-gray-600 flex items-start">
-                            <CheckCircle className="h-4 w-4 text-green-600 mr-2 mt-0.5 flex-shrink-0" />
-                            {highlight}
-                          </li>
-                        ))}
-                      </ul>
-                    </div>
-
-                    {opportunity.status === 'active' && (
-                      <button className="w-full cta-primary">
-                        Request Investment Details
-                      </button>
-                    )}
-                  </div>
-                </motion.div>
-              ))}
-            </div>
-          </motion.div>
-        </div>
-      </section>
-
-      {/* Investment Map */}
-      <section className="py-16 bg-gray-50">
+      {/* Investment Types */}
+      <section className="py-16 bg-white">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <motion.div
-            initial={{ opacity: 0 }}
-            whileInView={{ opacity: 1 }}
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            transition={{ duration: 0.6 }}
+            className="text-center mb-12"
           >
-            <div className="text-center mb-8">
-              <h2 className="text-3xl font-bold text-gray-900 mb-4">Investment Properties Map</h2>
-              <p className="text-lg text-gray-600 max-w-2xl mx-auto">
-                Explore investment opportunities across Houston's prime development corridors
-              </p>
+            <h2 className="text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl">
+              Investment Strategies
+            </h2>
+            <p className="mt-4 text-lg text-gray-600">
+              Multiple paths to build wealth in Houston real estate
+            </p>
+          </motion.div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+            {investmentTypes.map((type, index) => (
+              <motion.div
+                key={type.title}
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ delay: index * 0.1 }}
+                className="bg-gray-50 rounded-xl p-6"
+              >
+                <div className="inline-flex items-center justify-center w-12 h-12 rounded-lg bg-green-100 mb-4">
+                  <type.icon className="h-6 w-6 text-green-600" />
+                </div>
+                <h3 className="text-lg font-semibold text-gray-900 mb-2">{type.title}</h3>
+                <p className="text-gray-600 mb-4">{type.description}</p>
+                <div className="space-y-2 text-sm">
+                  <div className="flex justify-between">
+                    <span className="text-gray-500">Min Investment:</span>
+                    <span className="font-medium text-gray-900">{type.minInvestment}</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-gray-500">Timeline:</span>
+                    <span className="font-medium text-gray-900">{type.timeline}</span>
+                  </div>
+                </div>
+              </motion.div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Investor Tools Grid */}
+      <section className="py-20 bg-gradient-to-b from-gray-50 to-white">
+        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            className="text-center mb-12"
+          >
+            <h2 className="text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl">
+              Intelligence Tools for Investors
+            </h2>
+            <p className="mt-4 text-lg text-gray-600">
+              Professional-grade analytics to identify and evaluate opportunities
+            </p>
+          </motion.div>
+
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+            {tools.map((tool, index) => (
+              <motion.div
+                key={tool.href}
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ delay: index * 0.1 }}
+              >
+                <Link
+                  href={tool.href}
+                  className="group relative bg-white rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300 overflow-hidden"
+                >
+                  <div className={`absolute inset-0 bg-gradient-to-br ${tool.color} opacity-5 group-hover:opacity-10 transition-opacity`} />
+                  
+                  <div className="relative p-8">
+                    <div className="flex items-start justify-between mb-6">
+                      <div className={`inline-flex items-center justify-center w-14 h-14 rounded-xl bg-gradient-to-br ${tool.color} text-white group-hover:scale-110 transition-transform`}>
+                        <tool.icon className="h-7 w-7" />
+                      </div>
+                      <span className="text-sm font-medium text-gray-500">{tool.stats}</span>
+                    </div>
+
+                    <h3 className="text-2xl font-bold text-gray-900 mb-3 group-hover:text-green-600 transition-colors">
+                      {tool.title}
+                    </h3>
+                    <p className="text-gray-600 mb-6">
+                      {tool.description}
+                    </p>
+
+                    <div className="grid grid-cols-2 gap-3 mb-6">
+                      {tool.features.map((feature) => (
+                        <div key={feature} className="flex items-center text-sm text-gray-500">
+                          <div className="w-1.5 h-1.5 bg-green-500 rounded-full mr-2" />
+                          {feature}
+                        </div>
+                      ))}
+                    </div>
+
+                    <div className="flex items-center text-green-600 font-medium">
+                      Launch Tool
+                      <ArrowRight className="ml-2 h-5 w-5 group-hover:translate-x-2 transition-transform" />
+                    </div>
+                  </div>
+                </Link>
+              </motion.div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Fernando-X Integration */}
+      <section className="relative py-20 overflow-hidden bg-gradient-to-br from-green-900 via-emerald-900 to-teal-900">
+        <div className="absolute inset-0 bg-black/20" />
+        
+        <div className="mx-auto max-w-4xl px-4 sm:px-6 lg:px-8 relative z-10">
+          <motion.div
+            initial={{ opacity: 0, scale: 0.9 }}
+            whileInView={{ opacity: 1, scale: 1 }}
+            viewport={{ once: true }}
+            className="text-center"
+          >
+            <div className="inline-flex items-center justify-center w-20 h-20 rounded-full bg-white/10 backdrop-blur-sm mb-6">
+              <Brain className="h-10 w-10 text-white" />
+            </div>
+            
+            <h2 className="text-4xl font-bold tracking-tight text-white sm:text-5xl mb-4">
+              Your AI Investment Advisor
+            </h2>
+            <p className="text-xl text-green-200 mb-8 max-w-2xl mx-auto">
+              Fernando-X analyzes thousands of data points to find the best Houston investment opportunities. 
+              Get personalized recommendations based on your goals.
+            </p>
+
+            <div className="bg-white/10 backdrop-blur-sm rounded-2xl p-8 mb-8">
+              <h3 className="text-lg font-semibold text-white mb-4">Ask Fernando-X about:</h3>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-left">
+                <div className="flex items-start">
+                  <TrendingUp className="h-5 w-5 text-green-300 mt-0.5 mr-3 flex-shrink-0" />
+                  <span className="text-gray-200">Which Houston areas will appreciate most</span>
+                </div>
+                <div className="flex items-start">
+                  <DollarSign className="h-5 w-5 text-green-300 mt-0.5 mr-3 flex-shrink-0" />
+                  <span className="text-gray-200">Expected ROI for different property types</span>
+                </div>
+                <div className="flex items-start">
+                  <Shield className="h-5 w-5 text-green-300 mt-0.5 mr-3 flex-shrink-0" />
+                  <span className="text-gray-200">Risk assessment for specific deals</span>
+                </div>
+                <div className="flex items-start">
+                  <Clock className="h-5 w-5 text-green-300 mt-0.5 mr-3 flex-shrink-0" />
+                  <span className="text-gray-200">Optimal investment timing strategies</span>
+                </div>
+              </div>
             </div>
 
-            <div className="bg-white rounded-xl shadow-lg overflow-hidden">
-              <PropertyMap
-                height="500px"
-                showSearch={true}
-                markers={filteredOpportunities.map(opp => ({
-                  id: opp.id,
-                  position: getInvestmentLocation(opp.location),
-                  title: opp.title,
-                  description: `${opp.type} • ${opp.investmentRange} • ${opp.targetROI} ROI`
-                }))}
-                zoom={10}
-              />
-            </div>
+            <Link
+              href="/assistant"
+              className="inline-flex items-center justify-center px-10 py-5 bg-white text-green-900 font-bold rounded-full hover:bg-gray-100 transition-all transform hover:scale-105 shadow-2xl"
+            >
+              Start Conversation
+              <ArrowRight className="ml-2 h-5 w-5" />
+            </Link>
           </motion.div>
+        </div>
+      </section>
+
+      {/* Success Metrics */}
+      <section className="py-20 bg-gray-50">
+        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            className="text-center mb-12"
+          >
+            <h2 className="text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl">
+              Proven Investment Performance
+            </h2>
+            <p className="mt-4 text-lg text-gray-600">
+              Our intelligence platform delivers superior returns
+            </p>
+          </motion.div>
+
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              className="bg-white rounded-2xl shadow-lg p-8 text-center"
+            >
+              <div className="text-4xl font-bold text-green-600 mb-2">22.5%</div>
+              <div className="text-lg font-semibold text-gray-900 mb-2">Average Annual Return</div>
+              <p className="text-gray-600">Consistently outperforming market benchmarks</p>
+            </motion.div>
+
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ delay: 0.1 }}
+              className="bg-white rounded-2xl shadow-lg p-8 text-center"
+            >
+              <div className="text-4xl font-bold text-green-600 mb-2">$147M</div>
+              <div className="text-lg font-semibold text-gray-900 mb-2">Active Investments</div>
+              <p className="text-gray-600">Capital deployed across Houston market</p>
+            </motion.div>
+
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ delay: 0.2 }}
+              className="bg-white rounded-2xl shadow-lg p-8 text-center"
+            >
+              <div className="text-4xl font-bold text-green-600 mb-2">2.3x</div>
+              <div className="text-lg font-semibold text-gray-900 mb-2">Average Multiple</div>
+              <p className="text-gray-600">On realized investments over 3 years</p>
+            </motion.div>
+
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ delay: 0.3 }}
+              className="bg-white rounded-2xl shadow-lg p-8 text-center"
+            >
+              <div className="text-4xl font-bold text-green-600 mb-2">15%</div>
+              <div className="text-lg font-semibold text-gray-900 mb-2">Cash-on-Cash</div>
+              <p className="text-gray-600">Average annual cash flow returns</p>
+            </motion.div>
+          </div>
         </div>
       </section>
 
       {/* Investment Process */}
-      <section className="py-16 bg-white">
+      <section className="py-20 bg-white">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          <motion.div 
-            initial={{ opacity: 0 }}
-            whileInView={{ opacity: 1 }}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            transition={{ duration: 0.6 }}
+            className="text-center mb-12"
           >
-            <h2 className="text-3xl font-bold text-gray-900 mb-12 text-center">Investment Process</h2>
-            
-            <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
-              <div className="text-center">
-                <div className="mx-auto w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mb-4">
-                  <span className="text-2xl font-bold text-green-600">1</span>
-                </div>
-                <h3 className="font-semibold text-gray-900 mb-2">Initial Consultation</h3>
-                <p className="text-sm text-gray-600">
-                  Discuss your investment goals and review current opportunities
-                </p>
-              </div>
-              
-              <div className="text-center">
-                <div className="mx-auto w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mb-4">
-                  <span className="text-2xl font-bold text-green-600">2</span>
-                </div>
-                <h3 className="font-semibold text-gray-900 mb-2">Due Diligence</h3>
-                <p className="text-sm text-gray-600">
-                  Review detailed project information, financials, and projections
-                </p>
-              </div>
-              
-              <div className="text-center">
-                <div className="mx-auto w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mb-4">
-                  <span className="text-2xl font-bold text-green-600">3</span>
-                </div>
-                <h3 className="font-semibold text-gray-900 mb-2">Investment Structure</h3>
-                <p className="text-sm text-gray-600">
-                  Finalize investment terms, structure, and legal documentation
-                </p>
-              </div>
-              
-              <div className="text-center">
-                <div className="mx-auto w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mb-4">
-                  <span className="text-2xl font-bold text-green-600">4</span>
-                </div>
-                <h3 className="font-semibold text-gray-900 mb-2">Active Management</h3>
-                <p className="text-sm text-gray-600">
-                  Regular updates and distributions throughout the project lifecycle
-                </p>
-              </div>
-            </div>
+            <h2 className="text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl">
+              Your Investment Journey
+            </h2>
+            <p className="mt-4 text-lg text-gray-600">
+              Simple process from discovery to returns
+            </p>
           </motion.div>
-        </div>
-      </section>
 
-      {/* Track Record */}
-      <section className="py-16 bg-gradient-to-b from-gray-50 to-white">
-        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          <motion.div 
-            initial={{ opacity: 0 }}
-            whileInView={{ opacity: 1 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.6 }}
-          >
-            <h2 className="text-3xl font-bold text-gray-900 mb-12 text-center">Proven Track Record</h2>
-            
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
-              <div>
-                <h3 className="text-xl font-semibold text-gray-900 mb-6">Recent Successful Exits</h3>
-                <div className="space-y-4">
-                  <div className="bg-white rounded-lg border border-gray-200 p-4">
-                    <div className="flex justify-between items-start mb-2">
-                      <div>
-                        <h4 className="font-semibold text-gray-900">Cypress Creek Business Park</h4>
-                        <p className="text-sm text-gray-600">Industrial Development - 2023 Exit</p>
-                      </div>
-                      <div className="text-right">
-                        <div className="text-lg font-bold text-green-600">26.4% IRR</div>
-                        <div className="text-sm text-gray-600">2.2x Multiple</div>
-                      </div>
-                    </div>
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
+            {[
+              {
+                step: "1",
+                title: "Define Criteria",
+                description: "Set your investment goals, risk tolerance, and preferences",
+                icon: Target
+              },
+              {
+                step: "2",
+                title: "AI Matching",
+                description: "Fernando-X identifies opportunities that fit your profile",
+                icon: Cpu
+              },
+              {
+                step: "3",
+                title: "Due Diligence",
+                description: "Comprehensive analysis with AI-powered risk assessment",
+                icon: Shield
+              },
+              {
+                step: "4",
+                title: "Track Returns",
+                description: "Monitor performance and optimize your portfolio",
+                icon: BarChart3
+              }
+            ].map((process, index) => (
+              <motion.div
+                key={process.step}
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ delay: index * 0.1 }}
+                className="relative"
+              >
+                <div className="text-center">
+                  <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-green-600 text-white text-2xl font-bold mb-4">
+                    {process.step}
                   </div>
-                  
-                  <div className="bg-white rounded-lg border border-gray-200 p-4">
-                    <div className="flex justify-between items-start mb-2">
-                      <div>
-                        <h4 className="font-semibold text-gray-900">Katy Commons Retail Center</h4>
-                        <p className="text-sm text-gray-600">Retail Development - 2023 Exit</p>
-                      </div>
-                      <div className="text-right">
-                        <div className="text-lg font-bold text-green-600">19.8% IRR</div>
-                        <div className="text-sm text-gray-600">1.8x Multiple</div>
-                      </div>
-                    </div>
+                  <h3 className="text-lg font-semibold text-gray-900 mb-2">{process.title}</h3>
+                  <p className="text-gray-600">{process.description}</p>
+                </div>
+                {index < 3 && (
+                  <div className="hidden md:block absolute top-8 left-1/2 w-full">
+                    <div className="h-0.5 bg-gray-300 w-full"></div>
                   </div>
-                  
-                  <div className="bg-white rounded-lg border border-gray-200 p-4">
-                    <div className="flex justify-between items-start mb-2">
-                      <div>
-                        <h4 className="font-semibold text-gray-900">Woodlands Medical Pavilion</h4>
-                        <p className="text-sm text-gray-600">Medical Office - 2022 Exit</p>
-                      </div>
-                      <div className="text-right">
-                        <div className="text-lg font-bold text-green-600">22.1% IRR</div>
-                        <div className="text-sm text-gray-600">2.0x Multiple</div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-              <div>
-                <h3 className="text-xl font-semibold text-gray-900 mb-6">Why Houston Development?</h3>
-                <div className="space-y-4">
-                  <div className="flex items-start">
-                    <CheckCircle className="h-5 w-5 text-green-600 mr-3 mt-0.5 flex-shrink-0" />
-                    <div>
-                      <h4 className="font-medium text-gray-900">No State Income Tax</h4>
-                      <p className="text-sm text-gray-600">Maximize your investment returns</p>
-                    </div>
-                  </div>
-                  <div className="flex items-start">
-                    <CheckCircle className="h-5 w-5 text-green-600 mr-3 mt-0.5 flex-shrink-0" />
-                    <div>
-                      <h4 className="font-medium text-gray-900">Population Growth</h4>
-                      <p className="text-sm text-gray-600">100,000+ new residents annually</p>
-                    </div>
-                  </div>
-                  <div className="flex items-start">
-                    <CheckCircle className="h-5 w-5 text-green-600 mr-3 mt-0.5 flex-shrink-0" />
-                    <div>
-                      <h4 className="font-medium text-gray-900">No Zoning Restrictions</h4>
-                      <p className="text-sm text-gray-600">Flexible development opportunities</p>
-                    </div>
-                  </div>
-                  <div className="flex items-start">
-                    <CheckCircle className="h-5 w-5 text-green-600 mr-3 mt-0.5 flex-shrink-0" />
-                    <div>
-                      <h4 className="font-medium text-gray-900">Diverse Economy</h4>
-                      <p className="text-sm text-gray-600">Beyond oil & gas - healthcare, tech, aerospace</p>
-                    </div>
-                  </div>
-                  <div className="flex items-start">
-                    <CheckCircle className="h-5 w-5 text-green-600 mr-3 mt-0.5 flex-shrink-0" />
-                    <div>
-                      <h4 className="font-medium text-gray-900">Lower Development Costs</h4>
-                      <p className="text-sm text-gray-600">35-50% lower land costs than Austin</p>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </motion.div>
-        </div>
-      </section>
-
-      {/* Investment Criteria */}
-      <section className="py-16 bg-white">
-        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          <motion.div 
-            initial={{ opacity: 0 }}
-            whileInView={{ opacity: 1 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.6 }}
-          >
-            <h2 className="text-3xl font-bold text-gray-900 mb-12 text-center">Investment Criteria</h2>
-            
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-              <div className="bg-gradient-to-br from-green-50 to-emerald-50 rounded-lg p-6">
-                <Target className="h-8 w-8 text-green-600 mb-4" />
-                <h3 className="font-semibold text-gray-900 mb-2">Minimum Investment</h3>
-                <p className="text-2xl font-bold text-gray-900 mb-2">$100,000</p>
-                <p className="text-sm text-gray-600">
-                  Varies by project type and structure. Some opportunities available at $50K.
-                </p>
-              </div>
-              
-              <div className="bg-gradient-to-br from-blue-50 to-cyan-50 rounded-lg p-6">
-                <Briefcase className="h-8 w-8 text-blue-600 mb-4" />
-                <h3 className="font-semibold text-gray-900 mb-2">Investor Type</h3>
-                <p className="text-sm text-gray-600">
-                  Accredited investors, family offices, institutions, and qualified purchasers
-                </p>
-              </div>
-              
-              <div className="bg-gradient-to-br from-purple-50 to-pink-50 rounded-lg p-6">
-                <Clock className="h-8 w-8 text-purple-600 mb-4" />
-                <h3 className="font-semibold text-gray-900 mb-2">Investment Timeline</h3>
-                <p className="text-2xl font-bold text-gray-900 mb-2">18-36 Months</p>
-                <p className="text-sm text-gray-600">
-                  Most projects complete within 2-3 years with regular distributions
-                </p>
-              </div>
-            </div>
-
-            <div className="mt-12 bg-gray-50 rounded-lg p-8">
-              <h3 className="text-xl font-semibold text-gray-900 mb-4">Deal Structures We Offer</h3>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div>
-                  <h4 className="font-medium text-gray-900 mb-2">Joint Ventures</h4>
-                  <p className="text-sm text-gray-600">
-                    Partner directly in development projects with profit sharing based on contribution
-                  </p>
-                </div>
-                <div>
-                  <h4 className="font-medium text-gray-900 mb-2">Preferred Equity</h4>
-                  <p className="text-sm text-gray-600">
-                    Fixed preferred returns with upside participation in project success
-                  </p>
-                </div>
-                <div>
-                  <h4 className="font-medium text-gray-900 mb-2">Syndications</h4>
-                  <p className="text-sm text-gray-600">
-                    Pool investments for larger projects with professional management
-                  </p>
-                </div>
-                <div>
-                  <h4 className="font-medium text-gray-900 mb-2">Debt Investments</h4>
-                  <p className="text-sm text-gray-600">
-                    Secured lending opportunities with fixed returns and asset backing
-                  </p>
-                </div>
-              </div>
-            </div>
-          </motion.div>
-        </div>
-      </section>
-
-      {/* Investor Resources */}
-      <section className="py-16 bg-gradient-to-b from-gray-50 to-white">
-        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          <motion.div 
-            initial={{ opacity: 0 }}
-            whileInView={{ opacity: 1 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.6 }}
-          >
-            <h2 className="text-3xl font-bold text-gray-900 mb-12 text-center">Investor Resources</h2>
-            
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-              <Link href="/roi-calculator" className="group">
-                <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6 hover:shadow-md transition-shadow">
-                  <Calculator className="h-8 w-8 text-green-600 mb-3" />
-                  <h3 className="font-semibold text-gray-900 mb-2 group-hover:text-green-600 transition-colors">
-                    ROI Calculator
-                  </h3>
-                  <p className="text-sm text-gray-600">
-                    Calculate potential returns on Houston development investments
-                  </p>
-                </div>
-              </Link>
-              
-              <Link href="/blog/houston-development-market-report-q1-2024" className="group">
-                <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6 hover:shadow-md transition-shadow">
-                  <BarChart3 className="h-8 w-8 text-green-600 mb-3" />
-                  <h3 className="font-semibold text-gray-900 mb-2 group-hover:text-green-600 transition-colors">
-                    Market Reports
-                  </h3>
-                  <p className="text-sm text-gray-600">
-                    Latest Houston development market analysis and trends
-                  </p>
-                </div>
-              </Link>
-              
-              <div className="group cursor-pointer">
-                <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6 hover:shadow-md transition-shadow">
-                  <FileText className="h-8 w-8 text-green-600 mb-3" />
-                  <h3 className="font-semibold text-gray-900 mb-2 group-hover:text-green-600 transition-colors">
-                    Investment Guide
-                  </h3>
-                  <p className="text-sm text-gray-600">
-                    Download our comprehensive Houston investment guide
-                  </p>
-                </div>
-              </div>
-              
-              <div className="group cursor-pointer">
-                <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6 hover:shadow-md transition-shadow">
-                  <Shield className="h-8 w-8 text-green-600 mb-3" />
-                  <h3 className="font-semibold text-gray-900 mb-2 group-hover:text-green-600 transition-colors">
-                    Due Diligence Checklist
-                  </h3>
-                  <p className="text-sm text-gray-600">
-                    Essential checklist for evaluating development deals
-                  </p>
-                </div>
-              </div>
-            </div>
-          </motion.div>
-        </div>
-      </section>
-
-      {/* Testimonials */}
-      <section className="py-16 bg-white">
-        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          <motion.div 
-            initial={{ opacity: 0 }}
-            whileInView={{ opacity: 1 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.6 }}
-          >
-            <h2 className="text-3xl font-bold text-gray-900 mb-12 text-center">What Investors Say</h2>
-            
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-              <div className="bg-gradient-to-br from-green-50 to-emerald-50 rounded-lg p-6">
-                <div className="flex items-center mb-4">
-                  {[...Array(5)].map((_, i) => (
-                    <Star key={i} className="h-5 w-5 text-yellow-400 fill-current" />
-                  ))}
-                </div>
-                <p className="text-gray-700 mb-4">
-                  "The team's local expertise and track record gave us confidence to invest. Our Katy 
-                  project delivered 24% IRR, exceeding projections."
-                </p>
-                <div className="text-sm">
-                  <div className="font-semibold text-gray-900">Michael Chen</div>
-                  <div className="text-gray-600">Family Office Investor</div>
-                </div>
-              </div>
-              
-              <div className="bg-gradient-to-br from-blue-50 to-cyan-50 rounded-lg p-6">
-                <div className="flex items-center mb-4">
-                  {[...Array(5)].map((_, i) => (
-                    <Star key={i} className="h-5 w-5 text-yellow-400 fill-current" />
-                  ))}
-                </div>
-                <p className="text-gray-700 mb-4">
-                  "Transparent communication and detailed reporting throughout the project. The Woodlands 
-                  medical office investment performed exactly as modeled."
-                </p>
-                <div className="text-sm">
-                  <div className="font-semibold text-gray-900">Sarah Williams</div>
-                  <div className="text-gray-600">Accredited Investor</div>
-                </div>
-              </div>
-              
-              <div className="bg-gradient-to-br from-purple-50 to-pink-50 rounded-lg p-6">
-                <div className="flex items-center mb-4">
-                  {[...Array(5)].map((_, i) => (
-                    <Star key={i} className="h-5 w-5 text-yellow-400 fill-current" />
-                  ))}
-                </div>
-                <p className="text-gray-700 mb-4">
-                  "We've partnered on 3 Houston projects now. The deal flow quality and execution have 
-                  been consistently excellent."
-                </p>
-                <div className="text-sm">
-                  <div className="font-semibold text-gray-900">Robert Martinez</div>
-                  <div className="text-gray-600">Private Equity Partner</div>
-                </div>
-              </div>
-            </div>
-          </motion.div>
+                )}
+              </motion.div>
+            ))}
+          </div>
         </div>
       </section>
 
       {/* CTA Section */}
-      <section className="py-16 bg-gradient-to-b from-gray-50 to-white">
-        <div className="mx-auto max-w-4xl px-4 sm:px-6 lg:px-8">
-          <motion.div 
-            className="bg-gradient-to-br from-green-50 to-emerald-50 rounded-2xl p-8"
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.6 }}
-          >
-            <div className="text-center mb-6">
-              <h3 className="text-2xl font-bold text-gray-900 mb-2">
-                Ready to Explore Investment Opportunities?
-              </h3>
-              <p className="text-gray-600">
-                Schedule a confidential consultation to discuss your investment goals and review current opportunities
-              </p>
-            </div>
-            
-            <div className="max-w-md mx-auto">
-              <LeadCaptureForm source="INVESTMENT_OPPORTUNITIES" />
-            </div>
-            
-            <div className="mt-6 text-center">
-              <p className="text-sm text-gray-600">
-                Or call us directly at{' '}
-                <a href="tel:713-555-LAND" className="font-semibold text-green-600 hover:text-green-700">
-                  (713) 555-LAND
-                </a>
-              </p>
-            </div>
-          </motion.div>
+      <section className="bg-gray-900 py-16">
+        <div className="mx-auto max-w-4xl px-4 sm:px-6 lg:px-8 text-center">
+          <h2 className="text-3xl font-bold text-white mb-4">
+            Ready to Invest Smarter?
+          </h2>
+          <p className="text-xl text-gray-300 mb-8">
+            Join sophisticated investors using AI to maximize Houston real estate returns.
+          </p>
+          <div className="flex flex-col sm:flex-row gap-4 justify-center">
+            <Link
+              href="/consultation"
+              className="inline-flex items-center justify-center px-8 py-4 bg-green-500 text-white font-semibold rounded-lg hover:bg-green-600 transition-colors"
+            >
+              Schedule Investment Review
+            </Link>
+            <Link
+              href="/roi-calculator"
+              className="inline-flex items-center justify-center px-8 py-4 bg-gray-800 text-white font-semibold rounded-lg hover:bg-gray-700 transition-colors border border-gray-700"
+            >
+              Calculate Returns
+            </Link>
+          </div>
         </div>
       </section>
     </>

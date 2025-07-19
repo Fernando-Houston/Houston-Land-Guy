@@ -9,12 +9,12 @@ const footerNavigation = {
     { name: 'Development Timeline', href: '/houston-development-timeline' },
   ],
   intelligence: [
-    { name: 'Market Intelligence Hub', href: '/market-intelligence' },
-    { name: 'Weekly Reports', href: '/market-intelligence/weekly-reports' },
-    { name: 'Permit Tracker', href: '/market-intelligence/permit-tracker' },
-    { name: 'Market Timing', href: '/market-intelligence/market-timing' },
-    { name: 'Investment Opportunities', href: '/market-intelligence/investment-opportunities' },
-    { name: 'All Neighborhoods', href: '/houston-neighborhoods' },
+    { name: 'Fernando-X AI Assistant', href: '/assistant' },
+    { name: 'AI Development Scout', href: '/intelligence/scout' },
+    { name: '3D Development Map', href: '/intelligence/map' },
+    { name: 'Zoning Intelligence', href: '/intelligence/zoning' },
+    { name: 'Permit Tracker', href: '/intelligence/permits' },
+    { name: 'Cost Intelligence', href: '/intelligence/costs' },
   ],
   neighborhoods: [
     { name: 'Cypress', href: '/houston-neighborhoods/cypress' },
@@ -49,15 +49,15 @@ export function Footer() {
           <div className="space-y-8 xl:col-span-1">
             <div>
               <span className="text-2xl font-bold text-white">
-                Houston Development Intelligence
+                Houston Development Intelligence Hub
               </span>
-              <p className="mt-2 text-sm text-gray-400">
-                by Houston Land Guy
+              <p className="mt-2 text-sm text-purple-400 font-medium">
+                Powered by Fernando-X AI
               </p>
             </div>
             <p className="text-sm text-gray-400">
-              Empowering small-to-medium builders with data-driven insights and market intelligence
-              for Houston&apos;s real estate development opportunities.
+              Real-time market intelligence powered by AI. Advanced analytics for developers, sellers, 
+              and investors. 3D maps, AI scout, zoning intelligence, and more.
             </p>
           </div>
           <div className="mt-12 grid grid-cols-2 gap-8 xl:col-span-2 xl:mt-0">
@@ -141,7 +141,7 @@ export function Footer() {
         </div>
         <div className="mt-8 border-t border-gray-800 pt-8">
           <p className="text-sm text-gray-400 xl:text-center">
-            &copy; {new Date().getFullYear()} Houston Development Intelligence. All rights reserved.
+            &copy; {new Date().getFullYear()} Houston Development Intelligence Hub. All rights reserved.
           </p>
         </div>
       </div>

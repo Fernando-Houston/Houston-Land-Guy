@@ -10,10 +10,10 @@ import { GoogleAnalytics } from '@/components/analytics/GoogleAnalytics';
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: "Houston Development Intelligence | Premier Land Development Opportunities",
-  description: "Discover exclusive Houston development opportunities with advanced market intelligence. 15 years experience, $483M in deals across Harris County. Off-market land deals and development sites.",
-  keywords: "houston development intelligence, houston land development, harris county property, houston development opportunities, off market land houston, houston real estate, houston commercial real estate, harris county development, houston builder lots, houston land deals",
-  authors: [{ name: "Houston Development Intelligence" }],
+  title: "Houston Development Intelligence Hub | AI-Powered Real Estate Analytics",
+  description: "Real-time Houston market intelligence powered by Fernando-X AI. Advanced analytics for developers, sellers, and investors. 3D maps, AI scout, zoning intelligence, and more.",
+  keywords: "houston development intelligence, fernando-x ai, houston real estate analytics, ai development scout, houston market intelligence, real-time property data, houston zoning ai, development cost intelligence, houston permit tracker, investment analytics houston",
+  authors: [{ name: "Houston Development Intelligence Hub" }],
   robots: {
     index: true,
     follow: true,
@@ -26,10 +26,10 @@ export const metadata: Metadata = {
     },
   },
   openGraph: {
-    title: "Houston Development Intelligence | Premier Land Development Opportunities",
-    description: "Discover exclusive Houston development opportunities with advanced market intelligence. 15 years experience, $483M+ in deals across Harris County.",
+    title: "Houston Development Intelligence Hub | AI-Powered Analytics Platform",
+    description: "Real-time market intelligence powered by Fernando-X AI. Advanced analytics for Houston real estate professionals. 24/7 AI assistant, 3D maps, and predictive insights.",
     url: "https://houstonlandguy.com",
-    siteName: "Houston Development Intelligence",
+    siteName: "Houston Development Intelligence Hub",
     type: "website",
     locale: "en_US",
     images: [
@@ -43,8 +43,8 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "Houston Development Intelligence | Premier Land Development Opportunities",
-    description: "Discover exclusive Houston development opportunities with advanced market intelligence. 15 years experience, $483M+ in deals.",
+    title: "Houston Development Intelligence Hub | AI-Powered Analytics",
+    description: "Real-time market intelligence powered by Fernando-X AI. Advanced analytics for Houston real estate. 24/7 AI assistant & predictive insights.",
     images: ["/houston-development-opportunities.jpg"],
   },
   alternates: {
@@ -69,10 +69,10 @@ export default function RootLayout({
                 {
                   "@type": "Organization",
                   "@id": "https://houstonlandguy.com/#organization",
-                  name: "Houston Development Intelligence",
-                  alternateName: "Houston Land Guy",
+                  name: "Houston Development Intelligence Hub",
+                  alternateName: "HDI Hub",
                   url: "https://houstonlandguy.com",
-                  description: "Premier Houston development intelligence and off-market land opportunities. 15 years experience with $483M+ in transactions across Harris County.",
+                  description: "AI-powered real estate intelligence platform featuring Fernando-X assistant, real-time analytics, 3D visualization, and predictive market insights for Houston professionals.",
                   address: {
                     "@type": "PostalAddress",
                     addressLocality: "Houston",
@@ -102,15 +102,15 @@ export default function RootLayout({
                     }
                   ],
                   foundingDate: "2009",
-                  slogan: "Houston's Premier Development Intelligence Platform"
+                  slogan: "AI-Powered Intelligence for Houston Real Estate"
                 },
                 {
                   "@type": "LocalBusiness",
                   "@id": "https://houstonlandguy.com/#business",
-                  name: "Houston Development Intelligence",
-                  businessType: "Real Estate Development Consultancy",
+                  name: "Houston Development Intelligence Hub",
+                  businessType: "AI-Powered Real Estate Intelligence Platform",
                   url: "https://houstonlandguy.com",
-                  description: "Exclusive Houston development opportunities and off-market land deals. Advanced market intelligence for builders, developers, and investors in Harris County.",
+                  description: "Comprehensive intelligence platform featuring Fernando-X AI assistant, real-time market analytics, 3D development maps, and predictive insights for Houston real estate professionals.",
                   address: {
                     "@type": "PostalAddress",
                     addressLocality: "Houston",
@@ -171,8 +171,8 @@ export default function RootLayout({
                 {
                   "@type": "RealEstateAgent",
                   "@id": "https://houstonlandguy.com/#agent",
-                  name: "Houston Development Intelligence",
-                  description: "Specialized real estate development consulting for Houston and Harris County",
+                  name: "Houston Development Intelligence Hub",
+                  description: "AI-powered intelligence platform for Houston real estate professionals",
                   areaServed: "Harris County, Texas",
                   serviceArea: ["Houston", "The Woodlands", "Katy", "Sugar Land", "Cypress", "Spring Branch"],
                   specialty: ["Development land acquisition", "Market intelligence", "Off-market opportunities"],
@@ -182,8 +182,8 @@ export default function RootLayout({
                   "@type": "WebSite",
                   "@id": "https://houstonlandguy.com/#website",
                   url: "https://houstonlandguy.com",
-                  name: "Houston Development Intelligence",
-                  description: "Premier Houston development intelligence platform providing exclusive off-market land deals and market analysis",
+                  name: "Houston Development Intelligence Hub",
+                  description: "AI-powered real estate intelligence platform featuring Fernando-X assistant, real-time analytics, and predictive market insights for Houston professionals",
                   publisher: {
                     "@id": "https://houstonlandguy.com/#organization"
                   },

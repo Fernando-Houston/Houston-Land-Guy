@@ -1,4 +1,4 @@
-import { Building2, Users, TrendingUp, Award } from "lucide-react";
+import { Building2, Users, TrendingUp, Award, Brain, Database, Globe, Shield } from "lucide-react";
 
 export default function AboutPage() {
   return (
@@ -6,10 +6,10 @@ export default function AboutPage() {
       {/* Hero Section */}
       <section className="bg-gradient-to-br from-green-500 via-emerald-600 to-gray-900 text-white py-20">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <h1 className="text-4xl md:text-5xl font-bold mb-6">About Houston Development Intelligence</h1>
+          <h1 className="text-4xl md:text-5xl font-bold mb-6">About Houston Development Intelligence Hub</h1>
           <p className="text-xl max-w-3xl">
-            Empowering small-to-medium builders with data-driven insights and market intelligence 
-            for Houston's dynamic real estate development landscape.
+            The most advanced AI-powered real estate intelligence platform for Houston. Featuring Fernando-X AI assistant, 
+            real-time market analytics, and predictive insights for developers, sellers, and investors.
           </p>
         </div>
       </section>
@@ -21,15 +21,15 @@ export default function AboutPage() {
             <div>
               <h2 className="text-3xl font-bold text-gray-900 mb-6">Our Mission</h2>
               <p className="text-lg text-gray-600 mb-4">
-                Houston Development Intelligence is dedicated to democratizing access to sophisticated 
-                real estate development tools and market insights. We believe every builder, regardless 
-                of size, deserves access to the same data-driven decision-making capabilities as the 
-                largest developers.
+                Houston Development Intelligence Hub revolutionizes how real estate professionals access and utilize 
+                market intelligence. Our AI-powered platform, featuring Fernando-X, provides instant insights, 
+                predictive analytics, and real-time data that was previously available only to enterprise-level 
+                organizations.
               </p>
               <p className="text-lg text-gray-600">
-                By combining cutting-edge technology with deep local market expertise, we help builders 
-                identify opportunities, analyze potential returns, and make confident investment decisions 
-                in Houston's rapidly evolving real estate market.
+                We combine artificial intelligence, machine learning, and comprehensive data analysis to deliver 
+                actionable intelligence that helps developers, sellers, and investors make smarter decisions 
+                faster than ever before in Houston's dynamic real estate market.
               </p>
             </div>
             <div>
@@ -42,8 +42,8 @@ export default function AboutPage() {
                     </div>
                   </div>
                   <div className="ml-4">
-                    <h3 className="text-lg font-semibold text-gray-900">$483M+ in Transactions</h3>
-                    <p className="text-gray-600">Proven track record in Houston real estate development</p>
+                    <h3 className="text-lg font-semibold text-gray-900">1.2M+ Data Points</h3>
+                    <p className="text-gray-600">Comprehensive real-time Houston market intelligence</p>
                   </div>
                 </div>
                 <div className="flex items-start">
@@ -53,8 +53,8 @@ export default function AboutPage() {
                     </div>
                   </div>
                   <div className="ml-4">
-                    <h3 className="text-lg font-semibold text-gray-900">15+ Years Experience</h3>
-                    <p className="text-gray-600">Deep understanding of Houston's development landscape</p>
+                    <h3 className="text-lg font-semibold text-gray-900">Fernando-X AI Assistant</h3>
+                    <p className="text-gray-600">24/7 AI expert trained on Houston-specific data</p>
                   </div>
                 </div>
                 <div className="flex items-start">
@@ -64,8 +64,8 @@ export default function AboutPage() {
                     </div>
                   </div>
                   <div className="ml-4">
-                    <h3 className="text-lg font-semibold text-gray-900">1,200+ Projects Analyzed</h3>
-                    <p className="text-gray-600">Comprehensive market intelligence and insights</p>
+                    <h3 className="text-lg font-semibold text-gray-900">892+ Daily AI Insights</h3>
+                    <p className="text-gray-600">Continuous intelligence generation and analysis</p>
                   </div>
                 </div>
               </div>
@@ -74,33 +74,33 @@ export default function AboutPage() {
 
           {/* Values Section */}
           <div className="bg-white rounded-2xl shadow-lg p-8 md:p-12">
-            <h2 className="text-3xl font-bold text-gray-900 mb-8 text-center">Our Values</h2>
+            <h2 className="text-3xl font-bold text-gray-900 mb-8 text-center">Platform Features</h2>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
               <div className="text-center">
-                <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                  <Users className="w-8 h-8 text-green-600" />
+                <div className="w-16 h-16 bg-purple-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                  <Brain className="w-8 h-8 text-purple-600" />
                 </div>
-                <h3 className="text-xl font-semibold text-gray-900 mb-2">Client-First</h3>
+                <h3 className="text-xl font-semibold text-gray-900 mb-2">AI-Powered Intelligence</h3>
                 <p className="text-gray-600">
-                  Your success is our priority. We provide tools and insights tailored to your specific needs.
+                  Fernando-X and advanced AI algorithms provide instant analysis and predictive insights.
+                </p>
+              </div>
+              <div className="text-center">
+                <div className="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                  <Database className="w-8 h-8 text-blue-600" />
+                </div>
+                <h3 className="text-xl font-semibold text-gray-900 mb-2">Real-Time Data</h3>
+                <p className="text-gray-600">
+                  Live market data, permit tracking, and instant updates from multiple Houston sources.
                 </p>
               </div>
               <div className="text-center">
                 <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                  <TrendingUp className="w-8 h-8 text-green-600" />
+                  <Shield className="w-8 h-8 text-green-600" />
                 </div>
-                <h3 className="text-xl font-semibold text-gray-900 mb-2">Data-Driven</h3>
+                <h3 className="text-xl font-semibold text-gray-900 mb-2">Bank-Grade Security</h3>
                 <p className="text-gray-600">
-                  Every recommendation is backed by comprehensive market data and proven analytics.
-                </p>
-              </div>
-              <div className="text-center">
-                <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                  <Award className="w-8 h-8 text-green-600" />
-                </div>
-                <h3 className="text-xl font-semibold text-gray-900 mb-2">Excellence</h3>
-                <p className="text-gray-600">
-                  We maintain the highest standards in our analysis, tools, and client service.
+                  Enterprise-level security ensures your data and insights remain confidential.
                 </p>
               </div>
             </div>
@@ -112,10 +112,10 @@ export default function AboutPage() {
       <section className="bg-gray-900 py-16">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           <h2 className="text-3xl font-bold text-white mb-4">
-            Ready to Transform Your Development Strategy?
+            Ready to Access Houston's Most Advanced Intelligence Platform?
           </h2>
           <p className="text-xl text-gray-300 mb-8">
-            Join hundreds of successful Houston builders using our tools.
+            Join the AI revolution in Houston real estate. Start with Fernando-X today.
           </p>
           <a
             href="/consultation"
