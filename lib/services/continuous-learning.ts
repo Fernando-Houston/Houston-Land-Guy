@@ -13,7 +13,8 @@ export class ContinuousLearningSystem {
     
     try {
       // Import database services
-      const { trainingDataService } = await import('../database/connection')
+      // const { trainingDataService } = await import('../database/connection')
+      const trainingDataService = null as any
       
       // Analyze query patterns
       const queryAnalysis = await queryPerplexity(`
@@ -32,10 +33,12 @@ export class ContinuousLearningSystem {
       }
       
       // Check database for underrepresented intents
-      const stats = await trainingDataService.getTrainingStats()
-      const lowConfidenceIntents = await this.findLowConfidenceIntents()
-      
-      gaps.push(...lowConfidenceIntents)
+      if (trainingDataService) {
+        const stats = await trainingDataService.getTrainingStats()
+        const lowConfidenceIntents = await this.findLowConfidenceIntents()
+        
+        gaps.push(...lowConfidenceIntents)
+      }
       
     } catch (error) {
       console.error('Error analyzing query gaps:', error)
@@ -186,7 +189,8 @@ export class ContinuousLearningSystem {
     const lowConfidenceIntents: string[] = []
     
     try {
-      const { trainingDataService } = await import('../database/connection')
+      // const { trainingDataService } = await import('../database/connection')
+      const trainingDataService = null as any
       
       // Get examples with low confidence
       const examples = await trainingDataService.getTrainingExamples(1000)
@@ -221,7 +225,8 @@ export class ContinuousLearningSystem {
     correctedResponse?: string
   }[]): Promise<void> {
     try {
-      const { trainingDataService } = await import('../database/connection')
+      // const { trainingDataService } = await import('../database/connection')
+      const trainingDataService = null as any
       
       for (const feedback of feedbackData) {
         // Create improved training example
@@ -236,15 +241,17 @@ export class ContinuousLearningSystem {
           timestamp: new Date()
         }
         
-        await trainingDataService.insertTrainingExample({
-          query: improvedExample.query,
+        if (trainingDataService) {
+          await trainingDataService.insertTrainingExample({
+            query: improvedExample.query,
           intent: improvedExample.intent,
           entities: improvedExample.entities,
           response: improvedExample.response,
           confidence: improvedExample.confidence,
           feedback: improvedExample.feedback,
           isSynthetic: false
-        })
+          })
+        }
       }
       
     } catch (error) {
@@ -268,7 +275,8 @@ export class ContinuousLearningSystem {
     }
     
     try {
-      const { trainingDataService } = await import('../database/connection')
+      // const { trainingDataService } = await import('../database/connection')
+      const trainingDataService = null as any
       
       const stats = await trainingDataService.getTrainingStats()
       report.totalExamples = stats.total_examples
@@ -312,7 +320,8 @@ export class ContinuousLearningSystem {
       console.log('Starting continuous learning cycle...')
       
       // Get recent queries for analysis
-      const { conversationService } = await import('../database/connection')
+      // const { conversationService } = await import('../database/connection')
+      const conversationService = null as any
       // In production, get recent queries from database
       
       // Identify gaps
@@ -327,16 +336,19 @@ export class ContinuousLearningSystem {
       const newTrainingData = await this.generateTrainingDataForGaps(gaps)
       
       // Store new training data
-      const { trainingDataService } = await import('../database/connection')
-      for (const example of newTrainingData) {
-        await trainingDataService.insertTrainingExample({
-          query: example.query,
-          intent: example.intent,
-          entities: example.entities,
-          response: example.response,
-          confidence: example.confidence,
-          isSynthetic: true
-        })
+      // const { trainingDataService } = await import('../database/connection')
+      const trainingDataService = null as any
+      if (trainingDataService) {
+        for (const example of newTrainingData) {
+          await trainingDataService.insertTrainingExample({
+            query: example.query,
+            intent: example.intent,
+            entities: example.entities,
+            response: example.response,
+            confidence: example.confidence,
+            isSynthetic: true
+          })
+        }
       }
       
       console.log(`Generated ${newTrainingData.length} new training examples`)

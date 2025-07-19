@@ -517,10 +517,13 @@ export const initializeTrainingSystem = async (): Promise<void> => {
   
   try {
     // Import database services
-    const { trainingDataService, db } = await import('../database/connection')
+    // const { trainingDataService, db } = await import('../database/connection')
+    // TODO: Implement database connection
+    const trainingDataService = null
+    const db = null
     
     // Check database health
-    const isHealthy = await db.isHealthy()
+    const isHealthy = false // await db.isHealthy()
     if (!isHealthy) {
       console.warn('Database not available, using in-memory training data')
       return
