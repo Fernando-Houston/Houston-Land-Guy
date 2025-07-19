@@ -15,6 +15,7 @@ const navigation = [
     icon: TrendingUp,
     highlight: true
   },
+  { name: 'Live Dashboard', href: '/intelligence/dashboard', icon: Activity },
   { name: 'Fernando-X', href: '/assistant', icon: Brain },
   { 
     name: 'Developer Intel', 
