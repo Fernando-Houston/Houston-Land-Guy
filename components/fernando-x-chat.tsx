@@ -43,6 +43,10 @@ export default function FernandoXChat({ initialMessage, onClose }: FernandoXChat
   const fileInputRef = useRef<HTMLInputElement>(null)
   
   useEffect(() => {
+    // VERSION CHECK
+    console.log('🎯 FERNANDO-X CHAT COMPONENT: Initializing')
+    console.log('📊 FERNANDO-X VERSION CHECK:', fernandoX.getMarketSummary())
+    
     // Initialize with welcome message
     const welcomeMessage: Message = {
       id: 'welcome',
@@ -83,6 +87,8 @@ export default function FernandoXChat({ initialMessage, onClose }: FernandoXChat
   const handleSendMessage = async () => {
     if (!input.trim() && selectedImages.length === 0) return
     
+    console.log('🚀 FERNANDO-X CHAT: Sending message:', input)
+    
     const userMessage: Message = {
       id: `msg_${Date.now()}`,
       role: 'user',
@@ -96,6 +102,7 @@ export default function FernandoXChat({ initialMessage, onClose }: FernandoXChat
     
     // Call Fernando-X API
     try {
+      console.log('🔄 FERNANDO-X CHAT: Calling fernandoX.processQuery...')
       const response = await fernandoX.processQuery({
         text: input,
         voice: isListening,
@@ -104,6 +111,7 @@ export default function FernandoXChat({ initialMessage, onClose }: FernandoXChat
           sessionId: `session_${Date.now()}`
         }
       })
+      console.log('✅ FERNANDO-X CHAT: Received response:', response)
       
       const assistantMessage: Message = {
         id: `msg_${Date.now()}_resp`,
