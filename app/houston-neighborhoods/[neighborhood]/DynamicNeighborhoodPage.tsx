@@ -95,7 +95,7 @@ export function DynamicNeighborhoodPage({
       }
     },
     hasMap: `https://maps.google.com/?q=${neighborhoodData.name}+Houston+TX`
-  }
+  };
 
   return (
     <>
