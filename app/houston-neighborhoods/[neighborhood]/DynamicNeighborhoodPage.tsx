@@ -97,5 +97,20 @@ export function DynamicNeighborhoodPage({
     hasMap: `https://maps.google.com/?q=${neighborhoodData.name}+Houston+TX`
   };
 
-  return null;
+  return (
+    <div>
+      <section className="bg-gradient-to-br from-green-50 via-emerald-50 to-teal-50 py-16">
+        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+          <h1 className="text-4xl font-bold text-gray-900 mb-4">
+            {neighborhoodData.name} Development Opportunities
+          </h1>
+          <p className="text-xl text-gray-700 mb-6">
+            Discover premium development sites in one of Houston's most dynamic neighborhoods with{' '}
+            <span className="font-semibold text-green-600">{neighborhoodData.growthRate}% annual growth</span> and{' '}
+            <span className="font-semibold text-green-600">${(neighborhoodData.medianHomePrice / 1000).toFixed(0)}K median home prices</span>.
+          </p>
+        </div>
+      </section>
+    </div>
+  );
 }
