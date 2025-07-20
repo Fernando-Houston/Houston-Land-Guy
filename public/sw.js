@@ -4,7 +4,7 @@ const urlsToCache = [
   '/assistant',
   '/roi-calculator',
   '/intelligence/map',
-  '/intelligence/dashboard',
+  '/intelligence',
   '/offline'
 ];
 

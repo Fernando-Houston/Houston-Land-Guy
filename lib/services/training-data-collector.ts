@@ -516,18 +516,14 @@ export const initializeTrainingSystem = async (): Promise<void> => {
   console.log('Initializing Houston Assistant Training System...')
   
   try {
-    // Import database services
-    // const { trainingDataService, db } = await import('../database/connection')
-    // TODO: Implement database connection
-    const trainingDataService = null
-    const db = null
+    // For now, skip database initialization until properly configured
+    // This removes the warning message about database not being available
+    console.log('Using in-memory training data')
+    return
     
-    // Check database health
-    const isHealthy = false // await db.isHealthy()
-    if (!isHealthy) {
-      console.warn('Database not available, using in-memory training data')
-      return
-    }
+    // TODO: Implement database connection when ready
+    // const { trainingDataService, db } = await import('../database/connection')
+    // const isHealthy = await db.isHealthy()
     
     // Load existing training data from database
     const existingData = await trainingDataService.getTrainingExamples(1000)

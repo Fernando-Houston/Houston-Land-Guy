@@ -108,7 +108,9 @@ class RealEstateAPI {
 
   private async makeRequest<T>(endpoint: string, params?: Record<string, any>): Promise<T> {
     // Always return mock data since we don't have a real API endpoint
-    console.log(`Mock API request to: ${endpoint}`, params)
+    if (process.env.NODE_ENV === 'development') {
+      console.log(`Mock API request to: ${endpoint}`, params)
+    }
     
     // Throw error to trigger mock data fallbacks
     throw new Error('Using mock data - no real API configured')
@@ -134,7 +136,7 @@ class RealEstateAPI {
       const data = await this.makeRequest<any>('/properties/search', filters)
       return data.properties.map((prop: any) => PropertySchema.parse(prop))
     } catch (error) {
-      console.error('Error fetching properties:', error)
+      // Expected in development - using mock data
       // Return mock data for development
       return this.getMockProperties(filters)
     }
@@ -156,7 +158,7 @@ class RealEstateAPI {
       const data = await this.makeRequest<any>('/permits', filters)
       return data.permits.map((permit: any) => PermitSchema.parse(permit))
     } catch (error) {
-      console.error('Error fetching permits:', error)
+      // Expected in development - using mock data
       return this.getMockPermits(filters)
     }
   }
@@ -176,7 +178,7 @@ class RealEstateAPI {
     try {
       return await this.makeRequest(`/tax-data/${propertyId}`)
     } catch (error) {
-      console.error('Error fetching tax data:', error)
+      // Expected in development - using mock data
       return {
         assessedValue: 425000,
         marketValue: 450000,
@@ -197,7 +199,7 @@ class RealEstateAPI {
       const data = await this.makeRequest<any>('/market-data', { zipCode, neighborhood })
       return data.markets.map((market: any) => MarketDataSchema.parse(market))
     } catch (error) {
-      console.error('Error fetching market data:', error)
+      // Expected in development - using mock data
       return this.getMockMarketData()
     }
   }
@@ -208,7 +210,7 @@ class RealEstateAPI {
       const data = await this.makeRequest<any>(`/properties/${propertyId}/comparables`, { radius })
       return data.comparables.map((prop: any) => PropertySchema.parse(prop))
     } catch (error) {
-      console.error('Error fetching comparables:', error)
+      // Expected in development - using mock data
       return this.getMockComparables()
     }
   }
@@ -223,7 +225,7 @@ class RealEstateAPI {
     try {
       return await this.makeRequest(`/properties/${propertyId}/price-history`)
     } catch (error) {
-      console.error('Error fetching price history:', error)
+      // Expected in development - using mock data
       return [
         { date: '2024-01-15', price: 450000, event: 'listing', source: 'MLS' },
         { date: '2024-02-20', price: 435000, event: 'price_change', source: 'MLS' },
@@ -246,7 +248,7 @@ class RealEstateAPI {
     try {
       return await this.makeRequest('/economic-indicators')
     } catch (error) {
-      console.error('Error fetching economic indicators:', error)
+      // Expected in development - using mock data
       return {
         unemployment: 3.8,
         populationGrowth: 2.1,

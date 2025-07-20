@@ -15,7 +15,7 @@ const navigation = [
     icon: TrendingUp,
     highlight: true
   },
-  { name: 'Live Dashboard', href: '/intelligence/dashboard', icon: Activity },
+  { name: 'Live Dashboard', href: '/intelligence', icon: Activity },
   { 
     name: 'Developer Intel', 
     href: '/developers', 
@@ -37,8 +37,8 @@ const navigation = [
     subItems: [
       { name: 'Property Valuation', href: '/sellers' },
       { name: '3D Market Map', href: '/intelligence/map' },
-      { name: 'Market Timing', href: '/intelligence/market-timing' },
-      { name: 'Buyer Demand', href: '/intelligence/demand' }
+      { name: 'Market Timing', href: '/market-intelligence/market-timing' },
+      { name: 'Buyer Demand', href: '/sellers' }
     ]
   },
   { 
@@ -49,7 +49,7 @@ const navigation = [
       { name: 'Opportunities', href: '/investment-opportunities' },
       { name: 'Market Predictions', href: '/intelligence/predictions' },
       { name: 'Predictive Analytics', href: '/intelligence/analytics' },
-      { name: 'Portfolio Analytics', href: '/intelligence/portfolio' },
+      { name: 'Portfolio Analytics', href: '/deals' },
       { name: 'ROI Analysis', href: '/roi-calculator' }
     ]
   },
