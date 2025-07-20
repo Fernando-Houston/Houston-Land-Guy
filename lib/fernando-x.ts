@@ -24,6 +24,14 @@ class FernandoX {
   private baseUrl = '/api/fernando-x'
   
   async processQuery(query: FernandoXQuery): Promise<FernandoXResponse> {
+    // DIAGNOSTIC: Log to verify enhanced version is being used
+    console.log('🚀 FERNANDO-X ENHANCED: Processing query with 750,000+ data points')
+    console.log('📊 Data verification:', {
+      populationGrowth: INTEGRATED_DATA.populationGrowth.totalProjected,
+      totalDevelopers: INTEGRATED_DATA.developers.length,
+      majorProjects: INTEGRATED_DATA.majorProjects.length
+    })
+    
     try {
       const queryLower = query.text.toLowerCase()
       
@@ -336,7 +344,9 @@ Foreign investment is strong at $${(INTEGRATED_DATA.capitalFlows.foreignInvestme
       // General greeting
       if (queryLower.includes('hello') || queryLower.includes('hi') || queryLower.includes('hey')) {
         return {
-          text: `Hello! I'm Fernando-X, powered by 750,000+ Houston real estate data points. I can help you with:
+          text: `🚀 Hello! I'm Fernando-X ENHANCED VERSION with 750,000+ Houston real estate data points! 
+
+I can provide detailed insights on:
 
 📊 Market Analysis: $${INTEGRATED_DATA.marketMetrics.medianHomePrice.toLocaleString()} median price, ${INTEGRATED_DATA.marketMetrics.priceGrowthYoY}% growth
 🏗️ Development: ${INTEGRATED_DATA.permitActivity.totalPermits.toLocaleString()} active permits worth $${(INTEGRATED_DATA.permitActivity.totalConstructionValue / 1000000000).toFixed(1)}B
@@ -371,11 +381,11 @@ Could you be more specific about what you'd like to know? For example:
       }
       
     } catch (error) {
-      console.error('Fernando-X query error:', error)
+      console.error('🚨 Fernando-X ENHANCED query error:', error)
       return {
-        text: "I apologize, but I'm having trouble processing your request. Please try again or rephrase your question. I'm here to help with any Houston real estate questions using my database of 750,000+ data points!",
-        confidence: 0,
-        sources: []
+        text: "🚀 FERNANDO-X ENHANCED VERSION ERROR HANDLER - I'm having trouble with that specific query, but I'm definitely the enhanced version with 750,000+ data points! Try asking about Houston population growth, D.R. Horton projects, or East River development to verify I'm working correctly.",
+        confidence: 0.5,
+        sources: ['Enhanced Fernando-X', 'Error Handler']
       }
     }
   }
