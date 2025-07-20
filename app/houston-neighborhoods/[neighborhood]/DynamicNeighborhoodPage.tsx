@@ -99,12 +99,6 @@ export function DynamicNeighborhoodPage({
 
   return (
     <div>
-      <Script
-        id={`neighborhood-${neighborhoodData.slug}-jsonld`}
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
-      />
-      
       {/* Hero Section */}
       <section className="bg-gradient-to-br from-green-50 via-emerald-50 to-teal-50 py-16">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
