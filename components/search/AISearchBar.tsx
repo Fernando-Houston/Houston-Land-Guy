@@ -160,7 +160,11 @@ export default function AISearchBar({
         type: 'question',
         title: 'Ask Fernando-X for detailed analysis',
         icon: Brain,
-        action: () => router.push(`/assistant?q=${encodeURIComponent(query)}`)
+        action: () => {
+          const event = new CustomEvent('open-fernando-chat', { detail: { query } })
+          window.dispatchEvent(event)
+          setIsOpen(false)
+        }
       })
     }
 
@@ -338,7 +342,12 @@ export default function AISearchBar({
                 {/* AI Assistant CTA */}
                 <div className="mt-6 pt-6 border-t border-gray-100">
                   <button
-                    onClick={() => router.push('/assistant')}
+                    onClick={() => {
+                      // Trigger Fernando-X chat popup
+                      const event = new CustomEvent('open-fernando-chat', { detail: { query: query } })
+                      window.dispatchEvent(event)
+                      setIsOpen(false)
+                    }}
                     className="w-full flex items-center justify-center px-4 py-3 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition-colors"
                   >
                     <Brain className="h-5 w-5 mr-2" />

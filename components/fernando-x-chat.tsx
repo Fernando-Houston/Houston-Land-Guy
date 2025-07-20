@@ -31,7 +31,7 @@ interface FernandoXChatProps {
 }
 
 export default function FernandoXChat({ initialMessage, onClose }: FernandoXChatProps) {
-  const [isOpen, setIsOpen] = useState(true)
+  const [isOpen, setIsOpen] = useState(false)
   const [isFullscreen, setIsFullscreen] = useState(false)
   const [messages, setMessages] = useState<Message[]>([])
   const [input, setInput] = useState(initialMessage || '')
@@ -57,6 +57,21 @@ export default function FernandoXChat({ initialMessage, onClose }: FernandoXChat
     // Scroll to bottom when messages change
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' })
   }, [messages])
+  
+  useEffect(() => {
+    // Listen for open event from search bar
+    const handleOpenChat = (event: CustomEvent) => {
+      setIsOpen(true)
+      if (event.detail?.query) {
+        setInput(event.detail.query)
+      }
+    }
+    
+    window.addEventListener('open-fernando-chat', handleOpenChat as EventListener)
+    return () => {
+      window.removeEventListener('open-fernando-chat', handleOpenChat as EventListener)
+    }
+  }, [])
   
   useEffect(() => {
     // Process initial message if provided
