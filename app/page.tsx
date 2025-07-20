@@ -533,59 +533,88 @@ export default function IntelligenceHub() {
 
         {/* Intelligence Modules Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {activeModules.map((module, index) => (
-            <motion.div
-              key={module.href}
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: index * 0.1 }}
-            >
-              {module.href === '/assistant' ? (
-                <button
-                  onClick={() => {
-                    const event = new CustomEvent('open-fernando-chat')
-                    window.dispatchEvent(event)
-                  }}
-                  className="w-full text-left"
-                >
-                  <div className="relative h-full bg-white rounded-xl shadow-lg hover:shadow-2xl transition-all duration-300 overflow-hidden group">
-              ) : (
-                <Link href={module.href}>
-                  <div className="relative h-full bg-white rounded-xl shadow-lg hover:shadow-2xl transition-all duration-300 overflow-hidden group">
-                  <div className={`absolute inset-0 bg-gradient-to-br ${module.color} opacity-5 group-hover:opacity-10 transition-opacity`} />
-                  
-                  <div className="relative p-6">
-                    <div className="flex items-start justify-between mb-4">
-                      <div className={`p-3 rounded-lg bg-gradient-to-br ${module.color} text-white`}>
-                        <module.icon className="h-6 w-6" />
+          {activeModules.map((module, index) => {
+            const isAssistant = module.href === '/assistant'
+            
+            return (
+              <motion.div
+                key={module.href}
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: index * 0.1 }}
+              >
+                {isAssistant ? (
+                  <button
+                    onClick={() => {
+                      const event = new CustomEvent('open-fernando-chat')
+                      window.dispatchEvent(event)
+                    }}
+                    className="w-full text-left h-full"
+                  >
+                    <div className="relative h-full bg-white rounded-xl shadow-lg hover:shadow-2xl transition-all duration-300 overflow-hidden group">
+                      <div className={`absolute inset-0 bg-gradient-to-br ${module.color} opacity-5 group-hover:opacity-10 transition-opacity`} />
+                      
+                      <div className="relative p-6">
+                        <div className="flex items-start justify-between mb-4">
+                          <div className={`p-3 rounded-lg bg-gradient-to-br ${module.color} text-white`}>
+                            <module.icon className="h-6 w-6" />
+                          </div>
+                          <span className="px-3 py-1 bg-purple-100 text-purple-700 text-xs font-semibold rounded-full">
+                            {module.badge}
+                          </span>
+                        </div>
+                        
+                        <h3 className="text-xl font-bold text-gray-900 mb-2 group-hover:text-purple-700 transition-colors">
+                          {module.title}
+                        </h3>
+                        <p className="text-gray-600 mb-4">
+                          {module.description}
+                        </p>
+                        
+                        <div className="flex items-center justify-between">
+                          <span className="text-sm font-medium text-gray-500">
+                            {module.stats}
+                          </span>
+                          <ArrowRight className="h-5 w-5 text-purple-600 group-hover:translate-x-2 transition-transform" />
+                        </div>
                       </div>
-                      <span className="px-3 py-1 bg-purple-100 text-purple-700 text-xs font-semibold rounded-full">
-                        {module.badge}
-                      </span>
                     </div>
-                    
-                    <h3 className="text-xl font-bold text-gray-900 mb-2 group-hover:text-purple-700 transition-colors">
-                      {module.title}
-                    </h3>
-                    <p className="text-gray-600 mb-4">
-                      {module.description}
-                    </p>
-                    
-                    <div className="flex items-center justify-between">
-                      <span className="text-sm font-medium text-gray-500">
-                        {module.stats}
-                      </span>
-                      <ArrowRight className="h-5 w-5 text-purple-600 group-hover:translate-x-2 transition-transform" />
+                  </button>
+                ) : (
+                  <Link href={module.href}>
+                    <div className="relative h-full bg-white rounded-xl shadow-lg hover:shadow-2xl transition-all duration-300 overflow-hidden group">
+                      <div className={`absolute inset-0 bg-gradient-to-br ${module.color} opacity-5 group-hover:opacity-10 transition-opacity`} />
+                      
+                      <div className="relative p-6">
+                        <div className="flex items-start justify-between mb-4">
+                          <div className={`p-3 rounded-lg bg-gradient-to-br ${module.color} text-white`}>
+                            <module.icon className="h-6 w-6" />
+                          </div>
+                          <span className="px-3 py-1 bg-purple-100 text-purple-700 text-xs font-semibold rounded-full">
+                            {module.badge}
+                          </span>
+                        </div>
+                        
+                        <h3 className="text-xl font-bold text-gray-900 mb-2 group-hover:text-purple-700 transition-colors">
+                          {module.title}
+                        </h3>
+                        <p className="text-gray-600 mb-4">
+                          {module.description}
+                        </p>
+                        
+                        <div className="flex items-center justify-between">
+                          <span className="text-sm font-medium text-gray-500">
+                            {module.stats}
+                          </span>
+                          <ArrowRight className="h-5 w-5 text-purple-600 group-hover:translate-x-2 transition-transform" />
+                        </div>
+                      </div>
                     </div>
-                  </div>
-                </div>
-              {module.href === '/assistant' ? (
-                </button>
-              ) : (
-                </Link>
-              )}
-            </motion.div>
-          ))}
+                  </Link>
+                )}
+              </motion.div>
+            )
+          })}
         </div>
       </div>
 
