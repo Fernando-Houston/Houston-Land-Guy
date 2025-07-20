@@ -1,16 +1,13 @@
 import { NextResponse } from 'next/server'
 import { aiRecommendations } from '@/lib/services/ai-recommendations'
-import { getServerSession } from 'next-auth'
-import { authConfig } from '@/lib/auth/auth-config'
 
 export async function POST(request: Request) {
   try {
     const body = await request.json()
     const { userId, category, limit, preferences } = body
 
-    // Get session if available
-    const session = await getServerSession(authConfig)
-    const effectiveUserId = session?.user?.id || userId || 'demo-user'
+    // Use demo user for now - auth will be added later
+    const effectiveUserId = userId || 'demo-user'
 
     // Get AI recommendations
     const recommendations = await aiRecommendations.getPersonalizedRecommendations(
