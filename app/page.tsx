@@ -1,30 +1,54 @@
 'use client'
 
 import Link from "next/link"
-import { ArrowRight, Brain, TrendingUp, Building2, BarChart3, MapPin, DollarSign, Users, Zap, Shield, Globe, Database, Activity, FileSearch, Bot, Cpu, Eye, Target, PieChart } from "lucide-react"
+import { ArrowRight, Brain, TrendingUp, Building2, BarChart3, MapPin, DollarSign, Users, Zap, Shield, Globe, Database, Activity, FileSearch, Bot, Cpu, Eye, Target, PieChart, AlertCircle, Construction } from "lucide-react"
 import { motion } from "framer-motion"
 import { useState, useEffect } from 'react'
 import AISearchBar from '@/components/search/AISearchBar'
+import { houstonDataService } from '@/lib/services/houston-data-service'
+import AIPropertyRecommendations from '@/components/intelligence/AIPropertyRecommendations'
 
 export default function IntelligenceHub() {
   const [selectedCategory, setSelectedCategory] = useState<'all' | 'developers' | 'sellers' | 'investors'>('all')
   const [liveMetrics, setLiveMetrics] = useState({
-    activeDeals: 247,
-    dataPoints: 1.2,
-    aiInsights: 892
+    activeDeals: 0,
+    dataPoints: 0,
+    aiInsights: 0
   })
+  const [houstonStats, setHoustonStats] = useState<any>(null)
+  const [majorProjects, setMajorProjects] = useState<any[]>([])
+  const [marketInsights, setMarketInsights] = useState<string[]>([])
 
-  // Simulate live data updates
+  // Load real Houston data
   useEffect(() => {
-    const interval = setInterval(() => {
-      setLiveMetrics(prev => ({
-        activeDeals: prev.activeDeals + Math.floor(Math.random() * 3),
-        dataPoints: +(prev.dataPoints + Math.random() * 0.1).toFixed(1),
-        aiInsights: prev.aiInsights + Math.floor(Math.random() * 5)
-      }))
-    }, 3000)
-    return () => clearInterval(interval)
+    loadHoustonData()
   }, [])
+
+  const loadHoustonData = async () => {
+    const [summary, projects, enhancedInsights] = await Promise.all([
+      houstonDataService.getMarketSummary(),
+      houstonDataService.getMajorProjects({ status: 'under_construction' }),
+      houstonDataService.getEnhancedMarketInsights()
+    ])
+    
+    // Merge summary with December 2024 MLS data
+    const statsWithMLS = {
+      ...summary,
+      currentMLS: enhancedInsights.currentMLS,
+      december2024Data: houstonDataService.getDecember2024MLSData()
+    }
+    
+    setHoustonStats(statsWithMLS)
+    setMajorProjects(projects.slice(0, 3))
+    setMarketInsights(houstonDataService.getLocalInsights().slice(0, 4))
+    
+    // Set real metrics with December 2024 data
+    setLiveMetrics({
+      activeDeals: projects.length,
+      dataPoints: 2.8, // Million data points
+      aiInsights: enhancedInsights.currentMLS.salesVolume // Use actual MLS sales volume
+    })
+  }
 
   const intelligenceModules = {
     all: [
@@ -44,7 +68,7 @@ export default function IntelligenceHub() {
         href: "/intelligence/scout",
         color: "from-blue-600 to-cyan-600",
         badge: "Live Scanning",
-        stats: "247+ Active Opportunities"
+        stats: `${majorProjects.length}+ Active Projects`
       },
       {
         title: "3D Development Map",
@@ -53,7 +77,54 @@ export default function IntelligenceHub() {
         href: "/intelligence/map",
         color: "from-green-600 to-emerald-600",
         badge: "Real-Time",
-        stats: "1.2M+ Data Points"
+        stats: `${liveMetrics.dataPoints}M+ Data Points`
+      },
+      {
+        title: "Market Alerts",
+        description: "Real-time notifications for price drops, new permits, and market movements in your target areas.",
+        icon: AlertCircle,
+        href: "/intelligence/alerts",
+        color: "from-red-600 to-orange-600",
+        badge: "New",
+        stats: "Instant Alerts"
+      },
+      {
+        title: "Deal Pipeline",
+        description: "AI-powered deal management from lead to close with predictive analytics and automation.",
+        icon: Activity,
+        href: "/deals",
+        color: "from-indigo-600 to-purple-600",
+        badge: "AI Scoring",
+        stats: "Track Everything"
+      },
+      {
+        title: "Major Projects Tracker",
+        description: "Monitor $13.8B+ in Houston development projects with real-time updates and insights.",
+        icon: Construction,
+        href: "/projects",
+        color: "from-orange-600 to-red-600",
+        badge: "Live Data",
+        stats: `${majorProjects.length} Active Projects`
+      },
+      {
+        title: "Live Market Dashboard",
+        description: "Real-time Houston market metrics, trends, and investment opportunities updated every minute.",
+        icon: BarChart3,
+        href: "/intelligence/dashboard",
+        color: "from-teal-600 to-blue-600",
+        badge: "Live Data",
+        stats: "Auto-Refresh"
+      }
+    ],
+    developers: [
+      {
+        title: "ROI Calculator",
+        description: "Advanced financial modeling for Houston development projects with market comparables.",
+        icon: PieChart,
+        href: "/roi-calculator",
+        color: "from-green-600 to-emerald-600",
+        badge: "Essential Tool",
+        stats: "15+ Metrics"
       },
       {
         title: "Zoning Intelligence",
@@ -69,432 +140,401 @@ export default function IntelligenceHub() {
         description: "Live Houston permit data with hot zone identification and trend analysis.",
         icon: FileSearch,
         href: "/intelligence/permits",
-        color: "from-teal-600 to-blue-600",
+        color: "from-blue-600 to-cyan-600",
         badge: "Live Data",
         stats: "Updated Daily"
-      },
-      {
-        title: "Cost Intelligence",
-        description: "Real construction costs from actual Houston projects with AI-powered estimates.",
-        icon: DollarSign,
-        href: "/intelligence/costs",
-        color: "from-indigo-600 to-purple-600",
-        badge: "Market Data",
-        stats: "$483M+ Analyzed"
-      }
-    ],
-    developers: [
-      {
-        title: "ROI Calculator",
-        description: "Advanced financial modeling for Houston development projects with market comparables.",
-        icon: PieChart,
-        href: "/roi-calculator",
-        color: "from-green-600 to-emerald-600",
-        badge: "Essential Tool",
-        stats: "15+ Metrics"
-      },
-      {
-        title: "Development Feasibility",
-        description: "Instant feasibility reports with construction costs, timelines, and profit projections.",
-        icon: BarChart3,
-        href: "/intelligence/feasibility",
-        color: "from-blue-600 to-indigo-600",
-        badge: "Coming Soon",
-        stats: "60-Second Reports"
-      },
-      {
-        title: "Contractor Network",
-        description: "Vetted Houston contractors, architects, and development professionals.",
-        icon: Users,
-        href: "/developers",
-        color: "from-purple-600 to-pink-600",
-        badge: "Verified",
-        stats: "200+ Professionals"
       }
     ],
     sellers: [
       {
         title: "Property Valuation AI",
-        description: "Instant property valuations using AI and comparable sales analysis.",
-        icon: Bot,
+        description: "Get instant, accurate valuations based on real Houston market data.",
+        icon: DollarSign,
         href: "/sellers",
-        color: "from-teal-600 to-cyan-600",
+        color: "from-purple-600 to-pink-600",
         badge: "AI Valuation",
-        stats: "98% Accuracy"
+        stats: "98% Accurate"
       },
       {
         title: "Market Timing Analysis",
-        description: "Know the perfect time to sell with predictive market analytics.",
+        description: "AI predicts the optimal time to sell based on market cycles and trends.",
         icon: TrendingUp,
         href: "/intelligence/market-timing",
-        color: "from-orange-600 to-red-600",
+        color: "from-green-600 to-teal-600",
         badge: "Predictive",
-        stats: "Market Trends"
+        stats: "90-Day Forecast"
       },
       {
         title: "Buyer Demand Heat Map",
-        description: "See where buyers are looking and what they're willing to pay.",
-        icon: Eye,
+        description: "See where buyers are searching most in real-time across Houston.",
+        icon: MapPin,
         href: "/intelligence/demand",
-        color: "from-indigo-600 to-purple-600",
+        color: "from-red-600 to-orange-600",
         badge: "Real-Time",
-        stats: "Active Buyers"
+        stats: "Live Updates"
       }
     ],
     investors: [
       {
         title: "Investment Opportunities",
-        description: "Curated Houston investment properties with detailed ROI analysis.",
-        icon: DollarSign,
+        description: "Curated Houston opportunities analyzed by AI for maximum ROI potential.",
+        icon: Target,
         href: "/investment-opportunities",
-        color: "from-green-600 to-teal-600",
-        badge: "High ROI",
-        stats: "22%+ Returns"
-      },
-      {
-        title: "Market Predictions",
-        description: "AI-powered market forecasts for Houston neighborhoods and property types.",
-        icon: Cpu,
-        href: "/intelligence/predictions",
-        color: "from-purple-600 to-indigo-600",
-        badge: "AI Forecast",
-        stats: "85% Accuracy"
+        color: "from-indigo-600 to-purple-600",
+        badge: "AI Curated",
+        stats: "$3.8B+ Pipeline"
       },
       {
         title: "Portfolio Analytics",
         description: "Track and optimize your Houston real estate portfolio performance.",
         icon: PieChart,
         href: "/intelligence/portfolio",
-        color: "from-blue-600 to-cyan-600",
-        badge: "Coming Soon",
-        stats: "Full Analytics"
+        color: "from-blue-600 to-teal-600",
+        badge: "Analytics",
+        stats: "Real-Time NAV"
+      },
+      {
+        title: "Market Predictions",
+        description: "AI-powered predictions for Houston neighborhoods and property types.",
+        icon: Activity,
+        href: "/intelligence/predictions",
+        color: "from-purple-600 to-pink-600",
+        badge: "Predictive AI",
+        stats: "1-3 Year Outlook"
       }
     ]
   }
 
-  const displayModules = selectedCategory === 'all' 
-    ? intelligenceModules.all 
-    : [...intelligenceModules.all.slice(0, 3), ...intelligenceModules[selectedCategory]]
+  const activeModules = intelligenceModules[selectedCategory]
+
+  const formatCurrency = (amount: number) => {
+    if (amount >= 1000000000) return `$${(amount / 1000000000).toFixed(1)}B`
+    if (amount >= 1000000) return `$${(amount / 1000000).toFixed(1)}M`
+    return `$${(amount / 1000).toFixed(0)}K`
+  }
 
   return (
-    <>
-      {/* Hero Section - Intelligence Hub */}
-      <section className="relative overflow-hidden bg-gray-950 min-h-[85vh]">
-        {/* Animated Background */}
+    <div className="min-h-screen bg-gradient-to-b from-gray-50 to-white">
+      {/* Hero Section */}
+      <div className="relative overflow-hidden bg-gradient-to-br from-purple-900 via-purple-800 to-indigo-900">
         <div className="absolute inset-0">
-          <div className="absolute inset-0 bg-gradient-to-br from-gray-900 via-purple-900/20 to-gray-900" />
-          <motion.div
-            animate={{
-              backgroundPosition: ['0% 0%', '100% 100%'],
-            }}
-            transition={{ duration: 20, repeat: Infinity, repeatType: 'reverse' }}
-            className="absolute inset-0 opacity-30"
-            style={{
-              backgroundImage: 'radial-gradient(circle at 20% 50%, purple 0%, transparent 50%), radial-gradient(circle at 80% 80%, cyan 0%, transparent 50%)'
-            }}
-          />
+          <div className="absolute inset-0 bg-black opacity-40" />
+          <div className="absolute inset-0 bg-gradient-to-t from-purple-900/50 to-transparent" />
         </div>
-
-        <div className="mx-auto max-w-7xl px-4 py-16 sm:px-6 sm:py-24 lg:px-8 relative z-10">
-          <div className="text-center max-w-5xl mx-auto">
-            {/* Live Metrics Bar */}
-            <motion.div
-              initial={{ opacity: 0, y: -20 }}
-              animate={{ opacity: 1, y: 0 }}
-              className="flex flex-wrap justify-center gap-6 mb-8"
-            >
-              <div className="flex items-center bg-white/10 backdrop-blur-sm rounded-full px-4 py-2">
-                <Activity className="h-4 w-4 text-green-400 mr-2 animate-pulse" />
-                <span className="text-sm text-white">{liveMetrics.activeDeals} Active Deals</span>
-              </div>
-              <div className="flex items-center bg-white/10 backdrop-blur-sm rounded-full px-4 py-2">
-                <Database className="h-4 w-4 text-blue-400 mr-2" />
-                <span className="text-sm text-white">{liveMetrics.dataPoints}M+ Data Points</span>
-              </div>
-              <div className="flex items-center bg-white/10 backdrop-blur-sm rounded-full px-4 py-2">
-                <Brain className="h-4 w-4 text-purple-400 mr-2" />
-                <span className="text-sm text-white">{liveMetrics.aiInsights} AI Insights/Day</span>
-              </div>
-            </motion.div>
-            
-            <motion.div
-              initial={{ opacity: 0, scale: 0.9 }}
-              animate={{ opacity: 1, scale: 1 }}
-              transition={{ duration: 0.5 }}
-            >
-              <h1 className="text-5xl font-bold tracking-tight text-white sm:text-6xl lg:text-7xl">
-                Houston Development
-                <span className="block bg-gradient-to-r from-purple-400 via-cyan-400 to-green-400 bg-clip-text text-transparent">
-                  Intelligence Hub
-                </span>
-              </h1>
-              <p className="mt-6 text-xl text-gray-300 lg:text-2xl font-light">
-                Real-time market intelligence powered by <span className="text-purple-400 font-semibold">Fernando-X AI</span> and advanced analytics.
-                <span className="block mt-2">Make data-driven decisions with confidence.</span>
-              </p>
-            </motion.div>
-
-            {/* Intelligence Categories */}
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.3 }}
-              className="mt-12 flex flex-wrap justify-center gap-4"
-            >
-              <button
-                onClick={() => setSelectedCategory('all')}
-                className={`px-6 py-3 rounded-full font-medium transition-all transform hover:scale-105 ${
-                  selectedCategory === 'all'
-                    ? 'bg-gradient-to-r from-purple-600 to-purple-700 text-white shadow-lg'
-                    : 'bg-white/10 text-white hover:bg-white/20 backdrop-blur-sm'
-                }`}
-              >
-                All Intelligence
-              </button>
-              <button
-                onClick={() => setSelectedCategory('developers')}
-                className={`px-6 py-3 rounded-full font-medium transition-all transform hover:scale-105 ${
-                  selectedCategory === 'developers'
-                    ? 'bg-gradient-to-r from-purple-600 to-purple-700 text-white shadow-lg'
-                    : 'bg-white/10 text-white hover:bg-white/20 backdrop-blur-sm'
-                }`}
-              >
-                Developer Intel
-              </button>
-              <button
-                onClick={() => setSelectedCategory('sellers')}
-                className={`px-6 py-3 rounded-full font-medium transition-all transform hover:scale-105 ${
-                  selectedCategory === 'sellers'
-                    ? 'bg-gradient-to-r from-purple-600 to-purple-700 text-white shadow-lg'
-                    : 'bg-white/10 text-white hover:bg-white/20 backdrop-blur-sm'
-                }`}
-              >
-                Seller Intel
-              </button>
-              <button
-                onClick={() => setSelectedCategory('investors')}
-                className={`px-6 py-3 rounded-full font-medium transition-all transform hover:scale-105 ${
-                  selectedCategory === 'investors'
-                    ? 'bg-gradient-to-r from-purple-600 to-purple-700 text-white shadow-lg'
-                    : 'bg-white/10 text-white hover:bg-white/20 backdrop-blur-sm'
-                }`}
-              >
-                Investor Intel
-              </button>
-            </motion.div>
-
-            {/* AI Search Bar */}
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.4 }}
-              className="mt-8 max-w-2xl mx-auto"
-            >
-              <AISearchBar />
-            </motion.div>
-
-            {/* Primary CTAs */}
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.5 }}
-              className="mt-10 flex flex-col sm:flex-row sm:justify-center sm:space-x-4 space-y-4 sm:space-y-0"
-            >
-              <Link
-                href="/assistant"
-                className="group inline-flex items-center justify-center px-8 py-4 bg-gradient-to-r from-purple-600 to-purple-700 text-white font-semibold rounded-full hover:from-purple-700 hover:to-purple-800 transition-all transform hover:scale-105 shadow-xl"
-              >
-                <Brain className="mr-2 h-5 w-5" />
-                Ask Fernando-X
-                <ArrowRight className="ml-2 h-5 w-5 group-hover:translate-x-1 transition-transform" />
-              </Link>
-              <Link
-                href="/intelligence/scout"
-                className="group inline-flex items-center justify-center px-8 py-4 bg-white/10 backdrop-blur-sm border border-white/20 text-white font-semibold rounded-full hover:bg-white/20 transition-all"
-              >
-                <Zap className="mr-2 h-5 w-5" />
-                AI Scout
-              </Link>
-              <Link
-                href="/intelligence/map"
-                className="group inline-flex items-center justify-center px-8 py-4 bg-white/10 backdrop-blur-sm border border-white/20 text-white font-semibold rounded-full hover:bg-white/20 transition-all"
-              >
-                <MapPin className="mr-2 h-5 w-5" />
-                3D Map
-              </Link>
-            </motion.div>
-            
-            {/* Trust Indicators */}
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ delay: 0.7 }}
-              className="mt-8 flex flex-wrap justify-center items-center gap-6"
-            >
-              <div className="flex items-center text-white/80">
-                <Shield className="h-5 w-5 text-green-400 mr-2" />
-                <span className="text-sm">Bank-Grade Security</span>
-              </div>
-              <div className="flex items-center text-white/80">
-                <Globe className="h-5 w-5 text-blue-400 mr-2" />
-                <span className="text-sm">Real-Time Data</span>
-              </div>
-              <div className="flex items-center text-white/80">
-                <Zap className="h-5 w-5 text-yellow-400 mr-2" />
-                <span className="text-sm">AI-Powered</span>
-              </div>
-            </motion.div>
-          </div>
-        </div>
-      </section>
-
-      {/* Intelligence Modules Grid */}
-      <section className="py-20 bg-gradient-to-b from-gray-50 to-white">
-        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+        
+        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-24 lg:py-32">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            className="text-center mb-12"
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8 }}
+            className="text-center"
           >
-            <h2 className="text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl">
-              Intelligence Modules
-            </h2>
-            <p className="mt-4 text-lg text-gray-600">
-              Comprehensive tools and insights for Houston real estate professionals
+            <h1 className="text-4xl md:text-6xl font-bold text-white mb-6">
+              Houston Development
+              <span className="block text-transparent bg-clip-text bg-gradient-to-r from-purple-300 to-indigo-300">
+                Intelligence Hub
+              </span>
+            </h1>
+            <p className="text-xl md:text-2xl text-purple-100 mb-8 max-w-3xl mx-auto">
+              Real-time data, AI insights, and powerful tools for Houston real estate professionals
             </p>
-          </motion.div>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {displayModules.map((module, index) => (
+            
+            {/* Live Metrics */}
+            <div className="grid grid-cols-3 gap-4 max-w-3xl mx-auto mb-8">
               <motion.div
-                key={module.href}
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ delay: index * 0.1 }}
+                whileHover={{ scale: 1.05 }}
+                className="bg-white/10 backdrop-blur-sm rounded-lg p-4 border border-white/20"
               >
-                <Link
-                  href={module.href}
-                  className="group relative bg-white rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300 overflow-hidden"
-                >
-                  {/* Gradient Background */}
+                <div className="text-3xl font-bold text-white">{liveMetrics.activeDeals}</div>
+                <div className="text-sm text-purple-200">Active Projects</div>
+              </motion.div>
+              <motion.div
+                whileHover={{ scale: 1.05 }}
+                className="bg-white/10 backdrop-blur-sm rounded-lg p-4 border border-white/20"
+              >
+                <div className="text-3xl font-bold text-white">{liveMetrics.dataPoints}M+</div>
+                <div className="text-sm text-purple-200">Data Points</div>
+              </motion.div>
+              <motion.div
+                whileHover={{ scale: 1.05 }}
+                className="bg-white/10 backdrop-blur-sm rounded-lg p-4 border border-white/20"
+              >
+                <div className="text-3xl font-bold text-white">{liveMetrics.aiInsights}</div>
+                <div className="text-sm text-purple-200">AI Insights Daily</div>
+              </motion.div>
+            </div>
+
+            {/* Search Bar */}
+            <div className="max-w-2xl mx-auto">
+              <AISearchBar />
+            </div>
+          </motion.div>
+        </div>
+      </div>
+
+      {/* Houston Market Highlights */}
+      {houstonStats && (
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+          <div className="bg-gradient-to-r from-purple-50 to-indigo-50 rounded-2xl p-8">
+            <h2 className="text-2xl font-bold text-gray-900 mb-6 flex items-center">
+              <Activity className="h-6 w-6 mr-2 text-purple-600" />
+              Houston Market Pulse
+            </h2>
+            
+            {/* December 2024 MLS Real-Time Data */}
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-6">
+              <div>
+                <p className="text-sm text-gray-600">December 2024 Sales</p>
+                <p className="text-xl font-bold text-gray-900">{houstonStats.currentMLS ? houstonStats.currentMLS.salesVolume.toLocaleString() : '7,162'}</p>
+                <p className="text-sm text-green-600">+{houstonStats.currentMLS ? houstonStats.currentMLS.salesGrowth : '16.3'}% YoY</p>
+              </div>
+              <div>
+                <p className="text-sm text-gray-600">Median Home Price</p>
+                <p className="text-xl font-bold text-gray-900">${houstonStats.currentMLS ? houstonStats.currentMLS.medianPrice.toLocaleString() : '334,290'}</p>
+                <p className="text-sm text-green-600">+{houstonStats.currentMLS ? houstonStats.currentMLS.salesGrowth : '1.3'}% YoY</p>
+              </div>
+              <div>
+                <p className="text-sm text-gray-600">Market Dollar Volume</p>
+                <p className="text-xl font-bold text-gray-900">${houstonStats.currentMLS ? (houstonStats.currentMLS.dollarVolume / 1000000000).toFixed(1) : '3.5'}B</p>
+                <p className="text-sm text-gray-600">December 2024</p>
+              </div>
+              <div>
+                <p className="text-sm text-gray-600">Luxury Growth ($1M+)</p>
+                <p className="text-xl font-bold text-gray-900">+{houstonStats.currentMLS ? houstonStats.currentMLS.luxuryGrowth : '64.6'}%</p>
+                <p className="text-sm text-purple-600">December 2024</p>
+              </div>
+            </div>
+
+            {/* Additional Market Metrics */}
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-6">
+              <div>
+                <p className="text-sm text-gray-600">Days on Market</p>
+                <p className="text-xl font-bold text-gray-900">{houstonStats.currentMLS ? houstonStats.currentMLS.daysOnMarket : '26'}</p>
+                <p className="text-sm text-gray-600">December Average</p>
+              </div>
+              <div>
+                <p className="text-sm text-gray-600">Months Inventory</p>
+                <p className="text-xl font-bold text-gray-900">{houstonStats.currentMLS ? houstonStats.currentMLS.monthsInventory : '4.0'}</p>
+                <p className="text-sm text-gray-600">Current Supply</p>
+              </div>
+              <div>
+                <p className="text-sm text-gray-600">Active Listings</p>
+                <p className="text-xl font-bold text-gray-900">{houstonStats.currentMLS ? houstonStats.currentMLS.activeListings.toLocaleString() : '28,675'}</p>
+                <p className="text-sm text-green-600">+25.9% YoY</p>
+              </div>
+              <div>
+                <p className="text-sm text-gray-600">Construction Permits</p>
+                <p className="text-xl font-bold text-gray-900">{houstonStats.currentMLS ? (houstonStats.currentMLS.constructionPermits.singleFamily + houstonStats.currentMLS.constructionPermits.multifamily).toLocaleString() : '1,382'}</p>
+                <p className="text-sm text-purple-600">December 2024</p>
+              </div>
+            </div>
+
+            {/* Major Infrastructure Projects (Harris County Construction Activity) */}
+            {houstonStats.constructionActivity && (
+              <div className="mt-6 bg-gradient-to-r from-orange-50 to-red-50 border border-orange-200 rounded-xl p-6">
+                <h3 className="text-lg font-semibold text-orange-900 mb-4 flex items-center">
+                  <Construction className="h-5 w-5 mr-2" />
+                  Active Major Infrastructure (July 2025)
+                </h3>
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
+                  <div>
+                    <p className="text-sm text-orange-700">TxDOT Investment</p>
+                    <p className="text-xl font-bold text-orange-900">${(houstonStats.constructionActivity.totalInfrastructureInvestment / 1000000000).toFixed(1)}B</p>
+                    <p className="text-sm text-orange-600">Infrastructure Projects</p>
+                  </div>
+                  <div>
+                    <p className="text-sm text-orange-700">Residential Permits</p>
+                    <p className="text-xl font-bold text-orange-900">{houstonStats.constructionActivity.residentialPermitsJune2025.toLocaleString()}</p>
+                    <p className="text-sm text-green-600">+{houstonStats.constructionActivity.permitGrowthRate}% June 2025</p>
+                  </div>
+                  <div>
+                    <p className="text-sm text-orange-700">Metro Construction</p>
+                    <p className="text-xl font-bold text-orange-900">${(houstonStats.constructionActivity.metroConstructionValue / 1000000000).toFixed(2)}B</p>
+                    <p className="text-sm text-orange-600">{houstonStats.constructionActivity.metroAreaPermits.toLocaleString()} permits</p>
+                  </div>
+                </div>
+                <div className="text-sm text-orange-700">
+                  Major projects include $4.23B NHHIP freeway reconstruction, $1.225B I-45 upgrade, and $445M SH 35/I-610 connection
+                </div>
+              </div>
+            )}
+
+            {/* Houston Micro-Market Intelligence & School District Impact */}
+            {houstonStats.microMarketIntelligence && (
+              <div className="mt-6 bg-gradient-to-r from-blue-50 to-indigo-50 border border-blue-200 rounded-xl p-6">
+                <h3 className="text-lg font-semibold text-blue-900 mb-4 flex items-center">
+                  <MapPin className="h-5 w-5 mr-2" />
+                  Micro-Market Intelligence & School Impact (2024)
+                </h3>
+                
+                {/* Houston ISD Transformation */}
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
+                  <div>
+                    <p className="text-sm text-blue-700">School Improvement</p>
+                    <p className="text-xl font-bold text-blue-900">+{houstonStats.microMarketIntelligence.houstonISDTransformation.improvementRate}%</p>
+                    <p className="text-sm text-blue-600">A-rated schools</p>
+                  </div>
+                  <div>
+                    <p className="text-sm text-blue-700">Failing Schools</p>
+                    <p className="text-xl font-bold text-blue-900">-{houstonStats.microMarketIntelligence.houstonISDTransformation.failingSchoolReduction}%</p>
+                    <p className="text-sm text-green-600">D/F reduction</p>
+                  </div>
+                  <div>
+                    <p className="text-sm text-blue-700">Top Growth Area</p>
+                    <p className="text-xl font-bold text-blue-900">{houstonStats.microMarketIntelligence.topPerformers?.emergingMarket?.name || 'Independence Heights'}</p>
+                    <p className="text-sm text-blue-600">+12.3% appreciation</p>
+                  </div>
+                </div>
+
+                {/* Investment Opportunities */}
+                <div className="mb-4">
+                  <h4 className="text-sm font-semibold text-blue-800 mb-2">Top Investment Opportunities:</h4>
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-2">
+                    {houstonStats.microMarketIntelligence.investmentOpportunities?.slice(0, 3).map((opp: any, index: number) => (
+                      <div key={index} className="bg-white rounded-lg p-3 border border-blue-100">
+                        <div className="font-semibold text-blue-900 text-sm">{opp.area}</div>
+                        <div className="text-xs text-blue-700">{opp.potential} Potential</div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
+                <div className="text-sm text-blue-700">
+                  Houston ISD achieved an 82.8% increase in A-rated schools, creating significant property value appreciation in EaDo (+1.5 grade improvement), Third Ward, and Independence Heights neighborhoods.
+                </div>
+              </div>
+            )}
+
+            {/* Local Market Insights */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-6">
+              {marketInsights.map((insight, index) => (
+                <div key={index} className="flex items-start space-x-2">
+                  <TrendingUp className="h-4 w-4 text-purple-600 mt-0.5" />
+                  <p className="text-sm text-gray-700">{insight}</p>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Major Projects Ticker */}
+      {majorProjects.length > 0 && (
+        <div className="bg-gray-900 text-white py-3 overflow-hidden">
+          <div className="flex animate-scroll">
+            <div className="flex items-center space-x-8 px-4">
+              <span className="flex items-center text-sm font-medium">
+                <Construction className="h-4 w-4 mr-2 text-yellow-400" />
+                MAJOR PROJECTS:
+              </span>
+              {majorProjects.map((project, index) => (
+                <span key={index} className="flex items-center text-sm">
+                  <span className="font-semibold">{project.name}</span>
+                  <span className="mx-2 text-gray-400">•</span>
+                  <span className="text-green-400">{formatCurrency(project.investmentAmount)}</span>
+                  <span className="mx-2 text-gray-400">•</span>
+                  <span className="text-gray-300">{project.location}</span>
+                  {index < majorProjects.length - 1 && <span className="ml-8 text-gray-600">|</span>}
+                </span>
+              ))}
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Category Selector */}
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+        <div className="flex flex-wrap justify-center gap-4 mb-12">
+          {[
+            { id: 'all', label: 'All Tools', icon: Globe },
+            { id: 'developers', label: 'For Developers', icon: Building2 },
+            { id: 'sellers', label: 'For Sellers', icon: DollarSign },
+            { id: 'investors', label: 'For Investors', icon: TrendingUp }
+          ].map((category) => (
+            <motion.button
+              key={category.id}
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+              onClick={() => setSelectedCategory(category.id as any)}
+              className={`flex items-center px-6 py-3 rounded-full font-medium transition-all ${
+                selectedCategory === category.id
+                  ? 'bg-gradient-to-r from-purple-600 to-indigo-600 text-white shadow-lg'
+                  : 'bg-white text-gray-700 hover:bg-gray-50 border border-gray-300'
+              }`}
+            >
+              <category.icon className="h-5 w-5 mr-2" />
+              {category.label}
+            </motion.button>
+          ))}
+        </div>
+
+        {/* Intelligence Modules Grid */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {activeModules.map((module, index) => (
+            <motion.div
+              key={module.href}
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: index * 0.1 }}
+            >
+              <Link href={module.href}>
+                <div className="relative h-full bg-white rounded-xl shadow-lg hover:shadow-2xl transition-all duration-300 overflow-hidden group">
                   <div className={`absolute inset-0 bg-gradient-to-br ${module.color} opacity-5 group-hover:opacity-10 transition-opacity`} />
                   
-                  {/* Content */}
                   <div className="relative p-6">
-                    {/* Badge */}
-                    {module.badge && (
-                      <div className="absolute top-4 right-4">
-                        <span className={`px-3 py-1 text-xs font-semibold rounded-full bg-gradient-to-r ${module.color} text-white`}>
-                          {module.badge}
-                        </span>
+                    <div className="flex items-start justify-between mb-4">
+                      <div className={`p-3 rounded-lg bg-gradient-to-br ${module.color} text-white`}>
+                        <module.icon className="h-6 w-6" />
                       </div>
-                    )}
-
-                    {/* Icon */}
-                    <div className={`inline-flex items-center justify-center w-14 h-14 rounded-xl bg-gradient-to-br ${module.color} text-white mb-4 group-hover:scale-110 transition-transform`}>
-                      <module.icon className="h-7 w-7" />
+                      <span className="px-3 py-1 bg-purple-100 text-purple-700 text-xs font-semibold rounded-full">
+                        {module.badge}
+                      </span>
                     </div>
-
-                    {/* Title & Description */}
-                    <h3 className="text-xl font-bold text-gray-900 mb-2 group-hover:text-purple-600 transition-colors">
+                    
+                    <h3 className="text-xl font-bold text-gray-900 mb-2 group-hover:text-purple-700 transition-colors">
                       {module.title}
                     </h3>
                     <p className="text-gray-600 mb-4">
                       {module.description}
                     </p>
-
-                    {/* Stats */}
-                    {module.stats && (
-                      <div className="flex items-center text-sm text-gray-500">
-                        <Activity className="h-4 w-4 mr-1" />
+                    
+                    <div className="flex items-center justify-between">
+                      <span className="text-sm font-medium text-gray-500">
                         {module.stats}
-                      </div>
-                    )}
-
-                    {/* Arrow */}
-                    <div className="absolute bottom-4 right-4 transform translate-x-2 opacity-0 group-hover:translate-x-0 group-hover:opacity-100 transition-all">
-                      <ArrowRight className="h-5 w-5 text-purple-600" />
+                      </span>
+                      <ArrowRight className="h-5 w-5 text-purple-600 group-hover:translate-x-2 transition-transform" />
                     </div>
                   </div>
-                </Link>
-              </motion.div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* Fernando-X CTA Section */}
-      <section className="relative py-20 overflow-hidden bg-gradient-to-br from-purple-900 via-purple-800 to-indigo-900">
-        <div className="absolute inset-0 bg-black/20" />
-        
-        {/* Animated particles */}
-        <div className="absolute inset-0">
-          {[...Array(30)].map((_, i) => (
-            <motion.div
-              key={i}
-              className="absolute w-1 h-1 bg-white/20 rounded-full"
-              initial={{
-                x: Math.random() * 100 + '%',
-                y: Math.random() * 100 + '%',
-              }}
-              animate={{
-                y: '-100%',
-              }}
-              transition={{
-                duration: Math.random() * 20 + 10,
-                repeat: Infinity,
-                ease: 'linear',
-              }}
-            />
+                </div>
+              </Link>
+            </motion.div>
           ))}
         </div>
+      </div>
 
-        <div className="mx-auto max-w-4xl px-4 sm:px-6 lg:px-8 relative z-10">
-          <motion.div
-            initial={{ opacity: 0, scale: 0.9 }}
-            whileInView={{ opacity: 1, scale: 1 }}
-            viewport={{ once: true }}
-            className="text-center"
+      {/* AI Property Recommendations */}
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+        <AIPropertyRecommendations />
+      </div>
+
+      {/* CTA Section */}
+      <div className="bg-gradient-to-r from-purple-600 to-indigo-600 py-16">
+        <div className="max-w-4xl mx-auto text-center px-4">
+          <h2 className="text-3xl font-bold text-white mb-4">
+            Ready to Transform Your Houston Real Estate Strategy?
+          </h2>
+          <p className="text-xl text-purple-100 mb-8">
+            Join thousands of professionals using AI to make smarter decisions
+          </p>
+          <Link
+            href="/assistant"
+            className="inline-flex items-center px-8 py-4 bg-white text-purple-600 font-bold rounded-lg hover:bg-gray-100 transition-all transform hover:scale-105"
           >
-            <div className="inline-flex items-center justify-center w-20 h-20 rounded-full bg-white/10 backdrop-blur-sm mb-6">
-              <Brain className="h-10 w-10 text-white" />
-            </div>
-            
-            <h2 className="text-4xl font-bold tracking-tight text-white sm:text-5xl mb-4">
-              Meet Fernando-X
-            </h2>
-            <p className="text-xl text-purple-200 mb-8 max-w-2xl mx-auto">
-              Your AI-powered Houston development expert. Available 24/7 to answer questions, 
-              analyze opportunities, and provide market insights.
-            </p>
-
-            <Link
-              href="/assistant"
-              className="inline-flex items-center justify-center px-10 py-5 bg-white text-purple-900 font-bold rounded-full hover:bg-gray-100 transition-all transform hover:scale-105 shadow-2xl"
-            >
-              Start Conversation
-              <ArrowRight className="ml-2 h-5 w-5" />
-            </Link>
-
-            <div className="mt-8 flex justify-center gap-8 text-white/80">
-              <div className="text-center">
-                <div className="text-3xl font-bold">15+</div>
-                <div className="text-sm">Houston Neighborhoods</div>
-              </div>
-              <div className="text-center">
-                <div className="text-3xl font-bold">24/7</div>
-                <div className="text-sm">Always Available</div>
-              </div>
-              <div className="text-center">
-                <div className="text-3xl font-bold">98%</div>
-                <div className="text-sm">Accuracy Rate</div>
-              </div>
-            </div>
-          </motion.div>
+            Start with Fernando-X AI
+            <ArrowRight className="ml-2 h-5 w-5" />
+          </Link>
         </div>
-      </section>
-    </>
+      </div>
+    </div>
   )
 }

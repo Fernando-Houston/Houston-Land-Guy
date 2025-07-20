@@ -7,10 +7,12 @@ import { useState, useEffect } from 'react'
 
 export default function InvestorIntelligence() {
   const [metrics, setMetrics] = useState({
-    avgROI: 22.5,
+    avgROI: 18.3, // Spring Branch actual YoY
     dealsAnalyzed: 892,
     successRate: 85,
-    activeFunds: 147
+    activeFunds: 147,
+    totalPipeline: 13.8, // Billion in active projects
+    topZipCode: '77433' // Cypress
   })
 
   useEffect(() => {
@@ -33,7 +35,7 @@ export default function InvestorIntelligence() {
       href: "/investment-opportunities/deals",
       color: "from-green-600 to-emerald-600",
       features: ["Pre-vetted deals", "ROI projections", "Risk scoring", "Exit strategies"],
-      stats: "22%+ avg returns"
+      stats: `${metrics.avgROI}% Spring Branch ROI`
     },
     {
       title: "Market Predictions",
@@ -115,32 +117,36 @@ export default function InvestorIntelligence() {
 
   const investmentTypes = [
     {
-      title: "Development Projects",
-      description: "Ground-up development opportunities with 20-30% projected returns",
+      title: "Hot Market Projects",
+      description: "Ground-up in Cypress (77433) and Katy (77493) - #1 & #2 hottest US markets",
       minInvestment: "$250K",
       timeline: "18-36 months",
-      icon: Building2
+      icon: Building2,
+      stats: "12.4% YoY growth"
     },
     {
-      title: "Value-Add Properties",
-      description: "Existing properties with renovation and repositioning potential",
-      minInvestment: "$100K",
-      timeline: "12-24 months",
-      icon: TrendingUp
+      title: "Major Developments",
+      description: "Partner in projects like East River ($2.5B) or TMC Innovation District",
+      minInvestment: "$1M+",
+      timeline: "3-5 years",
+      icon: TrendingUp,
+      stats: "$13.8B pipeline"
     },
     {
-      title: "Income Properties",
-      description: "Stabilized assets generating immediate cash flow",
-      minInvestment: "$50K",
-      timeline: "Long-term hold",
-      icon: DollarSign
-    },
-    {
-      title: "Land Banking",
-      description: "Strategic land acquisition in high-growth corridors",
+      title: "Spring Branch Plays",
+      description: "High appreciation area with 18.3% YoY growth potential",
       minInvestment: "$500K",
-      timeline: "3-7 years",
-      icon: Globe
+      timeline: "12-24 months",
+      icon: DollarSign,
+      stats: "18.3% returns"
+    },
+    {
+      title: "Value Neighborhoods",
+      description: "Emerging areas like Southwest Houston (77031) with 7% growth",
+      minInvestment: "$300K",
+      timeline: "2-4 years",
+      icon: Globe,
+      stats: "Hidden gems"
     }
   ]
 

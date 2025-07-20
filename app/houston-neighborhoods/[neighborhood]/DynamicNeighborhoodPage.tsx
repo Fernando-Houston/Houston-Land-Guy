@@ -2,7 +2,7 @@
 
 import { motion } from 'framer-motion'
 import Link from 'next/link'
-import { ArrowLeft, MapPin, TrendingUp, Users, School, Home, Building2, Download, Clock } from 'lucide-react'
+import { ArrowLeft, MapPin, TrendingUp, Users, School, Home, Building2, Download, Clock, Droplet, TreePine, DollarSign, Zap } from 'lucide-react'
 import { NeighborhoodData, MarketMetrics, MarketTiming, PermitActivity } from '@/lib/core-agents/types'
 import { MarketMetricsCard } from '@/components/market/MarketMetricsCard'
 import { PermitActivityChart } from '@/components/market/PermitActivityChart'
@@ -10,12 +10,22 @@ import { DemographicsCard } from '@/components/market/DemographicsCard'
 import { LeadCaptureForm } from '@/components/forms/LeadCaptureForm'
 import { PropertyMap } from '@/components/maps/MapWrapper'
 import Script from 'next/script'
+import { useEffect, useState } from 'react'
+import { houstonDataService } from '@/lib/services/houston-data-service'
 
 interface DynamicNeighborhoodPageProps {
   neighborhoodData: NeighborhoodData
   marketMetrics: MarketMetrics
   marketTiming: MarketTiming
   permitData: PermitActivity
+}
+
+interface AreaInsights {
+  market?: any
+  environmental?: any
+  tech?: any
+  residential?: any
+  commercial?: any
 }
 
 // Helper function to get neighborhood center coordinates
@@ -47,6 +57,23 @@ export function DynamicNeighborhoodPage({
   marketTiming,
   permitData 
 }: DynamicNeighborhoodPageProps) {
+  const [areaInsights, setAreaInsights] = useState<AreaInsights>({});
+  const [loading, setLoading] = useState(true);
+  
+  useEffect(() => {
+    const loadAreaData = async () => {
+      try {
+        const insights = await houstonDataService.getAreaInsights(neighborhoodData.name);
+        setAreaInsights(insights);
+      } catch (error) {
+        console.error('Error loading area insights:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+    
+    loadAreaData();
+  }, [neighborhoodData.name]);
   const jsonLd = {
     '@context': 'https://schema.org',
     '@type': 'Place',
@@ -120,6 +147,88 @@ export function DynamicNeighborhoodPage({
                     <div className="text-2xl font-bold text-green-600">${(neighborhoodData.medianIncome / 1000).toFixed(0)}K</div>
                     <div className="text-sm text-gray-600">Median Income</div>
                   </div>
+                </div>
+                
+                {/* Real Houston Data Insights */}
+                {areaInsights.environmental && (
+                  <div className="mt-4 p-4 bg-blue-50 rounded-lg">
+                    <div className="flex items-center mb-2">
+                      <Droplet className="h-5 w-5 text-blue-600 mr-2" />
+                      <span className="text-sm font-semibold text-blue-900">
+                        Flood Zone: {areaInsights.environmental.floodZone} | Risk: {areaInsights.environmental.floodRisk}
+                      </span>
+                    </div>
+                    <div className="flex items-center gap-4 text-sm text-blue-800">
+                      <span className="flex items-center">
+                        <TreePine className="h-4 w-4 mr-1" />
+                        {areaInsights.environmental.greenCertifications} Green Buildings
+                      </span>
+                      <span>AQI: {areaInsights.environmental.airQuality}</span>
+                      {areaInsights.environmental.solarIncentives && (
+                        <span className="flex items-center">
+                          <Zap className="h-4 w-4 mr-1" />
+                          Solar Incentives Available
+                        </span>
+                      )}
+                    </div>
+                  </div>
+                )}
+                
+                {areaInsights.tech && (
+                  <div className="mt-4 p-4 bg-purple-50 rounded-lg">
+                    <div className="flex items-center justify-between mb-2">
+                      <span className="text-sm font-semibold text-purple-900">
+                        Tech Ecosystem Score: {areaInsights.tech.innovationScore}/100
+                      </span>
+                      <span className="text-sm text-purple-700">
+                        ${(areaInsights.tech.vcFunding / 1000000).toFixed(0)}M VC Funding
+                      </span>
+                    </div>
+                    <div className="text-sm text-purple-800">
+                      {areaInsights.tech.techCompanies} Tech Companies | {areaInsights.tech.techWorkers.toLocaleString()} Tech Workers
+                    </div>
+                  </div>
+                )}
+                
+                {areaInsights.residential && (
+                  <div className="mt-4 p-4 bg-green-50 rounded-lg">
+                    <div className="flex items-center mb-2">
+                      <Home className="h-5 w-5 text-green-600 mr-2" />
+                      <span className="text-sm font-semibold text-green-900">
+                        Residential Market Activity
+                      </span>
+                    </div>
+                    <div className="text-sm text-green-800">
+                      {areaInsights.residential.activeBuilders} Active Builders | 
+                      {areaInsights.residential.newCommunities} New Communities | 
+                      Top Builder: {areaInsights.residential.topBuilder}
+                    </div>
+                    <div className="text-sm text-green-700 mt-1">
+                      Price Range: ${(areaInsights.residential.priceRangeLow / 1000).toFixed(0)}K - ${(areaInsights.residential.priceRangeHigh / 1000).toFixed(0)}K
+                    </div>
+                  </div>
+                )}
+                
+                {areaInsights.commercial && (
+                  <div className="mt-4 p-4 bg-orange-50 rounded-lg">
+                    <div className="flex items-center mb-2">
+                      <Building2 className="h-5 w-5 text-orange-600 mr-2" />
+                      <span className="text-sm font-semibold text-orange-900">
+                        Commercial Market: {areaInsights.commercial.vacancyRate}% Vacancy
+                      </span>
+                    </div>
+                    <div className="text-sm text-orange-800">
+                      ${areaInsights.commercial.averageRent}/SF | 
+                      {(areaInsights.commercial.underConstruction / 1000000).toFixed(1)}M SF Under Construction
+                    </div>
+                    {areaInsights.commercial.lendingRates && (
+                      <div className="text-sm text-orange-700 mt-1">
+                        Lending: Multifamily {areaInsights.commercial.lendingRates.multifamily} | 
+                        Commercial {areaInsights.commercial.lendingRates.commercial}
+                      </div>
+                    )}
+                  </div>
+                )}
                 </div>
                 
                 <div className="flex flex-wrap gap-4">

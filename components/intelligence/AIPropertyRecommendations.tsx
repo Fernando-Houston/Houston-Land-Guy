@@ -6,7 +6,7 @@ import Link from 'next/link'
 import {
   Brain, Target, TrendingUp, MapPin, Home, DollarSign,
   Star, Clock, AlertCircle, ChevronRight, Filter,
-  BarChart3, Heart, Eye, Calendar, Sparkles, Zap
+  BarChart3, Heart, Eye, Calendar, Sparkles, Zap, Building2
 } from 'lucide-react'
 import { PropertyRecommendation } from '@/lib/services/ai-recommendations'
 
@@ -262,25 +262,25 @@ function getMockRecommendations(): PropertyRecommendation[] {
       id: 'rec-1',
       property: {
         id: 'prop-1',
-        address: '15234 Cypress Woods Dr, Cypress, TX 77429',
-        price: 485000,
+        address: '15234 Cypress Woods Dr, Cypress, TX 77433',
+        price: 345000,
         propertyType: 'Single Family',
         size: '3,450 sqft',
         coordinates: { lat: 29.9691, lng: -95.6972 },
-        features: ['Pool', 'Updated Kitchen', '3-Car Garage']
+        features: ['Pool', 'Updated Kitchen', '3-Car Garage', 'Cy-Fair ISD']
       },
       matchScore: 94,
       reasoning: [
-        'Located in your preferred area of Cypress',
-        'Excellent schools rated 9/10 nearby',
-        'Price below market average by 8%',
-        'High appreciation potential in growing neighborhood'
+        'Cypress showing 9.8% YoY appreciation - hottest market in Houston',
+        'Excellent Cy-Fair schools with 9/10 ratings',
+        'Only 1.2 months inventory in 77433 ZIP code',
+        'Average days on market: 8 days in this area'
       ],
       insights: {
-        marketTiming: 'Optimal buying window',
-        investmentPotential: '18% projected ROI',
-        riskAssessment: 'Low risk profile',
-        comparableAnalysis: 'Priced competitively'
+        marketTiming: 'Hot seller\'s market - act fast',
+        investmentPotential: '9.8% annual appreciation',
+        riskAssessment: 'Low risk - high demand area',
+        comparableAnalysis: 'Priced at market median $345K'
       },
       actions: [
         { label: 'View Details', type: 'view', href: '/properties/prop-1' },
@@ -293,31 +293,93 @@ function getMockRecommendations(): PropertyRecommendation[] {
       id: 'rec-2',
       property: {
         id: 'prop-2',
-        address: '8901 Katy Fwy, Houston, TX 77024',
-        price: 1250000,
-        propertyType: 'Commercial',
-        size: '8,200 sqft',
+        address: '8901 Memorial Dr, Houston, TX 77024',
+        price: 875000,
+        propertyType: 'Single Family',
+        size: '4,200 sqft',
         coordinates: { lat: 29.7805, lng: -95.5505 },
-        features: ['Prime Location', 'High Traffic', 'Recent Renovation']
+        features: ['Memorial neighborhood', 'Recent renovation', 'Large lot', 'Spring Branch ISD']
       },
-      matchScore: 88,
+      matchScore: 91,
       reasoning: [
-        'High-traffic commercial corridor',
-        'Strong rental income potential',
-        'Near major business district',
-        'Excellent visibility from highway'
+        'Memorial area showing stable 4.5% YoY growth',
+        'Premium location with mature trees',
+        'Spring Branch ISD highly rated schools',
+        '3.2 months inventory provides negotiation opportunity'
       ],
       insights: {
-        marketTiming: 'Strong demand period',
-        investmentPotential: '22% cap rate possible',
-        riskAssessment: 'Moderate risk, high reward',
-        comparableAnalysis: 'Premium location justifies price'
+        marketTiming: 'Balanced market conditions',
+        investmentPotential: '4.5% appreciation + rental potential',
+        riskAssessment: 'Very low risk - established area',
+        comparableAnalysis: 'Median price $875K for Memorial'
       },
       actions: [
         { label: 'View Details', type: 'view', href: '/properties/prop-2' },
         { label: 'Schedule Tour', type: 'schedule' }
       ],
+      confidence: 0.91,
+      timestamp: new Date()
+    },
+    {
+      id: 'rec-3',
+      property: {
+        id: 'prop-3',
+        address: '1234 Heights Blvd, Houston, TX 77007',
+        price: 685000,
+        propertyType: 'Townhome',
+        size: '2,800 sqft',
+        coordinates: { lat: 29.7805, lng: -95.3988 },
+        features: ['The Heights', 'Walkable', 'New Construction', 'Rooftop deck']
+      },
+      matchScore: 88,
+      reasoning: [
+        'The Heights hottest urban market - 7.2% YoY growth',
+        'Only 18 days average on market',
+        'Walking distance to restaurants and shops',
+        'Strong millennial buyer demand'
+      ],
+      insights: {
+        marketTiming: 'Extremely hot market',
+        investmentPotential: '7.2% appreciation',
+        riskAssessment: 'Low risk - high demand',
+        comparableAnalysis: '$265 per sqft market rate'
+      },
+      actions: [
+        { label: 'View Details', type: 'view', href: '/properties/prop-3' },
+        { label: 'View Comps', type: 'analyze' }
+      ],
       confidence: 0.88,
+      timestamp: new Date()
+    },
+    {
+      id: 'rec-4',
+      property: {
+        id: 'prop-4',
+        address: '500 Crawford St, Houston, TX 77002',
+        price: 425000,
+        propertyType: 'Condo',
+        size: '1,650 sqft',
+        coordinates: { lat: 29.7604, lng: -95.3698 },
+        features: ['Downtown', 'High-rise', 'City views', 'Walk to Discovery Green']
+      },
+      matchScore: 85,
+      reasoning: [
+        'Downtown experiencing revitalization',
+        'Walking distance to major employers',
+        'New developments increasing area value',
+        'Strong rental demand from professionals'
+      ],
+      insights: {
+        marketTiming: 'Emerging opportunity',
+        investmentPotential: 'High rental yield potential',
+        riskAssessment: 'Moderate - dependent on downtown growth',
+        comparableAnalysis: 'Competitive downtown pricing'
+      },
+      actions: [
+        { label: 'View Details', type: 'view', href: '/properties/prop-4' },
+        { label: 'Rental Analysis', type: 'analyze' }
+      ],
+      confidence: 0.85,
       timestamp: new Date()
     }
   ]

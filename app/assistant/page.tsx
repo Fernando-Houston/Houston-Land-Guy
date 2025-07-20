@@ -27,50 +27,50 @@ interface QuickAction {
 
 const quickActions: QuickAction[] = [
   {
-    label: "Find Land in Heights",
-    query: "Find me available land in the Heights neighborhood",
+    label: "Hot Markets Analysis",
+    query: "Tell me about Cypress and Katy markets - why are they #1 and #2 hottest in the US?",
     icon: MapPin,
     color: "bg-blue-500"
   },
   {
-    label: "Apartment ROI Analysis",
-    query: "What's the ROI for apartment development in Houston?",
+    label: "Major Projects Update",
+    query: "What's the status of East River, TMC3, and IAH Terminal projects?",
     icon: Building2,
     color: "bg-green-500"
   },
   {
-    label: "Construction Costs",
-    query: "What are current construction costs per square foot?",
+    label: "Top Developers",
+    query: "Who are the most active developers? I heard D.R. Horton has 300+ permits",
     icon: DollarSign,
     color: "bg-purple-500"
   },
   {
-    label: "Permit Timeline",
-    query: "How long does permit approval take for mixed-use development?",
+    label: "Spring Branch ROI",
+    query: "Why is Spring Branch showing 18.3% returns? Is it a good investment?",
     icon: Clock,
     color: "bg-orange-500"
   },
   {
     label: "Best Neighborhoods",
-    query: "What are the best neighborhoods for single-family development?",
+    query: "Compare River Oaks, Memorial, and The Heights for development potential",
     icon: TrendingUp,
     color: "bg-indigo-500"
   },
   {
-    label: "Financing Options",
-    query: "What financing options are available for development projects?",
+    label: "$13.8B Pipeline",
+    query: "Tell me about the $13.8 billion development pipeline in Houston",
     icon: Users,
     color: "bg-teal-500"
   }
 ]
 
 const exampleQueries = [
-  "Find me 5+ acres in Cypress under $2M",
-  "What's the ROI for townhomes in Midtown?",
-  "Best general contractors for commercial projects",
-  "Zoning requirements for mixed-use development",
-  "How to expedite permit approval process?",
-  "Financing options for first-time developers"
+  "Why is Cypress 77433 the #2 hottest market in the US?",
+  "Compare D.R. Horton vs Lennar Homes performance",
+  "What's happening with the $2.5B East River project?",
+  "Show me neighborhoods with <2 months inventory",
+  "Which areas have the best school ratings?",
+  "Explain the TMC Innovation District opportunity"
 ]
 
 export default function HoustonAssistant() {

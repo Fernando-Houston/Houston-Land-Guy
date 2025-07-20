@@ -7,9 +7,11 @@ import { useState, useEffect } from 'react'
 
 export default function DeveloperIntelligence() {
   const [metrics, setMetrics] = useState({
-    activeProjects: 342,
-    avgROI: 22.5,
-    permitApprovals: 89
+    activeProjects: 1188, // Total permits Jan 2025 from top 5 developers
+    avgROI: 18.3, // Spring Branch actual
+    permitApprovals: 89,
+    topDeveloper: 'D.R. Horton', // 326 permits
+    totalValue: 13.8 // Billion in projects
   })
 
   useEffect(() => {
@@ -22,6 +24,14 @@ export default function DeveloperIntelligence() {
     }, 5000)
     return () => clearInterval(interval)
   }, [])
+  
+  const topDevelopers = [
+    { name: "D.R. Horton", permits: 326, avgValue: "$262,482", projects: "Breckenridge Forest, City Gate" },
+    { name: "Lennar Homes", permits: 318, avgValue: "$244,463", projects: "Flagstone, Piccolina" },
+    { name: "Perry Homes", permits: 183, avgValue: "$322,269", projects: "Artavia, Elyson, Sienna" },
+    { name: "Hines", permits: 0, avgValue: "Commercial", projects: "East River, Discovery Green" },
+    { name: "Howard Hughes", permits: 0, avgValue: "Mixed-Use", projects: "Bridgeland" }
+  ]
 
   const tools = [
     {
@@ -210,6 +220,53 @@ export default function DeveloperIntelligence() {
                 </div>
                 <div className="text-2xl font-bold text-white">{insight.value}</div>
                 <div className="text-sm text-gray-400">{insight.label}</div>
+              </motion.div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Top Houston Developers */}
+      <section className="py-12 bg-white border-b">
+        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            className="mb-8"
+          >
+            <h2 className="text-2xl font-bold text-gray-900 mb-2">
+              Houston's Top Developers - January 2025
+            </h2>
+            <p className="text-gray-600">
+              Leading the market with {metrics.activeProjects} active permits this month
+            </p>
+          </motion.div>
+          
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+            {topDevelopers.slice(0, 6).map((developer, index) => (
+              <motion.div
+                key={developer.name}
+                initial={{ opacity: 0, scale: 0.95 }}
+                whileInView={{ opacity: 1, scale: 1 }}
+                viewport={{ once: true }}
+                transition={{ delay: index * 0.1 }}
+                className="bg-gray-50 rounded-lg p-4 border border-gray-200"
+              >
+                <div className="flex items-start justify-between mb-2">
+                  <h3 className="font-semibold text-gray-900">{developer.name}</h3>
+                  {developer.permits > 0 && (
+                    <span className="text-xs bg-green-100 text-green-800 px-2 py-1 rounded-full">
+                      {developer.permits} permits
+                    </span>
+                  )}
+                </div>
+                <p className="text-sm text-gray-600 mb-1">
+                  Avg Value: {developer.avgValue}
+                </p>
+                <p className="text-xs text-gray-500">
+                  {developer.projects}
+                </p>
               </motion.div>
             ))}
           </div>

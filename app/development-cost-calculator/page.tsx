@@ -30,37 +30,46 @@ export default function DevelopmentCostCalculator() {
   const [breakdown, setBreakdown] = useState<CostBreakdown | null>(null)
 
   // Houston-specific construction costs per sq ft (2024)
+  // Updated with market data from development trends analysis
   const constructionCosts = {
     residential: {
-      economy: 120,
-      standard: 145,
-      premium: 185,
-      luxury: 250
+      economy: 125,
+      standard: 155,
+      premium: 195,
+      luxury: 275
     },
     multifamily: {
-      economy: 110,
-      standard: 135,
-      premium: 165,
-      luxury: 195
+      economy: 115,
+      standard: 140,
+      premium: 175,
+      luxury: 210
     },
     office: {
-      economy: 140,
-      standard: 180,
-      premium: 220,
-      luxury: 280
+      economy: 150,
+      standard: 190,
+      premium: 235,
+      luxury: 295
     },
     retail: {
-      economy: 100,
-      standard: 130,
-      premium: 160,
-      luxury: 200
+      economy: 105,
+      standard: 135,
+      premium: 170,
+      luxury: 215
     },
     industrial: {
-      economy: 45,
-      standard: 65,
-      premium: 85,
-      luxury: 110
+      economy: 48,
+      standard: 68,
+      premium: 90,
+      luxury: 120
     }
+  }
+  
+  // Real Houston lending rates from commercial market data
+  const lendingRates = {
+    multifamily: { min: 5.25, max: 5.80, typical: 5.50 },
+    commercial: { min: 6.00, max: 6.50, typical: 6.25 },
+    bridge: { min: 8.25, max: 9.25, typical: 8.75 },
+    construction: { min: 7.50, max: 8.50, typical: 8.00 }
   }
 
   const softCostPercentages = {
@@ -77,6 +86,15 @@ export default function DevelopmentCostCalculator() {
     office: 0.12,
     retail: 0.10,
     industrial: 0.08
+  }
+  
+  // Add current market context
+  const marketContext = {
+    permitVolume: '46,269 permits in 2023',
+    commercialContracts: '$43.8B in 2024 (+31% YoY)',
+    industrialConstruction: '25.4M SF under construction',
+    officeVacancy: '27% downtown vacancy',
+    hotMarkets: ['Katy/Cypress', 'Northwest Far', 'TMC/Ion District']
   }
 
   const calculateCosts = () => {
@@ -171,8 +189,8 @@ export default function DevelopmentCostCalculator() {
             </h1>
             <p className="mt-6 text-lg text-gray-600 max-w-3xl mx-auto">
               Get accurate cost estimates for your Houston development project. Our calculator uses 
-              current 2024 construction costs specific to the Harris County market, including hard costs, 
-              soft costs, and financing estimates.
+              current 2024 construction costs with $43.8B in commercial contracts awarded (+31% YoY) 
+              and real lending rates: Multifamily 5.25-5.80%, Commercial 6.00-6.50%.
             </p>
           </motion.div>
         </div>
@@ -404,6 +422,17 @@ export default function DevelopmentCostCalculator() {
                   </div>
                 </div>
 
+                {/* Market Context */}
+                <div className="mt-6 p-4 bg-blue-50 rounded-lg">
+                  <h4 className="font-semibold text-blue-900 mb-2">Current Houston Market Context</h4>
+                  <div className="grid grid-cols-2 gap-2 text-sm text-blue-800">
+                    <div>• Lending: {projectType === 'multifamily' ? '5.25-5.80%' : '6.00-6.50%'}</div>
+                    <div>• Hot Markets: Katy, Cypress, TMC</div>
+                    <div>• Industrial: 25.4M SF under construction</div>
+                    <div>• Office Vacancy: 27% (conversion opportunity)</div>
+                  </div>
+                </div>
+                
                 {/* Download Button */}
                 <div className="mt-8 flex items-center justify-center">
                   <button className="inline-flex items-center px-6 py-3 bg-green-600 text-white font-semibold rounded-lg hover:bg-green-700 transition-colors">
@@ -437,8 +466,8 @@ export default function DevelopmentCostCalculator() {
                   <h3 className="font-semibold text-gray-900">Hard Costs</h3>
                 </div>
                 <p className="text-gray-600 text-sm mb-3">
-                  Direct construction costs including materials and labor. Houston's costs are 15-25% 
-                  lower than Austin due to land availability and labor market.
+                  Direct construction costs including materials and labor. Houston's median new home price 
+                  is $357,365 with 46,269 residential permits issued in 2023 - leading the nation.
                 </p>
                 <ul className="space-y-1 text-sm text-gray-600">
                   <li className="flex items-start">
@@ -468,8 +497,8 @@ export default function DevelopmentCostCalculator() {
                   <h3 className="font-semibold text-gray-900">Soft Costs</h3>
                 </div>
                 <p className="text-gray-600 text-sm mb-3">
-                  Non-construction expenses typically 20-30% of hard costs. Houston's streamlined 
-                  permitting reduces these costs.
+                  Non-construction expenses typically 20-30% of hard costs. Houston's new 30-day permit 
+                  pilot program (starting July 2025) will significantly reduce timelines and carrying costs.
                 </p>
                 <ul className="space-y-1 text-sm text-gray-600">
                   <li className="flex items-start">
@@ -499,7 +528,8 @@ export default function DevelopmentCostCalculator() {
                   <h3 className="font-semibold text-gray-900">Market Factors</h3>
                 </div>
                 <p className="text-gray-600 text-sm mb-3">
-                  Houston-specific factors that impact development costs and timelines in 2024.
+                  Houston-specific factors: 25.4M SF industrial under construction, 27% office vacancy, 
+                  and Texas SB 840 enabling commercial-to-residential conversions by right (Sept 2025).
                 </p>
                 <ul className="space-y-1 text-sm text-gray-600">
                   <li className="flex items-start">

@@ -49,9 +49,15 @@ class FernandoXAI {
   private systemPrompt: string
 
   constructor() {
-    this.openai = new OpenAI({
-      apiKey: process.env.OPENAI_API_KEY
-    })
+    // Initialize OpenAI only if API key is available (not during build time)
+    if (process.env.OPENAI_API_KEY) {
+      this.openai = new OpenAI({
+        apiKey: process.env.OPENAI_API_KEY
+      })
+    } else {
+      // Create a dummy client for build time
+      this.openai = null as any
+    }
     this.model = 'gpt-4-turbo-preview'
     this.systemPrompt = `You are Fernando-X, an advanced AI real estate intelligence system specialized in Houston market analysis. You have deep expertise in:
 
@@ -69,6 +75,10 @@ Your analysis should be:
 - Include confidence levels and risk assessments
 
 Always provide quantitative analysis when possible and cite relevant data sources.`
+  }
+
+  private isOpenAIAvailable(): boolean {
+    return !!this.openai && !!process.env.OPENAI_API_KEY
   }
 
   async analyzeProperty(propertyId: string, analysisType: 'valuation' | 'investment' | 'development' = 'valuation'): Promise<PropertyAnalysis> {
@@ -90,6 +100,10 @@ Always provide quantitative analysis when possible and cite relevant data source
         priceHistory,
         analysisType
       )
+
+      if (!this.isOpenAIAvailable()) {
+        return this.getFallbackPropertyAnalysis()
+      }
 
       const completion = await this.openai.chat.completions.create({
         model: this.model,
@@ -126,6 +140,10 @@ Always provide quantitative analysis when possible and cite relevant data source
         economicIndicators,
         timeframe
       )
+
+      if (!this.isOpenAIAvailable()) {
+        return this.getFallbackMarketPrediction(neighborhood, timeframe)
+      }
 
       const completion = await this.openai.chat.completions.create({
         model: this.model,
@@ -165,6 +183,10 @@ Always provide quantitative analysis when possible and cite relevant data source
   }> {
     try {
       const prompt = this.buildInvestmentAnalysisPrompt(properties, investmentCriteria)
+
+      if (!this.isOpenAIAvailable()) {
+        return this.getFallbackInvestmentAdvice()
+      }
 
       const completion = await this.openai.chat.completions.create({
         model: this.model,
@@ -284,6 +306,10 @@ Consider:
 
 Provide specific, actionable recommendations for this Houston development project.`
 
+      if (!this.isOpenAIAvailable()) {
+        return this.getFallbackDevelopmentAnalysis()
+      }
+
       const completion = await this.openai.chat.completions.create({
         model: this.model,
         messages: [
@@ -332,6 +358,10 @@ Provide:
 
 Focus on Houston-specific factors and neighborhood dynamics.`
 
+      if (!this.isOpenAIAvailable()) {
+        return this.getFallbackNeighborhoodAnalysis(neighborhood)
+      }
+
       const completion = await this.openai.chat.completions.create({
         model: this.model,
         messages: [
@@ -360,6 +390,10 @@ Focus on Houston-specific factors and neighborhood dynamics.`
     marketAppeal: number // 1-10 scale
   }> {
     try {
+      if (!this.isOpenAIAvailable()) {
+        return []
+      }
+
       const analysisPromises = imageUrls.map(async (url) => {
         const completion = await this.openai.chat.completions.create({
           model: 'gpt-4-vision-preview',
@@ -404,6 +438,10 @@ Focus on Houston-specific factors and neighborhood dynamics.`
     followUpQuestions: string[]
   }> {
     try {
+      if (!this.isOpenAIAvailable()) {
+        return this.getFallbackQueryResponse(query)
+      }
+
       const completion = await this.openai.chat.completions.create({
         model: this.model,
         messages: [
@@ -677,7 +715,7 @@ Rank all properties and provide overall market insights.`
     }
   }
 
-  private getFallbackMarketPrediction(neighborhood: string): MarketPrediction {
+  private getFallbackMarketPrediction(neighborhood: string, timeframe?: string): MarketPrediction {
     return {
       analysis: 'Market prediction temporarily unavailable.',
       confidence: 0,
@@ -723,6 +761,51 @@ Rank all properties and provide overall market insights.`
       forecast: 'Data unavailable',
       investmentGrade: 'C' as const,
       recommendations: []
+    }
+  }
+
+  private getFallbackInvestmentAdvice() {
+    return {
+      analysis: 'Investment analysis requires API access',
+      confidence: 0.5,
+      recommendations: ['Contact a real estate advisor for detailed analysis'],
+      risks: ['Market data unavailable'],
+      opportunities: [],
+      dataPoints: {},
+      sources: []
+    }
+  }
+
+  private getFallbackNeighborhoodAnalysis(neighborhood: string) {
+    return {
+      overview: `${neighborhood} is a Houston neighborhood`,
+      demographics: {
+        population: 0,
+        medianIncome: 0,
+        medianAge: 0
+      },
+      marketStatus: 'Data unavailable',
+      investmentGrade: 'C' as const,
+      strengths: [],
+      weaknesses: [],
+      opportunities: [],
+      threats: [],
+      recommendations: ['Contact local experts for detailed analysis']
+    }
+  }
+
+  private getFallbackQueryResponse(query: string) {
+    return {
+      intent: 'general_inquiry',
+      response: 'I need API access to provide detailed analysis. Please try again later.',
+      suggestedActions: [
+        {
+          label: 'View Market Dashboard',
+          action: 'navigate',
+          data: { path: '/intelligence/dashboard' }
+        }
+      ],
+      followUpQuestions: []
     }
   }
 }

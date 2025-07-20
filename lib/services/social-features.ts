@@ -519,13 +519,18 @@ class SocialFeaturesService {
     
     // Create sample posts
     await this.createPost('user1', 
-      'Just closed on a great development opportunity in Cypress! 🎉 #RealEstate #HoustonDevelopment',
-      { tags: ['RealEstate', 'HoustonDevelopment'] }
+      'Just closed on 5 acres in Cypress (77433)! The #2 hottest market in the US is living up to the hype 🎉 12.4% YoY growth is real! #CypressTX #HoustonDevelopment',
+      { tags: ['CypressTX', 'HoustonDevelopment', 'HotMarket'] }
     )
     
     await this.createPost('user2',
-      'Market analysis shows strong growth potential in The Heights area. Seeing 15% YoY appreciation! 📈',
-      { tags: ['MarketAnalysis', 'Investment'] }
+      'Spring Branch showing 18.3% YoY returns - highest in Houston! Just secured 3 lots near Long Point. This area is transforming fast 📈 #SpringBranch #HoustonROI',
+      { tags: ['SpringBranch', 'HoustonROI', 'Investment'] }
+    )
+    
+    await this.createPost('user3',
+      'D.R. Horton leading with 326 permits in January alone! Lennar close behind with 318. The residential market is on fire 🔥 #HoustonDevelopers',
+      { tags: ['HoustonDevelopers', 'NewConstruction'] }
     )
     
     // Create sample groups
@@ -546,11 +551,20 @@ class SocialFeaturesService {
     // Create sample insights
     await this.shareMarketInsight(
       'user3',
-      'Emerging Opportunity: East End Development',
-      'The East End is showing strong indicators for growth with new Metro line completion',
+      '$13.8B Development Pipeline Active in Houston',
+      'Major projects update: IAH Terminal B ($2.55B), Convention Center ($2B), TMC3 ($1.85B), East River by Midway ($2.5B). This is the largest development boom in Houston history!',
       'opportunity',
-      'East End',
-      { priceGrowth: 12.5, demandScore: 85 }
+      'Houston Metro',
+      { totalInvestment: 13800000000, majorProjects: 8, jobsCreated: 50000 }
+    )
+    
+    await this.shareMarketInsight(
+      'user4',
+      'Katy (77493) Confirmed as #1 Hottest US Market',
+      'Realtor.com data confirms Katy 77493 as the hottest ZIP code in America. Strong rental demand, excellent schools, and new construction driving growth.',
+      'trend',
+      'Katy',
+      { ranking: 1, medianPrice: 374268, rentalDemand: 95 }
     )
   }
 }

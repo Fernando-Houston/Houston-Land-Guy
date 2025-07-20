@@ -71,9 +71,9 @@ export default function MarketPredictionsPage() {
   })
 
   const [stats, setStats] = useState({
-    avgPriceGrowth: 8.5,
-    hotestNeighborhood: 'Heights',
-    bestROI: 'East End',
+    avgPriceGrowth: 6.2, // Houston actual average
+    hotestNeighborhood: 'Cypress (77433)',
+    bestROI: 'Spring Branch',
     marketConfidence: 87,
     totalPredictions: 1247,
     accuracy: 92.5
@@ -86,14 +86,14 @@ export default function MarketPredictionsPage() {
       const mockPredictions: Prediction[] = [
         {
           id: '1',
-          neighborhood: 'Heights',
-          currentPrice: 425000,
-          predictedPrice: 468000,
-          confidence: 89,
-          changePercent: 10.1,
+          neighborhood: 'The Heights',
+          currentPrice: 690000,
+          predictedPrice: 731400,
+          confidence: 85,
+          changePercent: 6.0,
           trend: 'up',
-          factors: ['New rail line', 'Tech company expansion', 'Limited inventory'],
-          timeline: '6 months'
+          factors: ['Historic premium', 'Walkability', '18-day average DOM'],
+          timeline: '12 months'
         },
         {
           id: '2',
@@ -131,23 +131,23 @@ export default function MarketPredictionsPage() {
         {
           id: '5',
           neighborhood: 'River Oaks',
-          currentPrice: 1850000,
-          predictedPrice: 1887000,
-          confidence: 92,
-          changePercent: 2.0,
-          trend: 'stable',
-          factors: ['Luxury market stability', 'Limited supply', 'High-net-worth demand'],
+          currentPrice: 2985000,
+          predictedPrice: 2776050,
+          confidence: 78,
+          changePercent: -7.0,
+          trend: 'down',
+          factors: ['Ultra-luxury correction', 'High inventory', 'Price resistance'],
           timeline: '12 months'
         },
         {
           id: '6',
-          neighborhood: 'Cypress',
-          currentPrice: 375000,
-          predictedPrice: 401250,
-          confidence: 86,
-          changePercent: 7.0,
+          neighborhood: 'Cypress (77433)',
+          currentPrice: 629489,
+          predictedPrice: 707507,
+          confidence: 93,
+          changePercent: 12.4,
           trend: 'up',
-          factors: ['Suburban growth', 'New schools', 'Highway expansion'],
+          factors: ['#2 Hottest US Market', 'Fast sales', 'Low inventory'],
           timeline: '6 months'
         },
         {

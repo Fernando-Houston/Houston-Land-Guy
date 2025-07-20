@@ -45,10 +45,10 @@ export default function IntelligenceDashboardPage() {
   ]
 
   const stats = [
-    { label: 'Active Listings', value: '3,421', change: '+12%', icon: Home },
-    { label: 'Avg Days on Market', value: '42', change: '-8%', icon: Clock },
-    { label: 'Active Investors', value: '2,156', change: '+18%', icon: Users },
-    { label: 'Markets Tracked', value: '47', change: '+4', icon: Globe }
+    { label: 'Major Projects', value: '$13.8B', change: '8 Active', icon: Building2 },
+    { label: 'Hottest ZIP', value: '77433', change: 'Cypress', icon: MapPin },
+    { label: 'Top Developer', value: 'D.R. Horton', change: '326 permits', icon: Users },
+    { label: 'Best ROI', value: '18.3%', change: 'Spring Branch', icon: TrendingUp }
   ]
 
   return (
