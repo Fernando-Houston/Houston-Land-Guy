@@ -1,0 +1,379 @@
+// Enhanced Real Estate Data Schema with Core Agent Data
+// This extends the base schema with additional intelligence from CSV data
+
+// Enhanced Developer Activity Tracking
+model DeveloperActivity {
+  id                String   @id @default(cuid())
+  developerId       String
+  developer         Developer @relation(fields: [developerId], references: [id])
+  
+  // Monthly permit tracking
+  month             DateTime
+  permitCount       Int
+  constructionValue Float
+  averageHomeValue  Float
+  
+  // Activity metrics
+  activeProjects    String[] // List of project names
+  marketShare       Float?   // Percentage of total market
+  
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+  
+  @@unique([developerId, month])
+  @@index([month])
+  @@index([permitCount])
+}
+
+// Construction Activity by Area
+model AreaConstructionActivity {
+  id                    String   @id @default(cuid())
+  
+  neighborhood          String
+  year                  Int
+  
+  // Construction metrics
+  newConstructionUnits  Int
+  townhomeDevelopments  Int
+  mixedUseProjects      Int
+  averageUnitPrice      Float
+  
+  // Builder activity
+  activeBuilders        Int
+  topBuilder            String?
+  keyCommunities        String[] // Array of community names
+  
+  // Price ranges
+  priceRangeLow         Float
+  priceRangeHigh        Float
+  
+  createdAt             DateTime @default(now())
+  updatedAt             DateTime @updatedAt
+  
+  @@unique([neighborhood, year])
+  @@index([neighborhood])
+  @@index([year])
+  @@index([averageUnitPrice])
+}
+
+// ROI Indicators for specific areas/projects
+model ROIIndicator {
+  id                String   @id @default(cuid())
+  
+  // Location/Project reference
+  area              String?
+  projectId         String?
+  project           Project? @relation(fields: [projectId], references: [id])
+  
+  // ROI Metrics
+  indicatorName     String
+  currentValue      Float
+  metricType        String   // percentage, dollar, ratio, etc.
+  sourcePeriod      DateTime
+  
+  // Additional context
+  category          String   // market, financial, demographic
+  confidence        Float    @default(0.8)
+  
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+  
+  @@index([area])
+  @@index([projectId])
+  @@index([indicatorName])
+  @@index([sourcePeriod])
+}
+
+// Market Intelligence and Statistics
+model MarketIntelligence {
+  id                String   @id @default(cuid())
+  
+  // Core metrics
+  metricName        String
+  metricValue       String   // Can be numeric or text
+  numericValue      Float?   // Parsed numeric value if applicable
+  unit              String?  // $, %, units, etc.
+  
+  // Context
+  nationalRanking   String?
+  stateRanking      String?
+  yearOverYear      Float?   // Percentage change
+  
+  // Time period
+  period            String   // monthly, quarterly, yearly
+  periodStart       DateTime
+  periodEnd         DateTime
+  
+  // Category
+  category          String   // economic, demographic, construction, investment
+  subCategory       String?
+  
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+  
+  @@unique([metricName, periodStart])
+  @@index([category])
+  @@index([periodStart])
+}
+
+// Competitive Analysis Intelligence
+model CompetitiveAnalysis {
+  id                        String   @id @default(cuid())
+  
+  analysisCategory          String
+  keyFindings               String   @db.Text
+  competitiveImplications   String   @db.Text
+  strategicRecommendations  String   @db.Text
+  
+  // Related entities
+  relatedDevelopers         String[] // Developer names
+  relatedAreas              String[] // Geographic areas
+  
+  // Metadata
+  analysisDate              DateTime
+  validUntil                DateTime
+  confidence                Float    @default(0.75)
+  
+  createdAt                 DateTime @default(now())
+  updatedAt                 DateTime @updatedAt
+  
+  @@index([analysisCategory])
+  @@index([analysisDate])
+}
+
+// Environmental and Infrastructure Data
+model EnvironmentalData {
+  id                String   @id @default(cuid())
+  
+  // Location
+  area              String
+  coordinates       Json?    // GeoJSON for mapping
+  
+  // Environmental factors
+  floodZone         String?
+  floodRisk         String?  // low, moderate, high, very-high
+  drainageDistrict  String?
+  
+  // Infrastructure
+  utilityProvider   String?
+  waterPressure     String?
+  sewerCapacity     String?
+  
+  // Environmental programs
+  greenInitiatives  String[]
+  sustainabilityScore Float?
+  
+  lastUpdated       DateTime
+  createdAt         DateTime @default(now())
+  
+  @@unique([area])
+  @@index([floodRisk])
+}
+
+// Code Violations and Distressed Properties
+model CodeViolation {
+  id                String   @id @default(cuid())
+  
+  propertyId        String?
+  property          Property? @relation(fields: [propertyId], references: [id])
+  
+  // Violation details
+  address           String
+  violationType     String   // structural, maintenance, zoning, safety
+  severity          String   // minor, moderate, severe
+  description       String   @db.Text
+  
+  // Status
+  reportedDate      DateTime
+  status            String   // open, resolved, pending
+  resolutionDate    DateTime?
+  
+  // Financial impact
+  fineAmount        Float?
+  liensAttached     Boolean  @default(false)
+  
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+  
+  @@index([propertyId])
+  @@index([address])
+  @@index([violationType])
+  @@index([status])
+  @@index([reportedDate])
+}
+
+// Investment Opportunities (AI-generated)
+model InvestmentOpportunity {
+  id                String   @id @default(cuid())
+  
+  // Property/Area reference
+  propertyId        String?
+  property          Property? @relation(fields: [propertyId], references: [id])
+  area              String?
+  
+  // Opportunity details
+  opportunityType   String   // flip, rental, development, land-banking
+  investmentScore   Float    // 0-100
+  riskLevel         String   // low, moderate, high
+  
+  // Financial projections
+  estimatedCost     Float
+  projectedReturn   Float
+  roi               Float
+  paybackPeriod     Int      // months
+  
+  // Key factors
+  strengths         String[]
+  risks             String[]
+  recommendations   String   @db.Text
+  
+  // Timing
+  marketTiming      String   // immediate, short-term, long-term
+  validUntil        DateTime
+  
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+  
+  @@index([propertyId])
+  @@index([area])
+  @@index([opportunityType])
+  @@index([investmentScore])
+}
+
+// Tax Assessment Data
+model TaxAssessment {
+  id                String   @id @default(cuid())
+  
+  propertyId        String
+  property          Property @relation(fields: [propertyId], references: [id])
+  
+  // Assessment details
+  taxYear           Int
+  assessedValue     Float
+  marketValue       Float
+  taxableValue      Float
+  
+  // Tax amounts
+  propertyTax       Float
+  schoolTax         Float
+  countyTax         Float
+  specialDistricts  Float?
+  totalTax          Float
+  
+  // Exemptions
+  homesteadExempt   Boolean  @default(false)
+  seniorExempt      Boolean  @default(false)
+  disabilityExempt  Boolean  @default(false)
+  veteranExempt     Boolean  @default(false)
+  exemptionAmount   Float?
+  
+  // Payment status
+  paymentStatus     String   // current, delinquent, paid
+  delinquentAmount  Float?
+  
+  createdAt         DateTime @default(now())
+  
+  @@unique([propertyId, taxYear])
+  @@index([propertyId])
+  @@index([taxYear])
+  @@index([paymentStatus])
+}
+
+// Capital Improvement Projects (CIP)
+model CapitalProject {
+  id                String   @id @default(cuid())
+  
+  projectNumber     String   @unique
+  projectName       String
+  category          String   // infrastructure, utilities, parks, transportation
+  
+  // Location
+  district          String
+  area              String
+  coordinates       Json?
+  
+  // Project details
+  description       String   @db.Text
+  scope             String   @db.Text
+  justification     String?  @db.Text
+  
+  // Financial
+  totalBudget       Float
+  fundingSources    String[]
+  spentToDate       Float?
+  
+  // Timeline
+  fiscalYear        String
+  startDate         DateTime?
+  completionDate    DateTime?
+  status            String   // planning, design, construction, completed
+  percentComplete   Float?
+  
+  // Impact
+  affectedParcels   Int?
+  benefitArea       String?
+  
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+  
+  @@index([category])
+  @@index([district])
+  @@index([status])
+  @@index([fiscalYear])
+}
+
+// Weather Impact on Construction
+model WeatherImpact {
+  id                String   @id @default(cuid())
+  
+  date              DateTime
+  area              String
+  
+  // Weather conditions
+  weatherType       String   // rain, flood, heat, freeze, hurricane
+  severity          String   // mild, moderate, severe
+  duration          Int      // hours
+  
+  // Construction impact
+  workDaysLost      Float
+  projectsAffected  Int
+  estimatedCost     Float
+  
+  // Specific impacts
+  concretePouring   Boolean  @default(false)
+  roofing           Boolean  @default(false)
+  excavation        Boolean  @default(false)
+  painting          Boolean  @default(false)
+  
+  createdAt         DateTime @default(now())
+  
+  @@index([date])
+  @@index([area])
+  @@index([weatherType])
+}
+
+// Update Property model to include new relationships
+model Property {
+  // ... existing fields ...
+  
+  // New relationships
+  taxAssessments    TaxAssessment[]
+  codeViolations    CodeViolation[]
+  opportunities     InvestmentOpportunity[]
+}
+
+// Update Developer model with activity tracking
+model Developer {
+  // ... existing fields ...
+  
+  // New relationships
+  activities        DeveloperActivity[]
+}
+
+// Update Project model with ROI indicators
+model Project {
+  // ... existing fields ...
+  
+  // New relationships
+  roiIndicators     ROIIndicator[]
+}

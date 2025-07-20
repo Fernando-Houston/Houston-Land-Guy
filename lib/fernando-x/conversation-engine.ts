@@ -2,6 +2,7 @@
 import { INTEGRATED_DATA } from '../fernando-x-data'
 import { fernandoMemory } from './memory-service'
 import { fernandoDataQuery } from './data-query-service'
+import { investmentScoring } from '../services/investment-scoring-service'
 
 interface ConversationContext {
   sessionId: string
@@ -225,8 +226,77 @@ What type of development are you considering? Residential, commercial, or mixed-
       }
     }
 
-    // Investment queries
+    // Investment queries - use real investment scoring
     if (messageLower.includes('invest') || messageLower.includes('roi')) {
+      try {
+        // Check for specific area investment queries
+        const areas = ['katy', 'cypress', 'spring', 'heights', 'downtown']
+        const mentionedArea = areas.find(area => messageLower.includes(area))
+        
+        if (mentionedArea) {
+          const score = await investmentScoring.calculateAreaInvestmentScore(
+            mentionedArea.charAt(0).toUpperCase() + mentionedArea.slice(1)
+          )
+          
+          return {
+            response: `Based on comprehensive analysis, ${score.area} has an investment score of **${score.totalScore.toFixed(1)}/100**.
+
+**Score Breakdown:**
+• Growth Potential: ${score.components.growthScore}/100
+• Affordability: ${score.components.affordabilityScore}/100
+• Infrastructure: ${score.components.infrastructureScore}/100
+• Risk Level: ${score.components.riskScore}/100
+• Market Dynamics: ${score.components.marketDynamicsScore}/100
+
+**Key Recommendations:**
+${score.recommendations.map(r => `• ${r}`).join('\n')}
+
+**Risk Factors:**
+${score.riskFactors.map(r => `⚠️ ${r}`).join('\n')}
+
+Would you like me to find specific properties or calculate ROI projections for this area?`,
+            confidence: 0.92,
+            sources: ['Investment Scoring Engine', 'Market Analytics', 'Risk Assessment'],
+            suggestedActions: [
+              { label: 'Find Properties', action: `search:properties:area:${score.area}` },
+              { label: 'Calculate ROI', action: 'navigate:/roi-calculator' },
+              { label: 'View Heat Map', action: 'navigate:/intelligence/map' }
+            ]
+          }
+        }
+        
+        // Check for distressed property queries
+        if (messageLower.includes('distressed') || messageLower.includes('foreclosure') || messageLower.includes('opportunity')) {
+          const opportunities = await investmentScoring.findDistressedOpportunities()
+          
+          if (opportunities.length > 0) {
+            return {
+              response: `I found ${opportunities.length} distressed property opportunities with high investment potential:
+
+${opportunities.slice(0, 3).map((opp, idx) => `
+**${idx + 1}. ${opp.property.address}**
+• Price: $${opp.property.listPrice?.toLocaleString() || 'Contact for price'}
+• Investment Score: ${opp.score.investmentScore}/100
+• Strategy: ${opp.strategy}
+• Key Factors: ${opp.score.factors.slice(0, 2).join(', ')}
+`).join('\n')}
+
+These properties show signs of motivated sellers and significant value-add potential. Would you like detailed ROI projections for any of these properties?`,
+              confidence: 0.90,
+              sources: ['Distressed Property Finder', 'Investment Analysis', 'Market Data'],
+              suggestedActions: [
+                { label: 'View All Opportunities', action: 'search:distressed' },
+                { label: 'Calculate ROI', action: 'navigate:/roi-calculator' },
+                { label: 'Get Financing', action: 'navigate:/tools/financing-calculator' }
+              ]
+            }
+          }
+        }
+      } catch (error) {
+        console.error('Investment scoring error:', error)
+      }
+      
+      // Fallback to general investment info
       return {
         response: `Houston real estate offers excellent investment opportunities with average ROIs of 15-25% annually. The hottest investment areas are:
 
@@ -235,12 +305,13 @@ What type of development are you considering? Residential, commercial, or mixed-
 • **Commercial**: 14-18% ROI in emerging business districts
 • **Land Banking**: 25-35% appreciation in path of growth
 
-With ${INTEGRATED_DATA.jobGrowth.totalNewJobs.toLocaleString()} new jobs coming to Houston, rental demand is surging. Would you like me to analyze specific investment strategies or calculate potential returns for a particular project?`,
-        confidence: 0.90,
+With ${INTEGRATED_DATA.jobGrowth.totalNewJobs.toLocaleString()} new jobs coming to Houston, rental demand is surging. Would you like me to analyze specific areas or find distressed properties with high potential?`,
+        confidence: 0.85,
         sources: ['Investment Analysis', 'Market Returns Data', 'Economic Projections'],
         suggestedActions: [
-          { label: 'Calculate ROI', action: 'navigate:/roi-calculator' },
-          { label: 'View Opportunities', action: 'navigate:/investment-opportunities' }
+          { label: 'Area Analysis', action: 'analyze:investment:area' },
+          { label: 'Find Opportunities', action: 'search:distressed' },
+          { label: 'Calculate ROI', action: 'navigate:/roi-calculator' }
         ]
       }
     }
