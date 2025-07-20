@@ -265,6 +265,57 @@ class HoustonDataService {
     }
   }
 
+  // July 2025 MLS Data - DataProcess 4
+  private static readonly JULY_2025_MLS_DATA = {
+    singleFamilyHomeSales: 8588,
+    singleFamilySalesGrowthYoY: 12.5,
+    totalPropertySales: 9993,
+    totalPropertySalesGrowthYoY: 10.4,
+    activeListingsSingleFamily: 38713,
+    activeListingsGrowthYoY: 31.8,
+    pendingSales: 8541,
+    pendingSalesGrowthYoY: 10.1,
+    medianHomePrice: 346651,
+    medianPriceChange: 0, // Unchanged
+    averageHomePrice: 450235,
+    averagePriceGrowthYoY: 4.4,
+    daysOnMarket: 49,
+    daysOnMarketChange: 2,
+    monthsInventory: 5.4,
+    inventoryChangeMonths: 1.2,
+    inventoryChangePercent: 28.6,
+    luxurySalesGrowth: 40.6,
+    newListingsGrowth: 17.4
+  }
+
+  // 2025 Neighborhood Pricing Data - DataProcess 4
+  private static readonly NEIGHBORHOOD_PRICING_2025 = {
+    'houston-heights': { median: 615000, average: null, daysOnMarket: 38 },
+    'magnolia': { median: 310576, average: 389191, daysOnMarket: 96 },
+    'montgomery': { median: 374900, average: 515357, daysOnMarket: 113 },
+    'conroe': { median: 295000, average: 352320, daysOnMarket: 88 },
+    'the-woodlands': { median: 600994, average: 715500, daysOnMarket: 61 },
+    'spring': { median: 325000, average: 401078, daysOnMarket: 72 },
+    'tomball': { median: 355795, average: 433707, daysOnMarket: 85 },
+    'harris-county': { median: 325000, average: 406492, daysOnMarket: 61 }
+  }
+
+  // Seasonal Market Patterns - DataProcess 4
+  private static readonly SEASONAL_PATTERNS = {
+    january: { index: 0.85, sales: 5064, medianPrice: 306000, inventory: 3.3 },
+    february: { index: 0.90, sales: 6837, medianPrice: 324000, inventory: 3.9 },
+    march: { index: 1.05, sales: 4940, medianPrice: 335000, inventory: null },
+    april: { index: 1.15, sales: 7856, medianPrice: 340000, inventory: 4.9 },
+    may: { index: 1.20, sales: 2102, medianPrice: 334000, inventory: null },
+    june: { index: 1.25, sales: 8588, medianPrice: 347000, inventory: 5.4 },
+    july: { index: 1.15, sales: null, medianPrice: null, inventory: null },
+    august: { index: 1.05, sales: null, medianPrice: null, inventory: null },
+    september: { index: 1.00, sales: null, medianPrice: null, inventory: null },
+    october: { index: 0.95, sales: null, medianPrice: null, inventory: null },
+    november: { index: 0.85, sales: null, medianPrice: null, inventory: null },
+    december: { index: 0.80, sales: null, medianPrice: null, inventory: null }
+  }
+
   // Houston Micro-Market Intelligence 2024 Data
   private static readonly HOUSTON_MICRO_MARKET_DATA = {
     neighborhoods: [
@@ -1534,6 +1585,26 @@ class HoustonDataService {
   // Get December 2024 MLS Real-Time Data
   getDecember2024MLSData() {
     return HoustonDataService.DECEMBER_2024_MLS_DATA
+  }
+
+  // Get July 2025 MLS Data
+  getJuly2025MLSData() {
+    return HoustonDataService.JULY_2025_MLS_DATA
+  }
+
+  // Get 2025 Neighborhood Pricing
+  get2025NeighborhoodPricing() {
+    return HoustonDataService.NEIGHBORHOOD_PRICING_2025
+  }
+
+  // Get Seasonal Market Patterns
+  getSeasonalPatterns() {
+    return HoustonDataService.SEASONAL_PATTERNS
+  }
+
+  // Get Current MLS Data (latest available - July 2025)
+  getCurrentMLSData() {
+    return HoustonDataService.JULY_2025_MLS_DATA
   }
 
   // Get Harris County Construction Activity Data (July 2025)

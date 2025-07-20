@@ -31,22 +31,36 @@ export default function IntelligenceHub() {
       houstonDataService.getEnhancedMarketInsights()
     ])
     
-    // Merge summary with December 2024 MLS data
+    // Get July 2025 data
+    const july2025Data = houstonDataService.getJuly2025MLSData()
+    
+    // Merge summary with July 2025 MLS data
     const statsWithMLS = {
       ...summary,
-      currentMLS: enhancedInsights.currentMLS,
-      december2024Data: houstonDataService.getDecember2024MLSData()
+      currentMLS: {
+        salesVolume: july2025Data.singleFamilyHomeSales,
+        salesGrowth: july2025Data.singleFamilySalesGrowthYoY,
+        medianPrice: july2025Data.medianHomePrice,
+        averagePrice: july2025Data.averageHomePrice,
+        activeListings: july2025Data.activeListingsSingleFamily,
+        luxuryGrowth: july2025Data.luxurySalesGrowth,
+        daysOnMarket: july2025Data.daysOnMarket,
+        monthsInventory: july2025Data.monthsInventory,
+        constructionPermits: enhancedInsights.currentMLS.constructionPermits
+      },
+      constructionActivity: enhancedInsights.constructionActivity,
+      microMarketIntelligence: enhancedInsights.microMarketIntelligence
     }
     
     setHoustonStats(statsWithMLS)
     setMajorProjects(projects.slice(0, 3))
     setMarketInsights(houstonDataService.getLocalInsights().slice(0, 4))
     
-    // Set real metrics with December 2024 data
+    // Set real metrics with July 2025 data
     setLiveMetrics({
       activeDeals: projects.length,
       dataPoints: 2.8, // Million data points
-      aiInsights: enhancedInsights.currentMLS.salesVolume // Use actual MLS sales volume
+      aiInsights: july2025Data.singleFamilyHomeSales // Use actual MLS sales volume
     })
   }
 
@@ -278,30 +292,30 @@ export default function IntelligenceHub() {
           <div className="bg-gradient-to-r from-purple-50 to-indigo-50 rounded-2xl p-8">
             <h2 className="text-2xl font-bold text-gray-900 mb-6 flex items-center">
               <Activity className="h-6 w-6 mr-2 text-purple-600" />
-              Houston Market Pulse
+              Houston Market Pulse - July 2025
             </h2>
             
-            {/* December 2024 MLS Real-Time Data */}
+            {/* July 2025 MLS Real-Time Data */}
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-6">
               <div>
-                <p className="text-sm text-gray-600">December 2024 Sales</p>
-                <p className="text-xl font-bold text-gray-900">{houstonStats.currentMLS ? houstonStats.currentMLS.salesVolume.toLocaleString() : '7,162'}</p>
-                <p className="text-sm text-green-600">+{houstonStats.currentMLS ? houstonStats.currentMLS.salesGrowth : '16.3'}% YoY</p>
+                <p className="text-sm text-gray-600">July 2025 Sales</p>
+                <p className="text-xl font-bold text-gray-900">{houstonStats.currentMLS ? houstonStats.currentMLS.salesVolume.toLocaleString() : '8,588'}</p>
+                <p className="text-sm text-green-600">+{houstonStats.currentMLS ? houstonStats.currentMLS.salesGrowth : '12.5'}% YoY</p>
               </div>
               <div>
                 <p className="text-sm text-gray-600">Median Home Price</p>
-                <p className="text-xl font-bold text-gray-900">${houstonStats.currentMLS ? houstonStats.currentMLS.medianPrice.toLocaleString() : '334,290'}</p>
-                <p className="text-sm text-green-600">+{houstonStats.currentMLS ? houstonStats.currentMLS.salesGrowth : '1.3'}% YoY</p>
+                <p className="text-xl font-bold text-gray-900">${houstonStats.currentMLS ? houstonStats.currentMLS.medianPrice.toLocaleString() : '346,651'}</p>
+                <p className="text-sm text-gray-600">Unchanged YoY</p>
               </div>
               <div>
-                <p className="text-sm text-gray-600">Market Dollar Volume</p>
-                <p className="text-xl font-bold text-gray-900">${houstonStats.currentMLS ? (houstonStats.currentMLS.dollarVolume / 1000000000).toFixed(1) : '3.5'}B</p>
-                <p className="text-sm text-gray-600">December 2024</p>
+                <p className="text-sm text-gray-600">Active Inventory</p>
+                <p className="text-xl font-bold text-gray-900">{houstonStats.currentMLS ? houstonStats.currentMLS.activeListings.toLocaleString() : '38,713'}</p>
+                <p className="text-sm text-green-600">+31.8% YoY</p>
               </div>
               <div>
                 <p className="text-sm text-gray-600">Luxury Growth ($1M+)</p>
-                <p className="text-xl font-bold text-gray-900">+{houstonStats.currentMLS ? houstonStats.currentMLS.luxuryGrowth : '64.6'}%</p>
-                <p className="text-sm text-purple-600">December 2024</p>
+                <p className="text-xl font-bold text-gray-900">+{houstonStats.currentMLS ? houstonStats.currentMLS.luxuryGrowth : '40.6'}%</p>
+                <p className="text-sm text-purple-600">July 2025</p>
               </div>
             </div>
 
@@ -413,6 +427,36 @@ export default function IntelligenceHub() {
                   <p className="text-sm text-gray-700">{insight}</p>
                 </div>
               ))}
+            </div>
+
+            {/* Seasonal Market Patterns */}
+            <div className="mt-6 bg-gradient-to-r from-green-50 to-emerald-50 border border-green-200 rounded-xl p-6">
+              <h3 className="text-lg font-semibold text-green-900 mb-4 flex items-center">
+                <Clock className="h-5 w-5 mr-2" />
+                2025 Seasonal Market Patterns
+              </h3>
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                <div>
+                  <p className="text-sm text-green-700">Peak Season</p>
+                  <p className="text-lg font-bold text-green-900">May-June</p>
+                  <p className="text-sm text-green-600">1.20-1.25 Activity Index</p>
+                </div>
+                <div>
+                  <p className="text-sm text-green-700">Current Month</p>
+                  <p className="text-lg font-bold text-green-900">July</p>
+                  <p className="text-sm text-green-600">1.15 Activity Index</p>
+                </div>
+                <div>
+                  <p className="text-sm text-green-700">Lowest Activity</p>
+                  <p className="text-lg font-bold text-green-900">December</p>
+                  <p className="text-sm text-green-600">0.80 Activity Index</p>
+                </div>
+                <div>
+                  <p className="text-sm text-green-700">Inventory Peak</p>
+                  <p className="text-lg font-bold text-green-900">June</p>
+                  <p className="text-sm text-green-600">5.4 Months Supply</p>
+                </div>
+              </div>
             </div>
           </div>
         </div>
