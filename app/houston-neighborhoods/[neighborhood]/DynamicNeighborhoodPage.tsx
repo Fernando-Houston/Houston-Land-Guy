@@ -98,7 +98,7 @@ export function DynamicNeighborhoodPage({
   };
 
   return (
-    <div>
+    <main>
       {/* Hero Section */}
       <section className="bg-gradient-to-br from-green-50 via-emerald-50 to-teal-50 py-16">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
@@ -588,6 +588,6 @@ export function DynamicNeighborhoodPage({
           </div>
         </div>
       </section>
-    </div>
+    </main>
   )
 }
