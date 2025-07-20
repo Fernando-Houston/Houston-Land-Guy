@@ -74,6 +74,7 @@ export function DynamicNeighborhoodPage({
     
     loadAreaData();
   }, [neighborhoodData.name]);
+
   const jsonLd = {
     '@context': 'https://schema.org',
     '@type': 'Place',
