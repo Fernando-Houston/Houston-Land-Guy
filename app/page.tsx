@@ -8,6 +8,7 @@ import AISearchBar from '@/components/search/AISearchBar'
 import { houstonDataService } from '@/lib/services/houston-data-service'
 import { houstonCityDataService } from '@/lib/services/houston-city-data-service'
 import AIPropertyRecommendations from '@/components/intelligence/AIPropertyRecommendations'
+import FernandoXChat from '@/components/fernando-x-chat'
 
 export default function IntelligenceHub() {
   const [selectedCategory, setSelectedCategory] = useState<'all' | 'developers' | 'sellers' | 'investors'>('all')
@@ -704,6 +705,9 @@ export default function IntelligenceHub() {
           </Link>
         </div>
       </div>
+      
+      {/* Fernando-X AI Chat Assistant */}
+      <FernandoXChat />
     </div>
   )
 }
