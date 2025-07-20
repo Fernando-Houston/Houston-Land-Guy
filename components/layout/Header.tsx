@@ -159,6 +159,29 @@ export function Header() {
                   </motion.div>
                 )
               })}
+              <motion.div
+                initial={{ opacity: 0, scale: 0.8 }}
+                animate={{ opacity: 1, scale: 1 }}
+                transition={{ delay: 0.5 }}
+                className="relative"
+              >
+                <Link
+                  href="/join"
+                  className="relative inline-block overflow-hidden rounded-xl bg-gradient-to-r from-purple-600 to-blue-600 px-6 py-2.5 text-sm font-semibold text-white transition-all duration-300 hover:scale-105 hover:shadow-lg group"
+                >
+                  {/* Animated wave background */}
+                  <span className="absolute inset-0 w-full h-full">
+                    <span className="absolute top-0 left-0 w-full h-full bg-gradient-to-r from-purple-400 to-blue-400 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+                    <span className="absolute -top-1 -left-1 w-[200%] h-[200%] bg-gradient-to-r from-transparent via-white to-transparent opacity-30 -skew-x-12 translate-x-[-200%] group-hover:translate-x-[100%] transition-transform duration-1000" />
+                  </span>
+                  <span className="relative flex items-center">
+                    Join Now
+                    <svg className="ml-2 w-4 h-4 transition-transform group-hover:translate-x-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7l5 5m0 0l-5 5m5-5H6" />
+                    </svg>
+                  </span>
+                </Link>
+              </motion.div>
             </div>
           </div>
           
@@ -252,6 +275,28 @@ export function Header() {
                   </motion.div>
                 )
               })}
+              <motion.div
+                initial={{ x: -50, opacity: 0 }}
+                animate={{ x: 0, opacity: 1 }}
+                transition={{ delay: navigation.length * 0.1 }}
+              >
+                <Link
+                  href="/join"
+                  className="relative inline-flex items-center w-full justify-center overflow-hidden rounded-xl bg-gradient-to-r from-purple-600 to-blue-600 px-4 py-3 text-base font-semibold text-white mt-4 group"
+                  onClick={() => setMobileMenuOpen(false)}
+                >
+                  <span className="absolute inset-0 w-full h-full">
+                    <span className="absolute top-0 left-0 w-full h-full bg-gradient-to-r from-purple-400 to-blue-400 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+                    <span className="absolute -top-1 -left-1 w-[200%] h-[200%] bg-gradient-to-r from-transparent via-white to-transparent opacity-30 -skew-x-12 translate-x-[-200%] group-hover:translate-x-[100%] transition-transform duration-1000" />
+                  </span>
+                  <span className="relative flex items-center">
+                    Join Now
+                    <svg className="ml-2 w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7l5 5m0 0l-5 5m5-5H6" />
+                    </svg>
+                  </span>
+                </Link>
+              </motion.div>
             </motion.div>
           </motion.div>
         )}

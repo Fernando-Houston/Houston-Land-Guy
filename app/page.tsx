@@ -1,7 +1,7 @@
 'use client'
 
 import Link from "next/link"
-import { ArrowRight, Brain, TrendingUp, Building2, BarChart3, MapPin, DollarSign, Users, Zap, Shield, Globe, Database, Activity, FileSearch, Bot, Cpu, Eye, Target, PieChart, AlertCircle, Construction } from "lucide-react"
+import { ArrowRight, Brain, TrendingUp, Building2, BarChart3, MapPin, DollarSign, Users, Zap, Shield, Globe, Database, Activity, FileSearch, Bot, Cpu, Eye, Target, PieChart, AlertCircle, Construction, Clock } from "lucide-react"
 import { motion } from "framer-motion"
 import { useState, useEffect } from 'react'
 import AISearchBar from '@/components/search/AISearchBar'
