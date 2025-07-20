@@ -97,7 +97,7 @@ export function DynamicNeighborhoodPage({
   }
 
   return (
-    <>
+    <div>
       <Script
         id={`neighborhood-${neighborhoodData.slug}-jsonld`}
         type="application/ld+json"
@@ -593,6 +593,6 @@ export function DynamicNeighborhoodPage({
           </div>
         </div>
       </section>
-    </>
+    </div>
   )
 }
