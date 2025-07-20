@@ -1,22 +1,17 @@
 import { NextResponse } from 'next/server'
-import { getServerSession } from 'next-auth'
-import { authConfig } from '@/lib/auth/auth-config'
 
 export async function GET(request: Request) {
   try {
-    // Check if user is authenticated
-    const session = await getServerSession(authConfig)
-    
-    // Demo portfolio data for non-authenticated users
+    // Demo portfolio data - no authentication required for now
     const portfolioData = {
       overview: {
-        totalValue: session ? 12850000 : 5750000,
-        totalProperties: session ? 8 : 3,
-        totalEquity: session ? 8920000 : 3250000,
-        totalDebt: session ? 3930000 : 2500000,
-        monthlyIncome: session ? 42500 : 18500,
-        monthlyExpenses: session ? 28750 : 12800,
-        netCashFlow: session ? 13750 : 5700
+        totalValue: 12850000,
+        totalProperties: 8,
+        totalEquity: 8920000,
+        totalDebt: 3930000,
+        monthlyIncome: 42500,
+        monthlyExpenses: 28750,
+        netCashFlow: 13750
       },
       performance: {
         totalReturn: 285000,
@@ -98,7 +93,7 @@ export async function GET(request: Request) {
     return NextResponse.json({
       success: true,
       data: portfolioData,
-      authenticated: !!session
+      authenticated: false
     })
   } catch (error) {
     console.error('Error fetching portfolio:', error)
@@ -111,13 +106,7 @@ export async function GET(request: Request) {
 
 export async function POST(request: Request) {
   try {
-    const session = await getServerSession(authConfig)
-    if (!session) {
-      return NextResponse.json(
-        { success: false, error: 'Authentication required' },
-        { status: 401 }
-      )
-    }
+    // For now, allow portfolio actions without authentication
 
     const body = await request.json()
     const { action, propertyId, data } = body
