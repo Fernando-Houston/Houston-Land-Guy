@@ -168,11 +168,12 @@ class SocialFeaturesService {
     
     this.posts.set(postId, post)
     
-    // AI content moderation
-    const moderation = await fernandoXAI.moderateContent(content)
-    if (moderation.flagged) {
-      post.visibility = 'private'
-    }
+    // AI content moderation - temporarily disabled
+    // TODO: Implement moderateContent method in fernandoXAI
+    // const moderation = await fernandoXAI.moderateContent(content)
+    // if (moderation.flagged) {
+    //   post.visibility = 'private'
+    // }
     
     return post
   }

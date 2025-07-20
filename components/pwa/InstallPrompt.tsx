@@ -56,7 +56,7 @@ export default function InstallPrompt() {
     window.addEventListener('offline', handleOffline)
 
     // Register service worker
-    if ('serviceWorker' in navigator) {
+    if (typeof navigator !== 'undefined' && 'serviceWorker' in navigator) {
       navigator.serviceWorker.register('/sw.js').then(registration => {
         console.log('Service Worker registered:', registration)
       }).catch(error => {
@@ -95,7 +95,7 @@ export default function InstallPrompt() {
     localStorage.setItem('pwa-install-dismissed', Date.now().toString())
   }
 
-  const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !(window as any).MSStream
+  const isIOS = typeof navigator !== 'undefined' ? /iPad|iPhone|iPod/.test(navigator.userAgent) && !(window as any).MSStream : false
 
   return (
     <>

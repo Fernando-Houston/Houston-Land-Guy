@@ -1,5 +1,6 @@
 // Fernando-X AI Assistant - Enhanced with 750,000+ Data Points
 import { INTEGRATED_DATA } from './fernando-x-data'
+import { fernandoMemory } from './fernando-x/memory-service'
 
 export interface FernandoXQuery {
   text: string
@@ -25,14 +26,34 @@ class FernandoX {
   
   async processQuery(query: FernandoXQuery): Promise<FernandoXResponse> {
     // DIAGNOSTIC: Log to verify enhanced version is being used
-    console.log('🚀 FERNANDO-X ENHANCED: Processing query with 750,000+ data points')
+    console.log('🚀 FERNANDO-X ENHANCED: Processing query with 750,000+ data points and memory')
     console.log('📊 Data verification:', {
       populationGrowth: INTEGRATED_DATA.populationGrowth.totalProjected,
       totalDevelopers: INTEGRATED_DATA.developers.length,
-      majorProjects: INTEGRATED_DATA.majorProjects.length
+      majorProjects: INTEGRATED_DATA.majorProjects.length,
+      memoryEnabled: true
     })
     
     try {
+      // Store the query in memory if user/session context provided
+      if (query.context?.sessionId) {
+        await fernandoMemory.storeMemory({
+          userId: query.context.userId,
+          sessionId: query.context.sessionId,
+          memoryType: 'conversation',
+          content: { query: query.text, timestamp: new Date() },
+          importance: 0.6
+        })
+        
+        // Get previous context
+        const previousMemories = await fernandoMemory.searchMemories({
+          sessionId: query.context.sessionId,
+          limit: 5
+        })
+        
+        console.log(`📝 Retrieved ${previousMemories.length} previous memories for context`)
+      }
+      
       const queryLower = query.text.toLowerCase()
       
       // Population & Growth Queries

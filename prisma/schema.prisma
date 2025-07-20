@@ -265,3 +265,73 @@ enum PROJECT_TYPE {
   MIXED_USE
   COMMERCIAL
 }
+
+// Fernando-X Memory Models
+model FernandoMemory {
+  id            String   @id @default(cuid())
+  userId        String?  // Optional - for user-specific memories
+  sessionId     String?  // Optional - for session-specific memories
+  
+  memoryType    String   // "conversation", "fact", "preference", "context"
+  content       Json     // The actual memory content
+  embedding     Float[]  // Vector embedding for similarity search
+  metadata      Json?    // Additional metadata
+  
+  importance    Float    @default(0.5) // 0-1 score
+  accessCount   Int      @default(0)
+  lastAccessed  DateTime @default(now())
+  
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+  
+  @@index([userId])
+  @@index([sessionId])
+  @@index([memoryType])
+  @@index([importance])
+  @@index([lastAccessed])
+}
+
+model FernandoConversation {
+  id            String   @id @default(cuid())
+  userId        String?
+  sessionId     String
+  
+  messages      Json[]   // Array of messages
+  summary       String?  @db.Text
+  topics        String[]
+  sentiment     String?  // "positive", "neutral", "negative"
+  
+  startedAt     DateTime @default(now())
+  endedAt       DateTime?
+  duration      Int?     // in seconds
+  
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+  
+  @@index([userId])
+  @@index([sessionId])
+  @@index([startedAt])
+}
+
+model FernandoInsight {
+  id            String   @id @default(cuid())
+  
+  insightType   String   // "market", "property", "user_behavior", "trend"
+  title         String
+  content       String   @db.Text
+  data          Json     // Supporting data
+  confidence    Float    // 0-1 confidence score
+  
+  tags          String[]
+  relevantTo    String[] // User IDs or segments this is relevant to
+  
+  validFrom     DateTime @default(now())
+  validUntil    DateTime?
+  
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+  
+  @@index([insightType])
+  @@index([confidence])
+  @@index([validFrom])
+}

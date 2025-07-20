@@ -225,7 +225,11 @@ class VoiceInterface {
     
     try {
       // Request microphone permission
-      await navigator.mediaDevices.getUserMedia({ audio: true })
+      if (typeof navigator !== 'undefined' && navigator.mediaDevices) {
+        await navigator.mediaDevices.getUserMedia({ audio: true })
+      } else {
+        throw new Error('Navigator not available')
+      }
       
       // Start recognition
       this.recognition.start()

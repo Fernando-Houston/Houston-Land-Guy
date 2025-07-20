@@ -16,10 +16,12 @@ export function HeroVideo() {
     window.addEventListener('resize', checkMobile);
 
     // Check if we're on a slow connection
-    const connection = (navigator as any).connection;
-    if (connection && (connection.saveData || connection.effectiveType === 'slow-2g')) {
-      setHasError(true); // Use fallback on slow connections
-      return;
+    if (typeof navigator !== 'undefined') {
+      const connection = (navigator as any).connection;
+      if (connection && (connection.saveData || connection.effectiveType === 'slow-2g')) {
+        setHasError(true); // Use fallback on slow connections
+        return;
+      }
     }
 
     return () => window.removeEventListener('resize', checkMobile);
