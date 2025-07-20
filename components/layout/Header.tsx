@@ -16,7 +16,6 @@ const navigation = [
     highlight: true
   },
   { name: 'Live Dashboard', href: '/intelligence/dashboard', icon: Activity },
-  { name: 'Fernando-X', href: '/assistant', icon: Brain },
   { 
     name: 'Developer Intel', 
     href: '/developers', 
@@ -159,6 +158,25 @@ export function Header() {
                   </motion.div>
                 )
               })}
+              
+              {/* Fernando-X Button */}
+              <motion.div
+                initial={{ opacity: 0, scale: 0.8 }}
+                animate={{ opacity: 1, scale: 1 }}
+                transition={{ delay: 0.4 }}
+              >
+                <button
+                  onClick={() => {
+                    const event = new CustomEvent('open-fernando-chat')
+                    window.dispatchEvent(event)
+                  }}
+                  className="flex items-center px-4 py-2 text-sm font-medium text-purple-600 hover:text-purple-700 transition-colors"
+                >
+                  <Brain className="h-4 w-4 mr-1" />
+                  Fernando-X
+                </button>
+              </motion.div>
+              
               <motion.div
                 initial={{ opacity: 0, scale: 0.8 }}
                 animate={{ opacity: 1, scale: 1 }}
