@@ -540,8 +540,18 @@ export default function IntelligenceHub() {
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: index * 0.1 }}
             >
-              <Link href={module.href}>
-                <div className="relative h-full bg-white rounded-xl shadow-lg hover:shadow-2xl transition-all duration-300 overflow-hidden group">
+              {module.href === '/assistant' ? (
+                <button
+                  onClick={() => {
+                    const event = new CustomEvent('open-fernando-chat')
+                    window.dispatchEvent(event)
+                  }}
+                  className="w-full text-left"
+                >
+                  <div className="relative h-full bg-white rounded-xl shadow-lg hover:shadow-2xl transition-all duration-300 overflow-hidden group">
+              ) : (
+                <Link href={module.href}>
+                  <div className="relative h-full bg-white rounded-xl shadow-lg hover:shadow-2xl transition-all duration-300 overflow-hidden group">
                   <div className={`absolute inset-0 bg-gradient-to-br ${module.color} opacity-5 group-hover:opacity-10 transition-opacity`} />
                   
                   <div className="relative p-6">
@@ -569,7 +579,11 @@ export default function IntelligenceHub() {
                     </div>
                   </div>
                 </div>
-              </Link>
+              {module.href === '/assistant' ? (
+                </button>
+              ) : (
+                </Link>
+              )}
             </motion.div>
           ))}
         </div>
@@ -696,13 +710,16 @@ export default function IntelligenceHub() {
           <p className="text-xl text-purple-100 mb-8">
             Join thousands of professionals using AI to make smarter decisions
           </p>
-          <Link
-            href="/assistant"
+          <button
+            onClick={() => {
+              const event = new CustomEvent('open-fernando-chat')
+              window.dispatchEvent(event)
+            }}
             className="inline-flex items-center px-8 py-4 bg-white text-purple-600 font-bold rounded-lg hover:bg-gray-100 transition-all transform hover:scale-105"
           >
             Start with Fernando-X AI
             <ArrowRight className="ml-2 h-5 w-5" />
-          </Link>
+          </button>
         </div>
       </div>
       
