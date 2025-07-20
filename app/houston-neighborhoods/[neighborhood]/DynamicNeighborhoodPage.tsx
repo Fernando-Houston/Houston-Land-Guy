@@ -1,5 +1,6 @@
 'use client'
 
+import React from 'react'
 import { motion } from 'framer-motion'
 import Link from 'next/link'
 import { ArrowLeft, MapPin, TrendingUp, Users, School, Home, Building2, Download, Clock, Droplet, TreePine, DollarSign, Zap } from 'lucide-react'
