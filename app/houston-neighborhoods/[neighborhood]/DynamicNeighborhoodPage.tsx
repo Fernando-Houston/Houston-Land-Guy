@@ -98,7 +98,7 @@ export function DynamicNeighborhoodPage({
   }
 
   return (
-    <React.Fragment>
+    <>
       <Script
         id={`neighborhood-${neighborhoodData.slug}-jsonld`}
         type="application/ld+json"
@@ -594,6 +594,6 @@ export function DynamicNeighborhoodPage({
           </div>
         </div>
       </section>
-    </React.Fragment>
+    </>
   )
 }
