@@ -1,6 +1,7 @@
 // Fernando-X Conversation Engine with LLM Integration
 import { INTEGRATED_DATA } from '../fernando-x-data'
 import { fernandoMemory } from './memory-service'
+import { fernandoDataQuery } from './data-query-service'
 
 interface ConversationContext {
   sessionId: string
@@ -61,34 +62,88 @@ Always:
     }
   }
 
-  private checkForDataQuery(message: string): any {
+  private async checkForDataQuery(message: string): Promise<any> {
     const messageLower = message.toLowerCase()
     
-    // Population growth queries
+    // Get real database stats first
+    const dbStats = await fernandoDataQuery.getDatabaseStats()
+    
+    // Population growth queries - use real data if available
     if (messageLower.includes('population') || messageLower.includes('growth')) {
-      const data = INTEGRATED_DATA.populationGrowth
-      return {
-        response: `Houston's population is booming! We're projected to add ${data.totalProjected.toLocaleString()} new residents. The fastest growing areas are ${data.topGrowthAreas[0].area} (${data.topGrowthAreas[0].growthRate}% growth) and ${data.topGrowthAreas[1].area} (${data.topGrowthAreas[1].growthRate}% growth). This creates massive opportunities for developers. Would you like to explore specific areas or development types?`,
-        confidence: 0.95,
-        sources: ['Houston Planning Department', 'Census Projections'],
-        suggestedActions: [
-          { label: 'View Growth Map', action: 'navigate:/intelligence/map' },
-          { label: 'Find Development Sites', action: 'search:development' }
-        ]
+      try {
+        // Try to get real market data for growth areas
+        const areas = ['Katy', 'Cypress', 'Spring', 'Pearland', 'Sugar Land']
+        const areaStats = await Promise.all(
+          areas.map(area => fernandoDataQuery.getAreaGrowth(area))
+        )
+        
+        const topGrowthAreas = areaStats
+          .sort((a, b) => b.growthMetrics.priceGrowth - a.growthMetrics.priceGrowth)
+          .slice(0, 3)
+        
+        return {
+          response: `Based on our database of ${dbStats.estimatedDataPoints.toLocaleString()}+ data points, Houston's fastest growing areas are:
+
+1. **${topGrowthAreas[0].areaName}** - ${topGrowthAreas[0].growthMetrics.priceGrowth.toFixed(1)}% price growth, ${topGrowthAreas[0].activeProjects} active projects
+2. **${topGrowthAreas[1].areaName}** - ${topGrowthAreas[1].growthMetrics.priceGrowth.toFixed(1)}% growth, ${topGrowthAreas[1].recentPermits} recent permits
+3. **${topGrowthAreas[2].areaName}** - ${topGrowthAreas[2].growthMetrics.priceGrowth.toFixed(1)}% growth
+
+With ${dbStats.tables.permits} permits tracked and ${dbStats.tables.projects} major projects in our database, these areas show tremendous development potential. Would you like specific property listings or market analysis?`,
+          confidence: 0.95,
+          sources: ['Real Estate Database', 'Permit Records', 'Market Analytics'],
+          suggestedActions: [
+            { label: 'View Growth Areas', action: 'navigate:/intelligence/map' },
+            { label: 'Search Properties', action: 'search:properties' }
+          ]
+        }
+      } catch (error) {
+        // Fallback to hardcoded data
+        const data = INTEGRATED_DATA.populationGrowth
+        return {
+          response: `Houston's population is booming! We're projected to add ${data.totalProjected.toLocaleString()} new residents. The fastest growing areas are ${data.topGrowthAreas[0].area} (${data.topGrowthAreas[0].growthRate}% growth) and ${data.topGrowthAreas[1].area} (${data.topGrowthAreas[1].growthRate}% growth). This creates massive opportunities for developers. Would you like to explore specific areas or development types?`,
+          confidence: 0.85,
+          sources: ['Houston Planning Department', 'Census Projections'],
+          suggestedActions: [
+            { label: 'View Growth Map', action: 'navigate:/intelligence/map' },
+            { label: 'Find Development Sites', action: 'search:development' }
+          ]
+        }
       }
     }
 
-    // Developer queries
+    // Developer queries - use real database
     if (messageLower.includes('d.r. horton') || messageLower.includes('dr horton')) {
-      const drHorton = INTEGRATED_DATA.developers.find(d => d.name === 'D.R. Horton')
-      return {
-        response: `D.R. Horton is Houston's #1 developer with ${drHorton?.activeProjects} active projects worth $${(drHorton?.totalValue! / 1000000000).toFixed(1)}B. They're focusing on entry-level homes ($250K-$450K) in Katy, Spring, and Fort Bend County. They're filing 300+ permits monthly! Want to see their specific communities or analyze investment opportunities?`,
-        confidence: 0.94,
-        sources: ['Developer Database', 'Permit Records'],
-        suggestedActions: [
-          { label: 'View D.R. Horton Projects', action: 'filter:developer:D.R. Horton' },
-          { label: 'Investment Analysis', action: 'analyze:investment' }
-        ]
+      try {
+        const developer = await fernandoDataQuery.getDeveloperInfo('D.R. Horton')
+        
+        if (developer && !Array.isArray(developer)) {
+          return {
+            response: `D.R. Horton is a leading Houston developer with ${developer.activeProjects} active projects worth $${(developer.totalValue / 1000000000).toFixed(1)}B. They specialize in ${developer.primaryFocus} development.
+
+Current Projects:
+${developer.projects.slice(0, 3).map(p => `• ${p.name} - $${(p.totalValue / 1000000).toFixed(0)}M in ${p.area}`).join('\n')}
+
+They currently have ${developer.properties.length} active property listings. Want to see specific communities or analyze investment opportunities?`,
+            confidence: 0.94,
+            sources: ['Developer Database', 'Project Records', 'Property Listings'],
+            suggestedActions: [
+              { label: 'View All Projects', action: 'filter:developer:D.R. Horton' },
+              { label: 'See Active Listings', action: 'search:properties:developer:D.R. Horton' }
+            ]
+          }
+        }
+      } catch (error) {
+        // Fallback to hardcoded data
+        const drHorton = INTEGRATED_DATA.developers.find(d => d.name === 'D.R. Horton')
+        return {
+          response: `D.R. Horton is Houston's #1 developer with ${drHorton?.activeProjects} active projects worth $${(drHorton?.totalValue! / 1000000000).toFixed(1)}B. They're focusing on entry-level homes ($250K-$450K) in Katy, Spring, and Fort Bend County. They're filing 300+ permits monthly! Want to see their specific communities or analyze investment opportunities?`,
+          confidence: 0.84,
+          sources: ['Developer Database', 'Permit Records'],
+          suggestedActions: [
+            { label: 'View D.R. Horton Projects', action: 'filter:developer:D.R. Horton' },
+            { label: 'Investment Analysis', action: 'analyze:investment' }
+          ]
+        }
       }
     }
 
@@ -103,9 +158,50 @@ Always:
     
     // Building/Development queries
     if (messageLower.includes('build') || messageLower.includes('develop')) {
-      const areas = INTEGRATED_DATA.populationGrowth.topGrowthAreas.slice(0, 3)
-      return {
-        response: `Based on current market data, the best areas for development in Houston are:
+      try {
+        // Get real data from database
+        const [marketStats, activeProjects, dbStats] = await Promise.all([
+          fernandoDataQuery.getMarketStats(),
+          fernandoDataQuery.getProjects({ phase: 'under-construction', limit: 5 }),
+          fernandoDataQuery.getDatabaseStats()
+        ])
+        
+        // Get area growth data
+        const areas = ['Katy', 'Cypress', 'Spring']
+        const areaGrowth = await Promise.all(
+          areas.map(area => fernandoDataQuery.getAreaGrowth(area))
+        )
+        
+        const sortedAreas = areaGrowth.sort((a, b) => 
+          b.growthMetrics.developmentActivity - a.growthMetrics.developmentActivity
+        )
+        
+        return {
+          response: `Based on our database of ${dbStats.tables.properties} properties and ${dbStats.tables.permits} permits, the best areas for development in Houston are:
+
+1. **${sortedAreas[0].areaName}** - ${sortedAreas[0].growthMetrics.priceGrowth.toFixed(1)}% price growth, ${sortedAreas[0].activeProjects} active projects, ${sortedAreas[0].recentPermits} recent permits
+2. **${sortedAreas[1].areaName}** - ${sortedAreas[1].growthMetrics.priceGrowth.toFixed(1)}% growth, market heat index: ${sortedAreas[1].growthMetrics.marketHeatIndex}
+3. **${sortedAreas[2].areaName}** - ${sortedAreas[2].activeProjects + sortedAreas[2].recentPermits} total development activities
+
+Current market conditions:
+• Median price: $${marketStats.current?.medianPrice?.toLocaleString() || 'N/A'}
+• Days on market: ${marketStats.current?.avgDaysOnMarket || 'N/A'}
+• ${activeProjects.length} major projects underway
+
+What type of development are you considering? I can provide specific analysis for residential, commercial, or mixed-use projects.`,
+          confidence: 0.92,
+          sources: ['Real Estate Database', 'Permit Records', 'Market Analytics'],
+          suggestedActions: [
+            { label: 'Compare Areas', action: 'tool:comparison' },
+            { label: 'ROI Calculator', action: 'navigate:/roi-calculator' },
+            { label: 'View Active Projects', action: 'search:projects' }
+          ]
+        }
+      } catch (error) {
+        // Fallback to hardcoded data
+        const areas = INTEGRATED_DATA.populationGrowth.topGrowthAreas.slice(0, 3)
+        return {
+          response: `Based on current market data, the best areas for development in Houston are:
 
 1. **${areas[0].area}** - ${areas[0].growthRate}% population growth, adding ${areas[0].projectedGrowth.toLocaleString()} residents
 2. **${areas[1].area}** - ${areas[1].growthRate}% growth, strong demand for single-family homes
@@ -118,13 +214,14 @@ Key factors to consider:
 • Infrastructure development plans
 
 What type of development are you considering? Residential, commercial, or mixed-use?`,
-        confidence: 0.92,
-        sources: ['Market Analysis', 'Growth Projections', 'Permit Data'],
-        suggestedActions: [
-          { label: 'Compare Areas', action: 'tool:comparison' },
-          { label: 'ROI Calculator', action: 'navigate:/roi-calculator' },
-          { label: 'View Available Land', action: 'search:land' }
-        ]
+          confidence: 0.82,
+          sources: ['Market Analysis', 'Growth Projections', 'Permit Data'],
+          suggestedActions: [
+            { label: 'Compare Areas', action: 'tool:comparison' },
+            { label: 'ROI Calculator', action: 'navigate:/roi-calculator' },
+            { label: 'View Available Land', action: 'search:land' }
+          ]
+        }
       }
     }
 

@@ -334,4 +334,332 @@ model FernandoInsight {
   @@index([insightType])
   @@index([confidence])
   @@index([validFrom])
+}// Real Estate Data Schema Extension
+// This file contains the schema for storing actual Houston real estate data
+
+// Property listings from MLS and other sources
+model Property {
+  id                String   @id @default(cuid())
+  mlsNumber         String?  @unique
+  
+  // Location
+  address           String
+  city              String
+  state             String   @default("TX")
+  zipCode           String
+  neighborhood      String?
+  county            String?
+  coordinates       Json?    // { lat, lng }
+  
+  // Property Details
+  propertyType      String   // residential, commercial, land, multi-family, etc
+  propertySubType   String?  // single-family, condo, townhome, etc
+  status            String   // active, pending, sold, off-market
+  
+  // Pricing
+  listPrice         Float?
+  soldPrice         Float?
+  pricePerSqft      Float?
+  taxAssessedValue  Float?
+  
+  // Size & Features
+  lotSize           Float?   // in acres
+  squareFeet        Float?
+  bedrooms          Int?
+  bathrooms         Float?
+  yearBuilt         Int?
+  stories           Int?
+  parkingSpaces     Int?
+  
+  // Additional Features
+  features          String[] // pool, garage, updated kitchen, etc
+  amenities         String[]
+  appliances        String[]
+  
+  // Dates
+  listDate          DateTime?
+  soldDate          DateTime?
+  lastModified      DateTime @updatedAt
+  createdAt         DateTime @default(now())
+  
+  // Relationships
+  developerId       String?
+  developer         Developer? @relation(fields: [developerId], references: [id])
+  permits           Permit[]
+  priceHistory      PriceHistory[]
+  marketAnalyses    MarketAnalysis[]
+  
+  @@index([mlsNumber])
+  @@index([zipCode])
+  @@index([neighborhood])
+  @@index([propertyType])
+  @@index([status])
+  @@index([listPrice])
+  @@index([coordinates(ops: JsonbOps)], type: Gin)
+}
+
+// Developer/Builder Information
+model Developer {
+  id                String   @id @default(cuid())
+  name              String   @unique
+  companyType       String   // builder, developer, investor
+  
+  // Contact
+  website           String?
+  phone             String?
+  email             String?
+  headquarters      String?
+  
+  // Metrics
+  activeProjects    Int      @default(0)
+  completedProjects Int      @default(0)
+  totalValue        Float    @default(0)
+  averagePrice      Float?
+  
+  // Specialization
+  primaryFocus      String   // single-family, multi-family, commercial, mixed-use
+  secondaryFocus    String?
+  targetMarket      String[] // entry-level, luxury, affordable, etc
+  
+  // Geographic Focus
+  primaryAreas      String[]
+  
+  // Dates
+  foundedYear       Int?
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+  
+  // Relationships
+  properties        Property[]
+  projects          Project[]
+  permits           Permit[]
+}
+
+// Major Development Projects
+model Project {
+  id                String   @id @default(cuid())
+  name              String
+  projectType       String   // residential, commercial, mixed-use, infrastructure
+  
+  // Location
+  address           String?
+  area              String   // neighborhood or district
+  coordinates       Json?    // { lat, lng }
+  totalAcres        Float?
+  
+  // Project Details
+  description       String?  @db.Text
+  totalValue        Float
+  phase             String   // planning, approved, under-construction, completed
+  startDate         DateTime?
+  completionDate    DateTime?
+  
+  // Scope
+  residentialUnits  Int?
+  commercialSqft    Float?
+  retailSqft        Float?
+  officeSqft        Float?
+  
+  // Developer
+  developerId       String
+  developer         Developer @relation(fields: [developerId], references: [id])
+  
+  // Dates
+  announcedDate     DateTime?
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+  
+  // Relationships
+  permits           Permit[]
+  
+  @@index([developerId])
+  @@index([area])
+  @@index([phase])
+}
+
+// Building Permits
+model Permit {
+  id                String   @id @default(cuid())
+  permitNumber      String   @unique
+  
+  // Location
+  address           String
+  zipCode           String
+  coordinates       Json?    // { lat, lng }
+  
+  // Permit Details
+  permitType        String   // building, electrical, plumbing, mechanical
+  workType          String   // new construction, renovation, addition
+  description       String?  @db.Text
+  
+  // Values
+  declaredValue     Float?
+  estimatedValue    Float?
+  
+  // Status
+  status            String   // submitted, approved, issued, completed, expired
+  
+  // Dates
+  applicationDate   DateTime
+  approvalDate      DateTime?
+  issueDate         DateTime?
+  completionDate    DateTime?
+  expirationDate    DateTime?
+  
+  // Parties
+  ownerName         String?
+  contractorName    String?
+  contractorLicense String?
+  
+  // Relationships
+  propertyId        String?
+  property          Property? @relation(fields: [propertyId], references: [id])
+  developerId       String?
+  developer         Developer? @relation(fields: [developerId], references: [id])
+  projectId         String?
+  project           Project? @relation(fields: [projectId], references: [id])
+  
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+  
+  @@index([permitNumber])
+  @@index([zipCode])
+  @@index([permitType])
+  @@index([status])
+  @@index([applicationDate])
+}
+
+// Market Statistics by Area
+model MarketMetrics {
+  id                String   @id @default(cuid())
+  
+  // Location
+  areaName          String
+  areaType          String   // neighborhood, zipcode, city, county
+  zipCode           String?
+  
+  // Time Period
+  period            String   // monthly, quarterly, yearly
+  startDate         DateTime
+  endDate           DateTime
+  
+  // Inventory Metrics
+  activeListings    Int
+  newListings       Int
+  closedSales       Int
+  pendingSales      Int
+  inventory         Float   // months of supply
+  
+  // Pricing Metrics
+  medianPrice       Float
+  averagePrice      Float
+  pricePerSqft      Float
+  
+  // Price Changes
+  medianPriceChange Float   // % change from previous period
+  avgPriceChange    Float   // % change from previous period
+  
+  // Market Velocity
+  avgDaysOnMarket   Int
+  avgDaysToClose    Int
+  listToSaleRatio   Float   // as percentage
+  
+  // Additional Metrics
+  absorptionRate    Float?
+  marketHeatIndex   Float?  // 0-100 score
+  
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+  
+  @@unique([areaName, period, startDate])
+  @@index([areaName])
+  @@index([zipCode])
+  @@index([period])
+  @@index([startDate])
+}
+
+// Price History for Properties
+model PriceHistory {
+  id                String   @id @default(cuid())
+  
+  propertyId        String
+  property          Property @relation(fields: [propertyId], references: [id])
+  
+  price             Float
+  priceType         String   // list, sold, reduced, increased
+  changeAmount      Float?
+  changePercent     Float?
+  
+  date              DateTime
+  source            String?  // MLS, public records, etc
+  
+  createdAt         DateTime @default(now())
+  
+  @@index([propertyId])
+  @@index([date])
+}
+
+// Market Analysis for Specific Properties
+model MarketAnalysis {
+  id                String   @id @default(cuid())
+  
+  propertyId        String
+  property          Property @relation(fields: [propertyId], references: [id])
+  
+  analysisType      String   // CMA, investment, development
+  
+  // Valuation
+  estimatedValue    Float
+  valueLow          Float
+  valueHigh         Float
+  confidence        Float    // 0-1
+  
+  // Comparables
+  comparableCount   Int
+  avgCompPrice      Float
+  avgCompSqft       Float
+  avgCompDays       Int
+  
+  // Market Position
+  marketPosition    String   // under-valued, fair, over-valued
+  demandLevel       String   // low, moderate, high, very-high
+  
+  // Investment Metrics
+  estimatedRent     Float?
+  capRate           Float?
+  cashFlow          Float?
+  
+  analysisData      Json     // detailed analysis data
+  
+  createdAt         DateTime @default(now())
+  validUntil        DateTime
+  
+  @@index([propertyId])
+  @@index([analysisType])
+  @@index([createdAt])
+}
+
+// Data Import Logs
+model DataImport {
+  id                String   @id @default(cuid())
+  
+  importType        String   // mls, permits, market-stats, etc
+  source            String   // source system/file
+  
+  status            String   // pending, processing, completed, failed
+  totalRecords      Int?
+  processedRecords  Int?
+  failedRecords     Int?
+  
+  startedAt         DateTime
+  completedAt       DateTime?
+  
+  errors            Json?
+  metadata          Json?
+  
+  createdAt         DateTime @default(now())
+  
+  @@index([importType])
+  @@index([status])
+  @@index([startedAt])
 }
