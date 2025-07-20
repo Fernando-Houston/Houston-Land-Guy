@@ -107,28 +107,11 @@ class RealEstateAPI {
   }
 
   private async makeRequest<T>(endpoint: string, params?: Record<string, any>): Promise<T> {
-    const url = new URL(`${this.baseUrl}${endpoint}`)
+    // Always return mock data since we don't have a real API endpoint
+    console.log(`Mock API request to: ${endpoint}`, params)
     
-    if (params) {
-      Object.entries(params).forEach(([key, value]) => {
-        if (value !== undefined && value !== null) {
-          url.searchParams.append(key, String(value))
-        }
-      })
-    }
-
-    const response = await fetch(url.toString(), {
-      headers: {
-        'Authorization': `Bearer ${this.apiKey}`,
-        'Content-Type': 'application/json'
-      }
-    })
-
-    if (!response.ok) {
-      throw new Error(`API request failed: ${response.statusText}`)
-    }
-
-    return response.json()
+    // Throw error to trigger mock data fallbacks
+    throw new Error('Using mock data - no real API configured')
   }
 
   // HAR (Houston Association of Realtors) MLS Integration

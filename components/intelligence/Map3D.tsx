@@ -2,6 +2,8 @@
 
 import { useEffect, useRef, useState, useCallback } from 'react'
 import { Loader2, Camera, Layers, Navigation, Maximize2 } from 'lucide-react'
+import { Map3DVisualizationLayer } from '../map/Map3DVisualizationLayer'
+import { Map3DControls } from '../map/Map3DControls'
 
 interface Map3DProps {
   center: { lat: number; lng: number }
@@ -29,6 +31,7 @@ export default function Map3D({ center, zoom, layers, properties, viewMode, onPr
   const [droneImagery, setDroneImagery] = useState<DroneImagery[]>([])
   const [selectedImagery, setSelectedImagery] = useState<DroneImagery | null>(null)
   const [mapLayers, setMapLayers] = useState<google.maps.Data[]>([])
+  const [activeVisualization, setActiveVisualization] = useState<string | null>(null)
   const markersRef = useRef<google.maps.Marker[]>([])
   const heatmapsRef = useRef<google.maps.visualization.HeatmapLayer[]>([])
 
@@ -443,6 +446,20 @@ export default function Map3D({ center, zoom, layers, properties, viewMode, onPr
     <div className="relative w-full h-full">
       <div ref={mapRef} className="w-full h-full" />
       
+      {/* 3D Visualization Layer */}
+      {mapInstance && (
+        <Map3DVisualizationLayer 
+          map={mapInstance} 
+          activeVisualization={activeVisualization as any}
+        />
+      )}
+      
+      {/* 3D Controls */}
+      <Map3DControls 
+        activeVisualization={activeVisualization}
+        onVisualizationChange={setActiveVisualization}
+      />
+      
       {/* Enhanced Controls Overlay */}
       <div className="absolute top-4 left-4 bg-white/90 backdrop-blur-sm rounded-lg shadow-lg p-3">
         <div className="flex items-center space-x-2 text-sm">
@@ -460,6 +477,12 @@ export default function Map3D({ center, zoom, layers, properties, viewMode, onPr
             <div className="flex items-center">
               <Camera className="w-3 h-3 mr-1 text-purple-600" />
               <span>{droneImagery.length} Drone Views</span>
+            </div>
+          )}
+          {activeVisualization && (
+            <div className="flex items-center">
+              <Layers className="w-3 h-3 mr-1 text-indigo-600" />
+              <span>3D Visualization Active</span>
             </div>
           )}
         </div>

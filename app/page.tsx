@@ -6,6 +6,7 @@ import { motion } from "framer-motion"
 import { useState, useEffect } from 'react'
 import AISearchBar from '@/components/search/AISearchBar'
 import { houstonDataService } from '@/lib/services/houston-data-service'
+import { houstonCityDataService } from '@/lib/services/houston-city-data-service'
 import AIPropertyRecommendations from '@/components/intelligence/AIPropertyRecommendations'
 
 export default function IntelligenceHub() {
@@ -18,6 +19,15 @@ export default function IntelligenceHub() {
   const [houstonStats, setHoustonStats] = useState<any>(null)
   const [majorProjects, setMajorProjects] = useState<any[]>([])
   const [marketInsights, setMarketInsights] = useState<string[]>([])
+  const [cityData, setCityData] = useState<{
+    laraProperties: any[]
+    cipProjects: any[]
+    cityInvestmentSummary: any
+  }>({
+    laraProperties: [],
+    cipProjects: [],
+    cityInvestmentSummary: null
+  })
 
   // Load real Houston data
   useEffect(() => {
@@ -25,10 +35,13 @@ export default function IntelligenceHub() {
   }, [])
 
   const loadHoustonData = async () => {
-    const [summary, projects, enhancedInsights] = await Promise.all([
+    const [summary, projects, enhancedInsights, laraProps, cipProjs, cityInvest] = await Promise.all([
       houstonDataService.getMarketSummary(),
       houstonDataService.getMajorProjects({ status: 'under_construction' }),
-      houstonDataService.getEnhancedMarketInsights()
+      houstonDataService.getEnhancedMarketInsights(),
+      houstonCityDataService.getLARAProperties({ status: 'available' }),
+      houstonCityDataService.getCIPProjects({ status: 'construction' }),
+      houstonCityDataService.getCityInvestmentSummary()
     ])
     
     // Get July 2025 data
@@ -55,6 +68,11 @@ export default function IntelligenceHub() {
     setHoustonStats(statsWithMLS)
     setMajorProjects(projects.slice(0, 3))
     setMarketInsights(houstonDataService.getLocalInsights().slice(0, 4))
+    setCityData({
+      laraProperties: laraProps,
+      cipProjects: cipProjs,
+      cityInvestmentSummary: cityInvest
+    })
     
     // Set real metrics with July 2025 data
     setLiveMetrics({
@@ -560,6 +578,113 @@ export default function IntelligenceHub() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
         <AIPropertyRecommendations />
       </div>
+
+      {/* Houston City Development Opportunities */}
+      {cityData.laraProperties.length > 0 && (
+        <div className="bg-gradient-to-br from-blue-50 to-indigo-50 py-16">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div className="text-center mb-12">
+              <h2 className="text-3xl font-bold text-gray-900 mb-4">
+                Houston City Development Opportunities
+              </h2>
+              <p className="text-xl text-gray-600">
+                City-owned properties and infrastructure projects creating value
+              </p>
+            </div>
+
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+              {/* LARA Properties */}
+              <div className="bg-white rounded-xl shadow-lg p-8">
+                <div className="flex items-center mb-6">
+                  <Building2 className="h-8 w-8 text-blue-600 mr-3" />
+                  <div>
+                    <h3 className="text-2xl font-bold text-gray-900">LARA Properties</h3>
+                    <p className="text-gray-600">City-owned land available for development</p>
+                  </div>
+                </div>
+
+                <div className="space-y-4">
+                  {cityData.laraProperties.slice(0, 3).map((property, index) => (
+                    <div key={index} className="border-l-4 border-blue-500 pl-4 py-2">
+                      <div className="flex justify-between items-start">
+                        <div className="flex-1">
+                          <h4 className="font-semibold text-gray-900">{property.address}</h4>
+                          <p className="text-sm text-gray-600">{property.neighborhood} • {property.zoning}</p>
+                          <p className="text-sm text-gray-500">{property.lotSize.toLocaleString()} sq ft • {property.intendedUse}</p>
+                        </div>
+                        <div className="text-right">
+                          <p className="text-lg font-bold text-green-600">${property.price?.toLocaleString()}</p>
+                          <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
+                            {property.status}
+                          </span>
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+
+                <Link href="/investment-opportunities" className="mt-6 inline-flex items-center text-blue-600 hover:text-blue-700 font-medium">
+                  View all {cityData.laraProperties.length} properties
+                  <ArrowRight className="ml-2 h-4 w-4" />
+                </Link>
+              </div>
+
+              {/* CIP Projects */}
+              <div className="bg-white rounded-xl shadow-lg p-8">
+                <div className="flex items-center mb-6">
+                  <Construction className="h-8 w-8 text-indigo-600 mr-3" />
+                  <div>
+                    <h3 className="text-2xl font-bold text-gray-900">Capital Projects</h3>
+                    <p className="text-gray-600">${(cityData.cityInvestmentSummary?.totalCIPBudget / 1000000000).toFixed(1)}B in infrastructure investment</p>
+                  </div>
+                </div>
+
+                <div className="space-y-4">
+                  {cityData.cipProjects.slice(0, 3).map((project, index) => (
+                    <div key={index} className="border-l-4 border-indigo-500 pl-4 py-2">
+                      <h4 className="font-semibold text-gray-900">{project.projectName}</h4>
+                      <p className="text-sm text-gray-600">{project.location} • {project.projectType}</p>
+                      <div className="flex justify-between items-center mt-1">
+                        <p className="text-sm text-gray-500">{project.status} • {project.completionYear}</p>
+                        <p className="text-lg font-bold text-indigo-600">${(project.totalBudget / 1000000).toFixed(1)}M</p>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+
+                <Link href="/houston-development-timeline" className="mt-6 inline-flex items-center text-indigo-600 hover:text-indigo-700 font-medium">
+                  Explore all projects
+                  <ArrowRight className="ml-2 h-4 w-4" />
+                </Link>
+              </div>
+            </div>
+
+            {/* City Investment Summary */}
+            {cityData.cityInvestmentSummary && (
+              <div className="mt-8 bg-white rounded-xl shadow-lg p-6">
+                <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-center">
+                  <div>
+                    <p className="text-3xl font-bold text-gray-900">${(cityData.cityInvestmentSummary.totalCIPBudget / 1000000000).toFixed(1)}B</p>
+                    <p className="text-sm text-gray-600">Total CIP Investment</p>
+                  </div>
+                  <div>
+                    <p className="text-3xl font-bold text-gray-900">{cityData.cityInvestmentSummary.laraInventory.available}</p>
+                    <p className="text-sm text-gray-600">Available LARA Properties</p>
+                  </div>
+                  <div>
+                    <p className="text-3xl font-bold text-gray-900">${(cityData.cityInvestmentSummary.laraInventory.totalValue / 1000000).toFixed(1)}M</p>
+                    <p className="text-sm text-gray-600">LARA Portfolio Value</p>
+                  </div>
+                  <div>
+                    <p className="text-3xl font-bold text-gray-900">{Object.keys(cityData.cityInvestmentSummary.projectsByType).length}</p>
+                    <p className="text-sm text-gray-600">Project Categories</p>
+                  </div>
+                </div>
+              </div>
+            )}
+          </div>
+        </div>
+      )}
 
       {/* CTA Section */}
       <div className="bg-gradient-to-r from-purple-600 to-indigo-600 py-16">

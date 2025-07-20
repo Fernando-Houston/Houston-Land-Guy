@@ -49,13 +49,13 @@ class FernandoXAI {
   private systemPrompt: string
 
   constructor() {
-    // Initialize OpenAI only if API key is available (not during build time)
-    if (process.env.OPENAI_API_KEY) {
+    // Only initialize OpenAI on server side
+    if (typeof window === 'undefined' && process.env.OPENAI_API_KEY) {
       this.openai = new OpenAI({
         apiKey: process.env.OPENAI_API_KEY
       })
     } else {
-      // Create a dummy client for build time
+      // Create a dummy client for client side and build time
       this.openai = null as any
     }
     this.model = 'gpt-4-turbo-preview'

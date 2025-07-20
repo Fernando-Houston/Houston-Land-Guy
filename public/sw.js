@@ -1,4 +1,4 @@
-const CACHE_NAME = 'houston-intel-v1';
+const CACHE_NAME = 'houston-intel-v2'; // Updated to force cache refresh
 const urlsToCache = [
   '/',
   '/assistant',

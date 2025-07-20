@@ -265,30 +265,43 @@ class HoustonDataService {
     }
   }
 
-  // July 2025 MLS Data - DataProcess 4
+  // July 2025 MLS Data - Updated from CSV
   private static readonly JULY_2025_MLS_DATA = {
     singleFamilyHomeSales: 8588,
     singleFamilySalesGrowthYoY: 12.5,
     totalPropertySales: 9993,
     totalPropertySalesGrowthYoY: 10.4,
     activeListingsSingleFamily: 38713,
-    activeListingsGrowthYoY: 31.8,
+    activeListingsGrowthYoY: 31.8, // Record High Inventory
     pendingSales: 8541,
     pendingSalesGrowthYoY: 10.1,
     medianHomePrice: 346651,
-    medianPriceChange: 0, // Unchanged
+    medianPriceChange: 0, // Price Stability - Unchanged
     averageHomePrice: 450235,
-    averagePriceGrowthYoY: 4.4,
+    averagePriceGrowthYoY: 4.4, // Luxury Impact
     daysOnMarket: 49,
     daysOnMarketChange: 2,
+    daysOnMarketChangePercent: 4.3, // Slightly Slower Sales
     monthsInventory: 5.4,
     inventoryChangeMonths: 1.2,
-    inventoryChangePercent: 28.6,
-    luxurySalesGrowth: 40.6,
-    newListingsGrowth: 17.4
+    inventoryChangePercent: 28.6, // Buyer-Favorable
+    luxurySalesGrowth: 40.6, // Luxury Surge ($1M+)
+    newListingsGrowth: 17.4, // Supply Increase
+    marketIndicators: {
+      demand: 'Strong Demand',
+      market: 'Active Market',
+      inventory: 'Record High Inventory',
+      buyerInterest: 'Buyer Interest',
+      priceStability: 'Price Stability',
+      luxuryImpact: 'Luxury Impact',
+      salesVelocity: 'Slightly Slower Sales',
+      marketBalance: 'Buyer-Favorable',
+      luxurySegment: 'Luxury Surge',
+      supplyTrend: 'Supply Increase'
+    }
   }
 
-  // 2025 Neighborhood Pricing Data - DataProcess 4
+  // January 2025 Neighborhood Pricing Data - Updated from CSV
   private static readonly NEIGHBORHOOD_PRICING_2025 = {
     'houston-heights': { median: 615000, average: null, daysOnMarket: 38 },
     'magnolia': { median: 310576, average: 389191, daysOnMarket: 96 },
