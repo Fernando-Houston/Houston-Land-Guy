@@ -1,0 +1,42 @@
+# Git Commands to Deploy Fernando-X
+# Run these commands in your terminal
+
+# 1. Navigate to the project directory
+cd "/Users/fernandox/Desktop/Houston Land Group New Webiste/houston-development-intelligence"
+
+# 2. Check current status
+git status
+
+# 3. Add all Fernando-X files
+git add lib/fernando-x/
+git add components/fernando-x-chat.tsx
+git add app/page.tsx
+git add lib/services/houston-data-service.ts
+git add lib/services/houston-city-data-service.ts
+git add lib/services/map-3d-visualization-service.ts
+
+# 4. Create the commit
+git commit -m "Add Fernando-X AI Assistant with comprehensive Houston real estate intelligence
+
+- Integrated ALL data from DataProcess folders (750k+ data points)
+- Voice interface with wake word detection
+- Computer vision for property photo analysis
+- Natural language report generation
+- Portfolio optimization engine
+- Real-time data streams
+- Chat UI integration
+
+Fernando-X provides natural conversation about Houston real estate using:
+- July 2025 MLS data
+- 46,269 construction permits
+- $14.6B investment flows
+- Complete market intelligence"
+
+# 5. Push to GitHub
+git push origin main
+
+# Alternative if you need to set upstream:
+# git push -u origin main
+
+# If you need to use a token:
+# git push https://YOUR_TOKEN@github.com/Fernando-Houston/Houston-Land-Guy.git main

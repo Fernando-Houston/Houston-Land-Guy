@@ -1,0 +1,20 @@
+# Steps to force a fresh build and clear caches:
+
+1. Clear your browser cache:
+   - Hard refresh: Cmd+Shift+R (Mac) or Ctrl+Shift+R (Windows)
+   - Or open Developer Tools > Network tab > check "Disable cache"
+
+2. If still seeing the error, force a Vercel rebuild:
+   - Option A: Push an empty commit
+     git commit --allow-empty -m "Force Vercel rebuild"
+     git push origin main
+   
+   - Option B: Go to Vercel dashboard
+     - Find your deployment
+     - Click "Redeploy" > "Redeploy with existing Build Cache" (unchecked)
+
+3. Wait for the new deployment to complete (usually 1-2 minutes)
+
+4. Test again with a cleared browser cache
+
+The Clock import fix is already in your code, so this should resolve the runtime error.

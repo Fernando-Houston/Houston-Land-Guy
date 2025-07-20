@@ -1,0 +1,20 @@
+# Git commands to ensure Fernando-X uses popup chat everywhere
+
+cd "/Users/fernandox/Desktop/Houston Land Group New Webiste/houston-development-intelligence"
+
+git add app/page.tsx
+
+git commit -m "Ensure Fernando-X always opens as popup chat
+
+- Updated Fernando-X module card to trigger popup instead of navigation
+- Changed CTA button to open chat popup
+- Fixed all links to /assistant to open popup chat instead
+
+Now Fernando-X consistently appears as:
+- Floating purple button in bottom-right
+- Opens as popup chat overlay
+- Never navigates to full-page interface
+
+Co-Authored-By: Claude <noreply@anthropic.com>"
+
+git push origin main

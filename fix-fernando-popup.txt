@@ -1,0 +1,25 @@
+# Git commands to fix Fernando-X popup chat
+
+cd "/Users/fernandox/Desktop/Houston Land Group New Webiste/houston-development-intelligence"
+
+git add app/assistant/page.tsx
+git add components/fernando-x-chat.tsx
+git add components/search/AISearchBar.tsx
+
+git commit -m "Fix Fernando-X to use popup chat instead of full page
+
+- Changed assistant page to redirect to homepage
+- Fernando-X chat starts minimized (floating button)
+- Search bar 'Ask Fernando-X' opens chat popup
+- Added event listener for opening chat with query
+- Fixed integration between search and chat
+
+Now Fernando-X appears as intended:
+- Floating purple button with sparkles icon
+- Opens as popup chat in corner
+- Can be triggered from search bar
+- Uses 750,000+ data points
+
+Co-Authored-By: Claude <noreply@anthropic.com>"
+
+git push origin main
