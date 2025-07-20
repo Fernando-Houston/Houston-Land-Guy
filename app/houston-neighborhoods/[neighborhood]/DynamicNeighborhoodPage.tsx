@@ -1,6 +1,6 @@
 'use client'
 
-import React from 'react'
+import React, { Fragment } from 'react'
 import { motion } from 'framer-motion'
 import Link from 'next/link'
 import { ArrowLeft, MapPin, TrendingUp, Users, School, Home, Building2, Download, Clock, Droplet, TreePine, DollarSign, Zap } from 'lucide-react'
@@ -95,7 +95,7 @@ export function DynamicNeighborhoodPage({
       }
     },
     hasMap: `https://maps.google.com/?q=${neighborhoodData.name}+Houston+TX`
-  };
+  }
 
   return (
     <React.Fragment>
