@@ -5,7 +5,7 @@ import { motion, AnimatePresence } from 'framer-motion'
 import {
   Search, Brain, Sparkles, MapPin, Home, DollarSign,
   TrendingUp, Building2, Filter, X, Loader2,
-  Calendar, Target, Zap, ChevronRight
+  Calendar, Target, Zap, ChevronRight, Clock
 } from 'lucide-react'
 import { useRouter } from 'next/navigation'
 
