@@ -1,0 +1,10 @@
+<svg width="400" height="300" viewBox="0 0 400 300" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <rect width="400" height="300" fill="#DBEAFE"/>
+  <path d="M150 120H250V180H150V120Z" fill="#93C5FD"/>
+  <path d="M150 120L200 90L250 120H150Z" fill="#60A5FA"/>
+  <rect x="170" y="140" width="25" height="25" fill="#3B82F6"/>
+  <rect x="205" y="140" width="25" height="25" fill="#3B82F6"/>
+  <rect x="185" y="180" width="30" height="20" fill="#2563EB"/>
+  <circle cx="200" cy="180" r="60" stroke="#93C5FD" stroke-width="2" stroke-dasharray="5 5" fill="none"/>
+  <text x="200" y="230" text-anchor="middle" fill="#60A5FA" font-family="Arial" font-size="14">Property Image</text>
+</svg>

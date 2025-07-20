@@ -1,6 +1,7 @@
 // Fernando-X AI Assistant - Enhanced with 750,000+ Data Points
 import { INTEGRATED_DATA } from './fernando-x-data'
 import { fernandoMemory } from './fernando-x/memory-service'
+import { conversationEngine } from './fernando-x/conversation-engine'
 
 export interface FernandoXQuery {
   text: string
@@ -31,29 +32,40 @@ class FernandoX {
       populationGrowth: INTEGRATED_DATA.populationGrowth.totalProjected,
       totalDevelopers: INTEGRATED_DATA.developers.length,
       majorProjects: INTEGRATED_DATA.majorProjects.length,
-      memoryEnabled: true
+      memoryEnabled: true,
+      conversationEngineActive: true
     })
     
     try {
-      // Store the query in memory if user/session context provided
+      // Use the conversation engine for natural responses
+      const sessionId = query.context?.sessionId || `session-${Date.now()}`
+      const context = await conversationEngine.getConversationContext(sessionId)
+      
+      const result = await conversationEngine.generateResponse(query.text, {
+        ...context,
+        userId: query.context?.userId
+      })
+      
+      // Store the conversation
       if (query.context?.sessionId) {
-        await fernandoMemory.storeMemory({
-          userId: query.context.userId,
-          sessionId: query.context.sessionId,
-          memoryType: 'conversation',
-          content: { query: query.text, timestamp: new Date() },
-          importance: 0.6
-        })
-        
-        // Get previous context
-        const previousMemories = await fernandoMemory.searchMemories({
-          sessionId: query.context.sessionId,
-          limit: 5
-        })
-        
-        console.log(`📝 Retrieved ${previousMemories.length} previous memories for context`)
+        await conversationEngine.storeConversation(
+          sessionId,
+          query.context.userId,
+          query.text,
+          result.response
+        )
       }
       
+      return {
+        text: result.response,
+        data: result.suggestedActions,
+        confidence: result.confidence,
+        sources: result.sources
+      }
+    } catch (error) {
+      console.error('Error in conversation engine, falling back to pattern matching:', error)
+      
+      // Fallback to pattern matching if conversation engine fails
       const queryLower = query.text.toLowerCase()
       
       // Population & Growth Queries

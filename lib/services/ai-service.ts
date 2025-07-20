@@ -256,7 +256,8 @@ Always provide quantitative analysis when possible and cite relevant data source
         neighborhood: locations[0],
         capRate: 8.5,
         projectedROI: 18.5,
-        features: ['Updated', 'Pool', 'Great Schools']
+        features: ['Updated', 'Pool', 'Great Schools'],
+        imageUrl: '/images/property-placeholder-1.jpg' // Added placeholder image
       },
       {
         id: 'prop-ai-2',
@@ -268,7 +269,8 @@ Always provide quantitative analysis when possible and cite relevant data source
         neighborhood: locations[1] || locations[0],
         capRate: 7.8,
         projectedROI: 16.2,
-        features: ['New Construction', 'Energy Efficient']
+        features: ['New Construction', 'Energy Efficient'],
+        imageUrl: '/images/property-placeholder-2.jpg' // Added placeholder image
       }
     ]
   }
