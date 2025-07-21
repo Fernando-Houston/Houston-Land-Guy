@@ -1,79 +1,73 @@
-import { getIntegratedData } from '../lib/fernando-x-data'
+#!/usr/bin/env npx tsx
+// Simple Fernando-X functionality test
+import FernandoX from '../lib/fernando-x'
 
-async function testFernandoXBasic() {
-  try {
-    console.log('🤖 Testing Fernando-X Basic Integration\n')
+async function testFernandoSimple() {
+  console.log('🤖 Simple Fernando-X Database Test\n')
+  
+  const fernando = new FernandoX()
+  
+  const testQueries = [
+    "How many developers are in Houston?",
+    "What properties are available for investment?", 
+    "Tell me about Houston neighborhoods",
+    "What's the construction activity like?",
+    "Show me market trends"
+  ]
+  
+  let passed = 0
+  let total = testQueries.length
+  
+  for (const [i, query] of testQueries.entries()) {
+    console.log(`\n${i + 1}. Testing: "${query}"`)
+    console.log('─'.repeat(50))
     
-    // Test data retrieval
-    console.log('1. Testing data retrieval...')
-    const data = await getIntegratedData()
-    
-    console.log(`   ✅ Successfully retrieved data`)
-    console.log(`   📊 Total data points: ${data.totalDataPoints.toLocaleString()}`)
-    
-    // Test data structure
-    console.log('\n2. Analyzing data structure...')
-    console.log(`   👥 Developers: ${data.totalDevelopers} records`)
-    console.log(`   🏗️ Projects: ${data.totalProjects} records`) 
-    console.log(`   📄 Permits: ${data.permitActivity.totalPermits} records`)
-    console.log(`   🏘️ Neighborhoods: ${data.totalNeighborhoods} records`)
-    console.log(`   🏠 Properties: ${data.propertyStats.totalProperties} records`)
-    
-    // Test data content
-    console.log('\n3. Testing data content...')
-    if (data.developers.length > 0) {
-      console.log(`   ✅ Top developer: ${data.developers[0].name}`)
-    }
-    
-    if (data.majorProjects.length > 0) {
-      console.log(`   ✅ Major project: ${data.majorProjects[0].name}`)
-    }
-    
-    if (data.neighborhoodRankings.length > 0) {
-      console.log(`   ✅ Top neighborhood: ${data.neighborhoodRankings[0].name}`)
-    }
-    
-    // Test legacy compatibility
-    console.log('\n4. Testing legacy compatibility...')
-    if (data.INTEGRATED_DATA && data.INTEGRATED_DATA.populationGrowth) {
-      console.log(`   ✅ Legacy data structure maintained`)
-      console.log(`   📈 Growth areas: ${data.INTEGRATED_DATA.populationGrowth.topGrowthAreas.length}`)
-    }
-    
-    console.log('\n🎉 Fernando-X integration test PASSED!')
-    console.log(`\n📋 Summary:`)
-    console.log(`   • Database: ✅ Connected`)
-    console.log(`   • Data Points: ✅ ${data.totalDataPoints.toLocaleString()}`)
-    console.log(`   • Developers: ✅ ${data.totalDevelopers}`)
-    console.log(`   • Projects: ✅ ${data.totalProjects}`)
-    console.log(`   • Legacy Support: ✅ Maintained`)
-    
-    return {
-      success: true,
-      dataPoints: data.totalDataPoints,
-      entities: {
-        developers: data.totalDevelopers,
-        projects: data.totalProjects,
-        permits: data.permitActivity.totalPermits,
-        neighborhoods: data.totalNeighborhoods,
-        properties: data.propertyStats.totalProperties
+    try {
+      const response = await fernando.processQuery({ text: query, context: { sessionId: 'test-session' }})
+      
+      // Check if response is substantive and not an error
+      if (response.text && response.text.length > 30 && !response.text.includes('I apologize, but I encountered an error')) {
+        console.log('✅ PASSED - Got substantive response')
+        console.log(`   Response preview: "${response.text.substring(0, 80)}..."`)
+        passed++
+      } else {
+        console.log('❌ FAILED - Poor or error response')
+        console.log(`   Response: "${response.text || JSON.stringify(response)}"`)
       }
+      
+    } catch (error) {
+      console.log('❌ FAILED - Exception thrown')
+      console.log(`   Error: ${error.message}`)
     }
     
-  } catch (error) {
-    console.error('❌ Fernando-X test failed:', error)
-    return {
-      success: false,
-      error: error.message
-    }
+    await new Promise(resolve => setTimeout(resolve, 1000))
   }
+  
+  console.log('\n' + '='.repeat(50))
+  console.log('🎯 FERNANDO-X TEST RESULTS')
+  console.log('='.repeat(50))
+  console.log(`✅ Passed: ${passed}/${total} (${Math.round(passed/total*100)}%)`)
+  
+  if (passed >= 4) {
+    console.log('\n🎉 Fernando-X is working well!')
+  } else if (passed >= 2) {
+    console.log('\n⚠️ Fernando-X has some issues but basic functionality works')
+  } else {
+    console.log('\n🚨 Fernando-X needs major fixes')
+  }
+  
+  return { passed, total }
 }
 
-// Run test
-testFernandoXBasic().then(result => {
-  if (result.success) {
-    process.exit(0)
-  } else {
-    process.exit(1)
-  }
-})
+if (require.main === module) {
+  testFernandoSimple()
+    .then((result) => {
+      process.exit(result.passed >= 3 ? 0 : 1)
+    })
+    .catch((error) => {
+      console.error('💥 Test failed:', error)
+      process.exit(1)
+    })
+}
+
+export { testFernandoSimple }
