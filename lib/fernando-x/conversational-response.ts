@@ -185,12 +185,17 @@ Once I know that, I can show you exactly what's available and where you'll get t
     }
     
     // Default greeting - but make it conversational
-    if (messageLower.includes('hello') || messageLower.includes('hi') || messageLower.includes('hey')) {
-      return `Hey! I'm Fernando-X. 
+    if (messageLower === 'hi' || messageLower === 'hello' || messageLower === 'hey' || 
+        messageLower.includes('hello') || messageLower.includes('hi') || messageLower.includes('hey')) {
+      return `Hey! I'm Fernando-X, your Houston real estate expert. 
 
-Instead of drowning you in data, let me ask - what's your real estate goal right now? 
+I can help you with:
+• Finding homes to buy or invest in
+• Understanding Houston neighborhoods
+• Analyzing market trends and prices
+• Calculating ROI on properties
 
-Buying your first place? Looking for an investment? Or just trying to figure out if Houston's market is as crazy as everyone says?`
+What brings you here today?`
     }
     
     // If we don't have a specific response, ask a clarifying question
@@ -333,6 +338,11 @@ export function shouldUseConversationalResponse(message: string): boolean {
   
   // If it's conversational, use conversational
   if (conversationalTriggers.some(trigger => messageLower.includes(trigger))) {
+    return true
+  }
+  
+  // Very short messages (1-2 words) are always conversational
+  if (message.split(' ').length <= 2) {
     return true
   }
   

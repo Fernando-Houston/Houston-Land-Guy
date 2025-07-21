@@ -614,30 +614,42 @@ What specific aspect would you like to explore?`,
     userMessage: string,
     assistantResponse: string
   ): Promise<void> {
-    // Store in memory for context
-    await fernandoMemory.storeMemory({
-      userId,
-      sessionId,
-      memoryType: 'conversation',
-      content: {
-        userMessage,
-        assistantResponse,
-        timestamp: new Date()
-      },
-      importance: 0.7
-    })
+    try {
+      // Store in memory for context
+      await fernandoMemory.storeMemory({
+        userId,
+        sessionId,
+        memoryType: 'conversation',
+        content: {
+          userMessage,
+          assistantResponse,
+          timestamp: new Date()
+        },
+        importance: 0.7
+      })
+    } catch (error) {
+      console.log('Memory storage skipped - service not available')
+    }
   }
 
   async getConversationContext(sessionId: string): Promise<ConversationContext> {
-    const memories = await fernandoMemory.getConversationHistory(sessionId, 10)
-    
-    return {
-      sessionId,
-      conversationHistory: memories.map(m => ({
-        role: m.content.userMessage ? 'user' : 'assistant',
-        content: m.content.userMessage || m.content.assistantResponse,
-        timestamp: new Date(m.createdAt)
-      }))
+    try {
+      const memories = await fernandoMemory.getConversationHistory(sessionId, 10)
+      
+      return {
+        sessionId,
+        conversationHistory: memories.map(m => ({
+          role: m.content.userMessage ? 'user' : 'assistant',
+          content: m.content.userMessage || m.content.assistantResponse,
+          timestamp: new Date(m.createdAt)
+        }))
+      }
+    } catch (error) {
+      console.log('Memory service not available, using empty context')
+      return {
+        sessionId,
+        conversationHistory: []
+      }
     }
   }
   
