@@ -1,7 +1,5 @@
 // Fernando-X AI Assistant - Enhanced with 750,000+ Data Points
 import { INTEGRATED_DATA } from './fernando-x-data'
-import { fernandoMemory } from './fernando-x/memory-service'
-import { conversationEngine } from './fernando-x/conversation-engine'
 
 export interface FernandoXQuery {
   text: string
@@ -53,6 +51,10 @@ class FernandoX {
     }
     
     // Server-side processing continues below
+    // Import server-side modules dynamically to prevent client bundling
+    const { fernandoMemory } = await import('./fernando-x/memory-service')
+    const { conversationEngine } = await import('./fernando-x/conversation-engine')
+    
     // DIAGNOSTIC: Log to verify enhanced version is being used
     console.log('🚀 FERNANDO-X ENHANCED: Processing query with 750,000+ data points and memory')
     console.log('📊 Data verification:', {

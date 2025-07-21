@@ -45,7 +45,7 @@ export default function FernandoXChat({ initialMessage, onClose }: FernandoXChat
   useEffect(() => {
     // VERSION CHECK
     console.log('🎯 FERNANDO-X CHAT COMPONENT: Initializing')
-    console.log('📊 FERNANDO-X VERSION CHECK:', fernandoX.getMarketSummary())
+    // Removed getMarketSummary call to prevent client-side bundling issues
     
     // Initialize with welcome message
     const welcomeMessage: Message = {
