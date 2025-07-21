@@ -4,7 +4,7 @@ import Link from "next/link"
 import { ArrowRight, Building2, Calculator, TrendingUp, FileSearch, DollarSign, Users, Map, Zap, BarChart3, Target, Database, Brain, Clock } from "lucide-react"
 import { motion } from "framer-motion"
 import { useState, useEffect } from 'react'
-import { realDataService } from '@/lib/services/real-data-service'
+// Removed direct service import - using API calls instead
 
 export default function DeveloperIntelligence() {
   const [metrics, setMetrics] = useState({
@@ -24,11 +24,21 @@ export default function DeveloperIntelligence() {
   
   const loadRealData = async () => {
     try {
-      const [developers, majorProjects, permitActivity] = await Promise.all([
-        realDataService.getDevelopers(10),
-        realDataService.getMajorProjects(),
-        realDataService.getPermitActivity()
+      const [developersResponse, projectsResponse, permitResponse] = await Promise.all([
+        fetch('/api/developers?limit=10'),
+        fetch('/api/projects'),
+        fetch('/api/permit-activity')
       ])
+      
+      const [developersData, projectsData, permitData] = await Promise.all([
+        developersResponse.json(),
+        projectsResponse.json(),
+        permitResponse.json()
+      ])
+      
+      const developers = developersData.developers || []
+      const majorProjects = projectsData.projects || []
+      const permitActivity = permitData.permitActivity || { totalPermits: 89 }
       
       setRealDevelopers(developers)
       setProjects(majorProjects)

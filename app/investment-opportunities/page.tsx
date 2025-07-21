@@ -4,7 +4,7 @@ import Link from "next/link"
 import { ArrowRight, DollarSign, TrendingUp, PieChart, Brain, Activity, Shield, Target, BarChart3, Globe, Cpu, Eye, CheckCircle, Zap, Building2, Clock, Filter } from "lucide-react"
 import { motion } from "framer-motion"
 import { useState, useEffect } from 'react'
-import { realDataService } from '@/lib/services/real-data-service'
+// Removed direct service import - using API calls instead
 
 export default function InvestorIntelligence() {
   const [metrics, setMetrics] = useState({
@@ -25,11 +25,21 @@ export default function InvestorIntelligence() {
 
   const loadRealData = async () => {
     try {
-      const [summary, projects, permits] = await Promise.all([
-        realDataService.getMarketSummary(),
-        realDataService.getMajorProjects(),
-        realDataService.getPermitActivity()
+      const [summaryResponse, projectsResponse, permitsResponse] = await Promise.all([
+        fetch('/api/market-data'),
+        fetch('/api/projects'),
+        fetch('/api/permit-activity')
       ])
+      
+      const [summaryData, projectsData, permitsData] = await Promise.all([
+        summaryResponse.json(),
+        projectsResponse.json(),
+        permitsResponse.json()
+      ])
+      
+      const summary = summaryData.summary || {}
+      const projects = projectsData.projects || []
+      const permits = permitsData.permitActivity || { totalPermits: 0 }
       
       setMarketSummary(summary)
       setMajorProjects(projects)

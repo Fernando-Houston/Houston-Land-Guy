@@ -9,7 +9,7 @@ import {
   Activity, Briefcase, ChevronRight, AlertCircle, Sparkles, Brain, Zap
 } from 'lucide-react'
 import { getMarketIntelligence, type MarketIntelligence } from '@/lib/services/data-intelligence'
-import { realDataService } from '@/lib/services/real-data-service'
+// Removed direct service import - using API calls instead
 import { format } from 'date-fns'
 
 
@@ -30,13 +30,25 @@ export default function IntelligencePage() {
 
   const loadRealData = async () => {
     try {
-      const [insight, summary, projects, permits, neighborhoods] = await Promise.all([
+      const [insight, summaryResponse, projectsResponse, permitsResponse, neighborhoodsResponse] = await Promise.all([
         getMarketIntelligence('development trends and opportunities'),
-        realDataService.getMarketSummary(),
-        realDataService.getMajorProjects(),
-        realDataService.getPermitActivity(),
-        realDataService.getAvailableNeighborhoods()
+        fetch('/api/market-data'),
+        fetch('/api/projects'),
+        fetch('/api/permit-activity'),
+        fetch('/api/neighborhoods')
       ])
+      
+      const [summaryData, projectsData, permitsData, neighborhoodsData] = await Promise.all([
+        summaryResponse.json(),
+        projectsResponse.json(),
+        permitsResponse.json(),
+        neighborhoodsResponse.json()
+      ])
+      
+      const summary = summaryData.summary || {}
+      const projects = projectsData.projects || []
+      const permits = permitsData.permitActivity || { totalPermits: 0 }
+      const neighborhoods = neighborhoodsData.neighborhoods || []
       
       setMarketInsight(insight)
       setPermitActivity(permits)
