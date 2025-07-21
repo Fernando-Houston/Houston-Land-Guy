@@ -33,13 +33,23 @@ class FernandoX {
       totalDevelopers: INTEGRATED_DATA.developers.length,
       majorProjects: INTEGRATED_DATA.majorProjects.length,
       memoryEnabled: true,
-      conversationEngineActive: true
+      conversationEngineActive: true,
+      queryText: query.text,
+      sessionId: query.context?.sessionId || 'no-session'
     })
     
     try {
       // Use the conversation engine for natural responses
       const sessionId = query.context?.sessionId || `session-${Date.now()}`
       const context = await conversationEngine.getConversationContext(sessionId)
+      
+      // Log whether this will use conversational or data engine
+      const isConversational = query.text.toLowerCase().includes('budget') || 
+                              query.text.toLowerCase().includes('what else') ||
+                              query.text.toLowerCase().includes('build') ||
+                              query.text.split(' ').length < 10
+      
+      console.log('🤖 Response type:', isConversational ? 'CONVERSATIONAL' : 'DATA-DRIVEN')
       
       const result = await conversationEngine.generateResponse(query.text, {
         ...context,

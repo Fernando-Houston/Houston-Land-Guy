@@ -4,6 +4,7 @@ import { fernandoMemory } from './memory-service'
 import { fernandoDataQuery } from './data-query-service'
 import { investmentScoring } from '../services/investment-scoring-service'
 import { enhancedDataQuery } from './enhanced-data-query-service'
+import { conversationalFernando, shouldUseConversationalResponse } from './conversational-response'
 
 interface ConversationContext {
   sessionId: string
@@ -49,6 +50,21 @@ Always:
     suggestedActions?: Array<{ label: string; action: string }>
   }> {
     try {
+      // First check if this should be a conversational response
+      if (shouldUseConversationalResponse(userMessage)) {
+        const conversationalResponse = await conversationalFernando.getResponse(
+          userMessage,
+          context.sessionId
+        )
+        
+        return {
+          response: conversationalResponse,
+          confidence: 0.95,
+          sources: ['Fernando-X Conversational AI'],
+          suggestedActions: this.getConversationalActions(userMessage, conversationalResponse)
+        }
+      }
+      
       // Check if we need to use fallback for specific queries
       const fallbackResponse = this.checkForDataQuery(userMessage)
       if (fallbackResponse) {
@@ -603,5 +619,43 @@ What specific aspect would you like to explore?`,
     }
   }
 }
+
+  private getConversationalActions(message: string, response: string): Array<{ label: string; action: string }> {
+    const actions: Array<{ label: string; action: string }> = []
+    const messageLower = message.toLowerCase()
+    const responseLower = response.toLowerCase()
+    
+    // Add relevant actions based on conversation context
+    if (messageLower.includes('build') || responseLower.includes('build')) {
+      actions.push(
+        { label: 'Construction Cost Calculator', action: 'navigate:/tools/cost-calculator' },
+        { label: 'Find Lots', action: 'search:land' }
+      )
+    }
+    
+    if (messageLower.includes('invest') || messageLower.includes('roi')) {
+      actions.push(
+        { label: 'ROI Calculator', action: 'navigate:/roi-calculator' },
+        { label: 'View Properties', action: 'search:properties' }
+      )
+    }
+    
+    if (responseLower.includes('area') || responseLower.includes('neighborhood')) {
+      actions.push(
+        { label: 'View Map', action: 'navigate:/intelligence/map' },
+        { label: 'Compare Areas', action: 'tool:comparison' }
+      )
+    }
+    
+    // Always include a help action
+    if (actions.length === 0) {
+      actions.push(
+        { label: 'Search Properties', action: 'search:properties' },
+        { label: 'View Market Data', action: 'navigate:/intelligence' }
+      )
+    }
+    
+    return actions
+  }
 
 export const conversationEngine = new FernandoXConversationEngine()
