@@ -7,7 +7,6 @@ import {
   Clock, DollarSign, Building2, Home, Factory, Store,
   TrendingUp, ArrowRight, Filter, Search
 } from 'lucide-react'
-import { houstonDataService } from '@/lib/services/houston-data-service'
 
 interface ZoningData {
   zone: string
@@ -42,12 +41,35 @@ export default function ZoningExplorer() {
   useEffect(() => {
     const loadData = async () => {
       try {
-        const [regulatory, trends] = await Promise.all([
-          houstonDataService.getRegulatoryData(),
-          houstonDataService.getDevelopmentTrends()
-        ])
-        setRegulatoryData(regulatory)
-        setDevelopmentTrends(trends)
+        // Use fallback regulatory data for now
+        const mockRegulatory = [
+          {
+            category: 'Texas SB 840',
+            currentStatus: 'Pending Implementation',
+            updates2025: 'Commercial-to-residential conversion by right',
+            effectiveDate: 'September 1, 2025',
+            developmentImpact: 'Streamlined multifamily development process'
+          },
+          {
+            category: '30-Day Permit Pilot',
+            currentStatus: 'Active Program',
+            updates2025: 'Fast-track single-family residential permits',
+            effectiveDate: 'July 7, 2025',
+            developmentImpact: 'Reduced permitting timeline for qualified projects'
+          }
+        ]
+        
+        const mockTrends = [
+          {
+            category: 'Subdivision Development',
+            keyMetrics: 'Active development in unincorporated Harris County',
+            geographicFocus: 'Northwest Harris County',
+            keyPlayers: ['Lennar', 'DR Horton', 'Perry Homes']
+          }
+        ]
+        
+        setRegulatoryData(mockRegulatory)
+        setDevelopmentTrends(mockTrends)
       } catch (error) {
         console.error('Error loading zoning data:', error)
       } finally {

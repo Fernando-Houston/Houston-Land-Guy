@@ -6,7 +6,6 @@ import {
   Construction, MapPin, DollarSign, Calendar, Building2,
   TrendingUp, Clock, Users, AlertCircle, Filter, Search
 } from 'lucide-react'
-import { realDataService } from '@/lib/services/real-data-service'
 
 interface MajorProject {
   id: string
@@ -45,8 +44,9 @@ export default function MajorProjectsTracker({
   const loadProjects = async () => {
     try {
       setLoading(true)
-      const allProjects = await realDataService.getMajorProjects()
-      setProjects(allProjects)
+      const response = await fetch('/api/projects')
+      const data = await response.json()
+      setProjects(data.projects || [])
     } catch (error) {
       console.error('Error loading projects:', error)
     } finally {
@@ -123,7 +123,7 @@ export default function MajorProjectsTracker({
           Major Houston Projects
         </h2>
         <p className="text-gray-600 mt-1">
-          Track {formatCurrency(projects.reduce((sum, p) => sum + p.investmentAmount, 0))} in development across Houston
+          Track {formatCurrency(projects.reduce((sum, p) => sum + p.value, 0))} in development across Houston
         </p>
       </div>
 
@@ -281,7 +281,7 @@ export default function MajorProjectsTracker({
         </div>
         <div className="text-center">
           <p className="text-3xl font-bold text-purple-600">
-            {formatCurrency(projects.reduce((sum, p) => sum + p.investmentAmount, 0))}
+            {formatCurrency(projects.reduce((sum, p) => sum + p.value, 0))}
           </p>
           <p className="text-sm text-gray-600">Total Investment</p>
         </div>
