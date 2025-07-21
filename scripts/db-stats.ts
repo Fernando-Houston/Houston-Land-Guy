@@ -13,31 +13,30 @@ async function getDatabaseStats() {
     const developers = await prisma.developer.count()
     const projects = await prisma.project.count()
     const properties = await prisma.property.count()
-    const neighborhoods = await prisma.neighborhood.count()
+    const neighborhoods = await prisma.harNeighborhoodData.count() // Using HarNeighborhoodData
     const marketMetrics = await prisma.marketMetrics.count()
-    const constructionCosts = await prisma.constructionCost.count()
+    const constructionCosts = await prisma.constructionCostDP5.count() // Using ConstructionCostDP5
     const permits = await prisma.permit.count()
     
     // Additional Tables
-    const harReports = await prisma.hARMLSReport.count()
-    const harNeighborhoods = await prisma.hARNeighborhoodData.count()
+    const harReports = await prisma.harMlsReport.count()
     const marketIntelligence = await prisma.marketIntelligence.count()
     const constructionActivity = await prisma.constructionActivity.count()
     const rentalMarket = await prisma.rentalMarket.count()
-    const strMarket = await prisma.shortTermRentalMarket.count()
+    const strMarket = await prisma.sTRMarket.count()
     const demographics = await prisma.areaDemographics.count()
     const income = await prisma.incomeData.count()
     const population = await prisma.populationProjection.count()
     const migration = await prisma.migrationData.count()
     const qualityOfLife = await prisma.qualityOfLife.count()
     const education = await prisma.educationMetrics.count()
-    const employers = await prisma.majorEmployer.count()
-    const economic = await prisma.economicIndicator.count()
+    const employers = await prisma.employerDP5.count()
+    const economic = await prisma.economicIndicatorDP5.count()
     
     // Calculate totals
     const coreTotal = developers + projects + properties + neighborhoods + 
                       marketMetrics + constructionCosts + permits
-    const additionalTotal = harReports + harNeighborhoods + marketIntelligence + 
+    const additionalTotal = harReports + marketIntelligence + 
                            constructionActivity + rentalMarket + strMarket + 
                            demographics + income + population + migration + 
                            qualityOfLife + education + employers + economic
@@ -60,7 +59,6 @@ async function getDatabaseStats() {
     console.log('\n📊 ENRICHMENT DATA:')
     console.log('-'.repeat(40))
     console.log(`📄 HAR MLS Reports:      ${harReports.toString().padStart(6)}`)
-    console.log(`🏡 HAR Neighborhoods:    ${harNeighborhoods.toString().padStart(6)}`)
     console.log(`🧠 Market Intelligence:  ${marketIntelligence.toString().padStart(6)}`)
     console.log(`🔨 Construction Activity:${constructionActivity.toString().padStart(6)}`)
     console.log(`🏢 Rental Market:        ${rentalMarket.toString().padStart(6)}`)
