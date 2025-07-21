@@ -6,28 +6,27 @@ import {
   MapPin, TrendingUp, DollarSign, School, Users, 
   Home, Building2, Plus, X, BarChart3, Download
 } from 'lucide-react'
-import { coreAgentsClient } from '@/lib/core-agents/client'
-import { NeighborhoodData } from '@/lib/core-agents/types'
+import { realDataService } from '@/lib/services/real-data-service'
+
+interface NeighborhoodData {
+  name: string
+  zipCode?: string
+  totalSales: number
+  medianPrice: number
+  avgPrice: number
+  pricePerSqft: number
+  activeListings: number
+  monthsInventory: number
+  avgDaysOnMarket: number
+  safetyScore?: number
+  walkScore?: number
+  schoolRating?: number
+  growthPotential: number
+}
 import { LeadCaptureForm } from '@/components/forms/LeadCaptureForm'
 import { PropertyMap } from '@/components/maps/MapWrapper'
 
-const availableNeighborhoods = [
-  { slug: 'cypress', name: 'Cypress' },
-  { slug: 'pearland', name: 'Pearland' },
-  { slug: 'memorial', name: 'Memorial' },
-  { slug: 'spring', name: 'Spring' },
-  { slug: 'conroe', name: 'Conroe' },
-  { slug: 'richmond', name: 'Richmond' },
-  { slug: 'friendswood', name: 'Friendswood' },
-  { slug: 'league-city', name: 'League City' },
-  { slug: 'clear-lake', name: 'Clear Lake' },
-  { slug: 'bellaire', name: 'Bellaire' },
-  { slug: 'river-oaks', name: 'River Oaks' },
-  { slug: 'heights', name: 'The Heights' },
-  { slug: 'montrose', name: 'Montrose' },
-  { slug: 'energy-corridor', name: 'Energy Corridor' },
-  { slug: 'champions', name: 'Champions' }
-]
+// Available neighborhoods will be loaded from database
 
 // Helper function to get neighborhood center coordinates
 function getNeighborhoodCenter(slug: string): { lat: number; lng: number } {
@@ -53,22 +52,49 @@ function getNeighborhoodCenter(slug: string): { lat: number; lng: number } {
 }
 
 export default function NeighborhoodComparison() {
-  const [selectedNeighborhoods, setSelectedNeighborhoods] = useState<string[]>(['cypress', 'pearland'])
+  const [selectedNeighborhoods, setSelectedNeighborhoods] = useState<string[]>([])
+  const [availableNeighborhoods, setAvailableNeighborhoods] = useState<Array<{slug: string, name: string, zipCode?: string}>>([])
   const [neighborhoodData, setNeighborhoodData] = useState<Record<string, NeighborhoodData>>({})
   const [loading, setLoading] = useState(false)
 
   useEffect(() => {
-    loadNeighborhoodData()
+    loadAvailableNeighborhoods()
+  }, [])
+
+  useEffect(() => {
+    if (selectedNeighborhoods.length > 0) {
+      loadNeighborhoodData()
+    }
   }, [selectedNeighborhoods])
+
+  const loadAvailableNeighborhoods = async () => {
+    try {
+      const neighborhoods = await realDataService.getAvailableNeighborhoods()
+      setAvailableNeighborhoods(neighborhoods)
+      // Set default selection to first two neighborhoods
+      if (neighborhoods.length >= 2) {
+        setSelectedNeighborhoods([neighborhoods[0].slug, neighborhoods[1].slug])
+      }
+    } catch (error) {
+      console.error('Error loading available neighborhoods:', error)
+    }
+  }
 
   const loadNeighborhoodData = async () => {
     setLoading(true)
     try {
-      const results = await coreAgentsClient.compareNeighborhoods(selectedNeighborhoods)
       const dataMap: Record<string, NeighborhoodData> = {}
-      results.data.forEach((data, index) => {
-        dataMap[selectedNeighborhoods[index]] = data
-      })
+      
+      for (const slug of selectedNeighborhoods) {
+        const neighborhood = availableNeighborhoods.find(n => n.slug === slug)
+        if (neighborhood) {
+          const data = await realDataService.getNeighborhoodComparison(neighborhood.name)
+          if (data) {
+            dataMap[slug] = data
+          }
+        }
+      }
+      
       setNeighborhoodData(dataMap)
     } catch (error) {
       console.error('Error loading neighborhood data:', error)

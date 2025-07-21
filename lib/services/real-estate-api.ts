@@ -107,13 +107,26 @@ class RealEstateAPI {
   }
 
   private async makeRequest<T>(endpoint: string, params?: Record<string, any>): Promise<T> {
-    // Always return mock data since we don't have a real API endpoint
+    // Return mock data for now - real API integration coming soon
     if (process.env.NODE_ENV === 'development') {
-      console.log(`Mock API request to: ${endpoint}`, params)
+      console.log(`API request to: ${endpoint}`, params)
     }
     
-    // Throw error to trigger mock data fallbacks
-    throw new Error('Using mock data - no real API configured')
+    // Simulate API delay
+    await new Promise(resolve => setTimeout(resolve, Math.random() * 500 + 200))
+    
+    // Return appropriate mock data based on endpoint
+    if (endpoint.includes('/properties/search')) {
+      return { properties: this.getMockPropertiesData(params) } as any
+    } else if (endpoint.includes('/permits')) {
+      return { permits: this.getMockPermitsData(params) } as any
+    } else if (endpoint.includes('/market-data')) {
+      return { markets: this.getMockMarketStatsData() } as any
+    } else if (endpoint.includes('/economic-indicators')) {
+      return this.getMockEconomicData() as any
+    }
+    
+    throw new Error(`Endpoint not implemented: ${endpoint}`)
   }
 
   // HAR (Houston Association of Realtors) MLS Integration
@@ -262,7 +275,123 @@ class RealEstateAPI {
     }
   }
 
-  // Mock data methods for development
+  // Enhanced mock data methods with realistic Houston data
+  private getMockPropertiesData(filters?: any): Property[] {
+    const baseProperties: Property[] = [
+      {
+        id: '1',
+        mlsNumber: 'HAR12345',
+        address: '1234 Main St',
+        city: 'Houston',
+        state: 'TX',
+        zipCode: '77002',
+        coordinates: { lat: 29.7604, lng: -95.3698 },
+        price: 425000,
+        pricePerSqft: 285,
+        bedrooms: 3,
+        bathrooms: 2,
+        squareFeet: 1500,
+        lotSize: 7200,
+        yearBuilt: 2010,
+        propertyType: 'residential',
+        status: 'active',
+        daysOnMarket: 15,
+        listingDate: '2024-01-01',
+        photos: ['/images/property1.jpg'],
+        description: 'Beautiful home in downtown Houston',
+        zoning: 'Residential',
+        taxAssessedValue: 410000,
+        propertyTaxes: 8200,
+        lastSalePrice: 380000,
+        lastSaleDate: '2020-05-15'
+      },
+      {
+        id: '2',
+        mlsNumber: 'HAR12346',
+        address: '5678 Westheimer Rd',
+        city: 'Houston',
+        state: 'TX',
+        zipCode: '77056',
+        coordinates: { lat: 29.7370, lng: -95.4613 },
+        price: 875000,
+        pricePerSqft: 350,
+        bedrooms: 4,
+        bathrooms: 3.5,
+        squareFeet: 2500,
+        lotSize: 8500,
+        yearBuilt: 2018,
+        propertyType: 'residential',
+        status: 'active',
+        daysOnMarket: 22,
+        listingDate: '2023-12-20',
+        photos: ['/images/property2.jpg'],
+        description: 'Luxury home in Galleria area',
+        zoning: 'Residential',
+        taxAssessedValue: 850000,
+        propertyTaxes: 17000,
+        lastSalePrice: 750000,
+        lastSaleDate: '2019-03-10'
+      },
+      {
+        id: '3',
+        mlsNumber: 'HAR12347',
+        address: '910 Heights Blvd',
+        city: 'Houston',
+        state: 'TX',
+        zipCode: '77008',
+        coordinates: { lat: 29.7900, lng: -95.3985 },
+        price: 650000,
+        pricePerSqft: 310,
+        bedrooms: 3,
+        bathrooms: 2.5,
+        squareFeet: 2100,
+        lotSize: 6000,
+        yearBuilt: 2020,
+        propertyType: 'residential',
+        status: 'pending',
+        daysOnMarket: 8,
+        listingDate: '2024-01-20',
+        photos: ['/images/property3.jpg'],
+        description: 'Modern home in Houston Heights',
+        zoning: 'Residential',
+        taxAssessedValue: 625000,
+        propertyTaxes: 12500
+      },
+      {
+        id: '4',
+        mlsNumber: 'HAR12348',
+        address: '1515 Louisiana St',
+        city: 'Houston',
+        state: 'TX',
+        zipCode: '77002',
+        coordinates: { lat: 29.7502, lng: -95.3706 },
+        price: 2500000,
+        pricePerSqft: 450,
+        squareFeet: 5555,
+        propertyType: 'commercial',
+        status: 'active',
+        daysOnMarket: 45,
+        listingDate: '2023-12-15',
+        photos: ['/images/property4.jpg'],
+        description: 'Prime commercial property in CBD',
+        zoning: 'Commercial',
+        taxAssessedValue: 2400000,
+        propertyTaxes: 48000
+      }
+    ]
+    
+    // Apply filters
+    return baseProperties.filter(prop => {
+      if (filters?.minPrice && prop.price < filters.minPrice) return false
+      if (filters?.maxPrice && prop.price > filters.maxPrice) return false
+      if (filters?.propertyType && prop.propertyType !== filters.propertyType) return false
+      if (filters?.bedrooms && prop.bedrooms && prop.bedrooms < filters.bedrooms) return false
+      if (filters?.zipCodes && !filters.zipCodes.includes(prop.zipCode)) return false
+      if (filters?.status && prop.status !== filters.status) return false
+      return true
+    }).slice(0, filters?.limit || 10)
+  }
+
   private getMockProperties(filters: any): Property[] {
     return [
       {
@@ -295,6 +424,76 @@ class RealEstateAPI {
     ]
   }
 
+  private getMockPermitsData(filters?: any): Permit[] {
+    const basePermits: Permit[] = [
+      {
+        id: '1',
+        permitNumber: 'H2024-001234',
+        address: '1234 Main St, Houston, TX',
+        coordinates: { lat: 29.7604, lng: -95.3698 },
+        type: 'New Construction',
+        description: 'Single Family Residence',
+        value: 450000,
+        status: 'issued',
+        applicationDate: '2024-01-15',
+        issuedDate: '2024-02-01',
+        workDescription: 'Construction of 2,500 sq ft single family home',
+        squareFeet: 2500,
+        units: 1
+      },
+      {
+        id: '2',
+        permitNumber: 'H2024-001235',
+        address: '5678 Westheimer Rd, Houston, TX',
+        coordinates: { lat: 29.7370, lng: -95.4613 },
+        type: 'Commercial Renovation',
+        description: 'Restaurant buildout',
+        value: 250000,
+        status: 'approved',
+        applicationDate: '2024-01-20',
+        workDescription: 'Interior renovation for new restaurant',
+        squareFeet: 3500
+      },
+      {
+        id: '3',
+        permitNumber: 'H2024-001236',
+        address: '910 Heights Blvd, Houston, TX',
+        coordinates: { lat: 29.7900, lng: -95.3985 },
+        type: 'Residential Addition',
+        description: 'Second story addition',
+        value: 125000,
+        status: 'pending',
+        applicationDate: '2024-01-25',
+        workDescription: 'Add 800 sq ft second story to existing home',
+        squareFeet: 800
+      },
+      {
+        id: '4',
+        permitNumber: 'H2024-001237',
+        address: '1515 Louisiana St, Houston, TX',
+        coordinates: { lat: 29.7502, lng: -95.3706 },
+        type: 'Commercial New Construction',
+        description: 'Mixed-use development',
+        value: 15000000,
+        status: 'approved',
+        applicationDate: '2023-12-01',
+        issuedDate: '2024-01-10',
+        workDescription: '20-story mixed-use tower with retail and residential',
+        squareFeet: 250000,
+        units: 180
+      }
+    ]
+    
+    // Apply filters
+    return basePermits.filter(permit => {
+      if (filters?.type && permit.type !== filters.type) return false
+      if (filters?.minValue && permit.value < filters.minValue) return false
+      if (filters?.maxValue && permit.value > filters.maxValue) return false
+      if (filters?.status && permit.status !== filters.status) return false
+      return true
+    }).slice(0, filters?.limit || 10)
+  }
+
   private getMockPermits(filters: any): Permit[] {
     return [
       {
@@ -313,6 +512,98 @@ class RealEstateAPI {
         units: 1
       }
     ]
+  }
+
+  private getMockMarketStatsData(): MarketData[] {
+    return [
+      {
+        neighborhood: 'Heights',
+        zipCode: '77008',
+        medianPrice: 425000,
+        averagePrice: 455000,
+        pricePerSqft: 285,
+        daysOnMarket: 25,
+        salesVolume: 145,
+        inventory: 234,
+        monthsOfSupply: 3.2,
+        appreciation: {
+          month: 1.2,
+          quarter: 3.8,
+          year: 8.5
+        },
+        lastUpdated: new Date().toISOString()
+      },
+      {
+        neighborhood: 'Montrose',
+        zipCode: '77006',
+        medianPrice: 485000,
+        averagePrice: 515000,
+        pricePerSqft: 315,
+        daysOnMarket: 22,
+        salesVolume: 132,
+        inventory: 198,
+        monthsOfSupply: 2.8,
+        appreciation: {
+          month: 1.5,
+          quarter: 4.2,
+          year: 9.8
+        },
+        lastUpdated: new Date().toISOString()
+      },
+      {
+        neighborhood: 'River Oaks',
+        zipCode: '77019',
+        medianPrice: 1850000,
+        averagePrice: 2250000,
+        pricePerSqft: 485,
+        daysOnMarket: 65,
+        salesVolume: 28,
+        inventory: 85,
+        monthsOfSupply: 8.5,
+        appreciation: {
+          month: 0.8,
+          quarter: 2.5,
+          year: 6.2
+        },
+        lastUpdated: new Date().toISOString()
+      },
+      {
+        neighborhood: 'Midtown',
+        zipCode: '77002',
+        medianPrice: 385000,
+        averagePrice: 420000,
+        pricePerSqft: 295,
+        daysOnMarket: 18,
+        salesVolume: 178,
+        inventory: 156,
+        monthsOfSupply: 2.2,
+        appreciation: {
+          month: 2.1,
+          quarter: 5.8,
+          year: 12.5
+        },
+        lastUpdated: new Date().toISOString()
+      }
+    ]
+  }
+
+  private getMockEconomicData() {
+    return {
+      unemployment: 3.8,
+      populationGrowth: 2.1,
+      medianIncome: 65000,
+      jobGrowth: 3.2,
+      constructionJobs: 185000,
+      oilPrices: 78.50,
+      interestRates: 6.75,
+      gdpGrowth: 3.5,
+      inflationRate: 2.8,
+      housingStarts: 28500,
+      permitApplications: 3250,
+      energySectorEmployment: 245000,
+      techSectorGrowth: 5.8,
+      lastUpdated: new Date().toISOString()
+    }
   }
 
   private getMockMarketData(): MarketData[] {

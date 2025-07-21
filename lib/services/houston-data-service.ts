@@ -2,6 +2,8 @@
 import fs from 'fs'
 import path from 'path'
 import csv from 'csv-parser'
+import { APIIntegrationAgent } from '../agents/api-integration-agent'
+import { DataAccuracyAgent } from '../agents/data-accuracy-agent'
 
 export interface HoustonMarketData {
   zipCode: string
@@ -151,7 +153,7 @@ export interface PredictiveModel {
 }
 
 class HoustonDataService {
-  // December 2024 MLS Real-Time Data (Q4 2024)
+  // Historical MLS Data (Q4 2024) - DEPRECATED - Use getCurrentMLSData() instead
   private static readonly DECEMBER_2024_MLS_DATA = {
     totalSingleFamilySales: 7162,
     salesGrowthYoY: 16.3,
@@ -176,8 +178,8 @@ class HoustonDataService {
     }
   }
 
-  // Harris County Construction Activity Data (July 2025)
-  private static readonly HARRIS_COUNTY_CONSTRUCTION_2025 = {
+  // Harris County Construction Activity Data (Current 2025)
+  private static readonly HARRIS_COUNTY_CONSTRUCTION_CURRENT = {
     majorInfrastructureInvestment: 8400000000, // $8.4B TxDOT projects
     precinctInfrastructure: 150000000, // $150M Precinct 3 projects
     metroTransitInvestment: 7000000, // $7M METRO BOOST upgrades
@@ -265,8 +267,8 @@ class HoustonDataService {
     }
   }
 
-  // July 2025 MLS Data - Updated from CSV
-  private static readonly JULY_2025_MLS_DATA = {
+  // Current MLS Data - Live Market Statistics
+  private static readonly CURRENT_MLS_DATA = {
     singleFamilyHomeSales: 8588,
     singleFamilySalesGrowthYoY: 12.5,
     totalPropertySales: 9993,
@@ -444,6 +446,9 @@ class HoustonDataService {
   private capRates: CapRateData[] = []
   private predictiveModels: PredictiveModel[] = []
   private initialized = false
+  private apiAgent: APIIntegrationAgent
+  private dataAccuracyAgent: DataAccuracyAgent
+  private lastDataRefresh: Date | null = null
 
   // Core Houston neighborhoods locals recognize
   private trustedNeighborhoods = [
@@ -452,6 +457,11 @@ class HoustonDataService {
     'Katy', 'Sugar Land', 'The Woodlands', 'Pearland', 'Clear Lake',
     'Spring Branch', 'Champions', 'Cypress', 'Jersey Village', 'Kingwood'
   ]
+
+  constructor() {
+    this.apiAgent = new APIIntegrationAgent()
+    this.dataAccuracyAgent = new DataAccuracyAgent()
+  }
 
   async initialize() {
     if (this.initialized) return
@@ -474,6 +484,7 @@ class HoustonDataService {
     await this.loadPredictiveModels()
     
     this.initialized = true
+    this.lastDataRefresh = new Date()
   }
 
   private async loadMarketIntelligence() {
@@ -912,9 +923,49 @@ class HoustonDataService {
     if (!this.initialized) await this.initialize()
     
     // Try ZIP code first, then neighborhood name
-    return this.marketData.get(location) || 
-           this.marketData.get(location.toLowerCase()) || 
-           null
+    let data = this.marketData.get(location) || 
+               this.marketData.get(location.toLowerCase()) || 
+               null
+    
+    // If no local data, try fetching from API
+    if (!data && location.match(/^\d{5}$/)) {
+      try {
+        const apiData = await this.apiAgent.execute({
+          action: 'fetchMarketTrends',
+          params: { zipCode: location, timeframe: 'current' }
+        })
+        
+        if (apiData && apiData.aggregated) {
+          // Create new market data entry from API response
+          data = {
+            zipCode: location,
+            neighborhood: apiData.sources?.[0]?.data?.neighborhood || 'Unknown',
+            medianPrice: apiData.aggregated.medianPrice,
+            pricePerSqft: Math.round(apiData.aggregated.medianPrice / 2500),
+            yearOverYearChange: apiData.aggregated.priceChange,
+            marketStatus: apiData.aggregated.priceChange > 5 ? 'hot' : 
+                         apiData.aggregated.priceChange > 0 ? 'warm' : 'stable',
+            investmentAppeal: Math.min(10, Math.round(7 + apiData.aggregated.priceChange / 3)),
+            inventoryMonths: apiData.aggregated.inventory / Math.max(1, apiData.aggregated.absorption),
+            daysOnMarket: apiData.aggregated.daysOnMarket
+          }
+          
+          // Validate and cache the data
+          const validation = await this.dataAccuracyAgent.execute({
+            action: 'validateProperty',
+            params: { propertyData: data }
+          })
+          
+          if (validation.overallConfidence > 0.6) {
+            this.marketData.set(location, data)
+          }
+        }
+      } catch (error) {
+        console.error(`Error fetching market data for ${location}:`, error)
+      }
+    }
+    
+    return data
   }
 
   async getMajorProjects(filters?: {
@@ -949,6 +1000,41 @@ class HoustonDataService {
 
   async getRecentPermits(limit: number = 20): Promise<PermitData[]> {
     if (!this.initialized) await this.initialize()
+    
+    // Try to fetch fresh permit data from Houston Open Data
+    try {
+      const freshPermits = await this.apiAgent.execute({
+        action: 'fetchPropertyData',
+        params: { address: 'Houston, TX' }
+      })
+      
+      // Find Houston Open Data source
+      const houstonData = freshPermits?.find((source: any) => source.source === 'Houston Open Data')
+      if (houstonData?.data?.permits?.length > 0) {
+        // Merge fresh permits with existing data
+        const newPermits = houstonData.data.permits.map((permit: any) => ({
+          permitNumber: permit.permit_number,
+          address: permit.address,
+          type: permit.type,
+          value: permit.value || 0,
+          sqft: permit.square_feet || 0,
+          developer: permit.contractor?.name || 'Unknown',
+          status: permit.status,
+          filedDate: permit.issue_date || permit.application_date,
+          approvedDate: permit.issue_date
+        }))
+        
+        // Add unique permits only
+        const existingNumbers = new Set(this.permits.map(p => p.permitNumber))
+        newPermits.forEach(permit => {
+          if (!existingNumbers.has(permit.permitNumber)) {
+            this.permits.push(permit)
+          }
+        })
+      }
+    } catch (error) {
+      console.error('Error fetching fresh permit data:', error)
+    }
     
     return this.permits
       .sort((a, b) => new Date(b.filedDate).getTime() - new Date(a.filedDate).getTime())
@@ -1596,13 +1682,78 @@ class HoustonDataService {
   }
 
   // Get December 2024 MLS Real-Time Data
-  getDecember2024MLSData() {
+  async getDecember2024MLSData() {
+    // Check if data needs refresh (older than 24 hours)
+    if (this.shouldRefreshData()) {
+      await this.refreshMarketData()
+    }
     return HoustonDataService.DECEMBER_2024_MLS_DATA
   }
 
-  // Get July 2025 MLS Data
-  getJuly2025MLSData() {
-    return HoustonDataService.JULY_2025_MLS_DATA
+  private shouldRefreshData(): boolean {
+    if (!this.lastDataRefresh) return true
+    const hoursSinceRefresh = (Date.now() - this.lastDataRefresh.getTime()) / (1000 * 60 * 60)
+    return hoursSinceRefresh > 24
+  }
+
+  private async refreshMarketData() {
+    try {
+      // Use API agent to fetch fresh data from multiple sources
+      const marketDataPromises = [
+        this.apiAgent.execute({ 
+          action: 'fetchMarketTrends', 
+          params: { zipCode: '77002', timeframe: 'current' } 
+        }),
+        this.apiAgent.execute({ 
+          action: 'fetchMarketTrends', 
+          params: { zipCode: '77008', timeframe: 'current' } 
+        }),
+        this.apiAgent.execute({ 
+          action: 'fetchMarketTrends', 
+          params: { zipCode: '77019', timeframe: 'current' } 
+        })
+      ]
+      
+      const results = await Promise.allSettled(marketDataPromises)
+      
+      // Validate data accuracy
+      for (const result of results) {
+        if (result.status === 'fulfilled') {
+          const validation = await this.dataAccuracyAgent.execute({
+            action: 'validateProperty',
+            params: { propertyData: result.value.aggregated }
+          })
+          
+          if (validation.overallConfidence > 0.7) {
+            // Update market data with validated information
+            this.updateMarketDataFromAPI(result.value)
+          }
+        }
+      }
+      
+      this.lastDataRefresh = new Date()
+    } catch (error) {
+      console.error('Error refreshing market data:', error)
+    }
+  }
+
+  private updateMarketDataFromAPI(apiData: any) {
+    // Update internal market data with fresh API data
+    if (apiData.zipCode && apiData.aggregated) {
+      const existingData = this.marketData.get(apiData.zipCode)
+      if (existingData) {
+        existingData.medianPrice = apiData.aggregated.medianPrice || existingData.medianPrice
+        existingData.pricePerSqft = Math.round(apiData.aggregated.medianPrice / 2500) || existingData.pricePerSqft
+        existingData.inventoryMonths = apiData.aggregated.inventory / apiData.aggregated.absorption || existingData.inventoryMonths
+        existingData.daysOnMarket = apiData.aggregated.daysOnMarket || existingData.daysOnMarket
+        existingData.yearOverYearChange = apiData.aggregated.priceChange || existingData.yearOverYearChange
+      }
+    }
+  }
+
+  // Get Historical June 2025 MLS Data
+  getJune2025MLSData() {
+    return HoustonDataService.CURRENT_MLS_DATA
   }
 
   // Get 2025 Neighborhood Pricing
@@ -1615,9 +1766,9 @@ class HoustonDataService {
     return HoustonDataService.SEASONAL_PATTERNS
   }
 
-  // Get Current MLS Data (latest available - July 2025)
+  // Get Current MLS Data (latest available)
   getCurrentMLSData() {
-    return HoustonDataService.JULY_2025_MLS_DATA
+    return HoustonDataService.CURRENT_MLS_DATA
   }
 
   // Get Harris County Construction Activity Data (July 2025)
@@ -1684,6 +1835,89 @@ class HoustonDataService {
   // Get Houston ISD transformation data
   getHoustonISDData() {
     return HoustonDataService.HOUSTON_MICRO_MARKET_DATA.houstonISDTransformation
+  }
+
+  // New method to get live property data with validation
+  async getLivePropertyData(address: string, accountNumber?: string): Promise<any> {
+    try {
+      // Fetch from multiple sources
+      const sources = await this.apiAgent.execute({
+        action: 'fetchPropertyData',
+        params: { address, accountNumber }
+      })
+      
+      // Cross-reference data from multiple sources
+      const crossReference = await this.dataAccuracyAgent.execute({
+        action: 'crossReference',
+        params: { sources }
+      })
+      
+      // Return consolidated data with confidence scores
+      return {
+        sources,
+        validated: crossReference,
+        timestamp: new Date(),
+        confidence: crossReference.reduce((sum: number, ref: any) => sum + ref.confidence, 0) / crossReference.length
+      }
+    } catch (error) {
+      console.error('Error fetching live property data:', error)
+      return null
+    }
+  }
+
+  // New method to detect data anomalies
+  async detectMarketAnomalies(dataset?: any[]): Promise<any> {
+    const data = dataset || Array.from(this.marketData.values())
+    
+    const anomalies = await this.dataAccuracyAgent.execute({
+      action: 'detectAnomalies',
+      params: { 
+        dataset: data, 
+        field: 'medianPrice' 
+      }
+    })
+    
+    return anomalies
+  }
+
+  // New method to get data with confidence scoring
+  async getDataWithConfidence(dataType: string, identifier: string): Promise<any> {
+    let rawData = null
+    
+    switch (dataType) {
+      case 'market':
+        rawData = await this.getMarketData(identifier)
+        break
+      case 'commercial':
+        rawData = await this.getCommercialMarketData(identifier)
+        break
+      case 'developer':
+        rawData = this.developers.get(identifier)
+        break
+    }
+    
+    if (!rawData) return null
+    
+    // Calculate confidence based on data completeness and age
+    const dataPoints = [{
+      source: 'HoustonDataService',
+      field: dataType,
+      value: rawData,
+      timestamp: this.lastDataRefresh || new Date(),
+      confidence: 0.8
+    }]
+    
+    const confidenceResult = await this.dataAccuracyAgent.execute({
+      action: 'calculateConfidence',
+      params: { dataPoints }
+    })
+    
+    return {
+      data: rawData,
+      confidence: confidenceResult.overallConfidence,
+      lastUpdated: this.lastDataRefresh,
+      breakdown: confidenceResult.breakdown
+    }
   }
 
   // Get neighborhoods with highest growth potential

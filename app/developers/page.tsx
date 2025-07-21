@@ -4,34 +4,59 @@ import Link from "next/link"
 import { ArrowRight, Building2, Calculator, TrendingUp, FileSearch, DollarSign, Users, Map, Zap, BarChart3, Target, Database, Brain, Clock } from "lucide-react"
 import { motion } from "framer-motion"
 import { useState, useEffect } from 'react'
+import { realDataService } from '@/lib/services/real-data-service'
 
 export default function DeveloperIntelligence() {
   const [metrics, setMetrics] = useState({
-    activeProjects: 1188, // Total permits Jan 2025 from top 5 developers
-    avgROI: 18.3, // Spring Branch actual
+    activeProjects: 0,
+    avgROI: 18.3,
     permitApprovals: 89,
-    topDeveloper: 'D.R. Horton', // 326 permits
-    totalValue: 13.8 // Billion in projects
+    topDeveloper: 'Loading...',
+    totalValue: 0
   })
+  
+  const [realDevelopers, setRealDevelopers] = useState([])
+  const [projects, setProjects] = useState([])
 
   useEffect(() => {
-    const interval = setInterval(() => {
-      setMetrics(prev => ({
-        activeProjects: prev.activeProjects + Math.floor(Math.random() * 3),
-        avgROI: +(prev.avgROI + (Math.random() * 0.2 - 0.1)).toFixed(1),
-        permitApprovals: prev.permitApprovals + (Math.random() > 0.5 ? 1 : 0)
-      }))
-    }, 5000)
-    return () => clearInterval(interval)
+    loadRealData()
   }, [])
   
-  const topDevelopers = [
-    { name: "D.R. Horton", permits: 326, avgValue: "$262,482", projects: "Breckenridge Forest, City Gate" },
-    { name: "Lennar Homes", permits: 318, avgValue: "$244,463", projects: "Flagstone, Piccolina" },
-    { name: "Perry Homes", permits: 183, avgValue: "$322,269", projects: "Artavia, Elyson, Sienna" },
-    { name: "Hines", permits: 0, avgValue: "Commercial", projects: "East River, Discovery Green" },
-    { name: "Howard Hughes", permits: 0, avgValue: "Mixed-Use", projects: "Bridgeland" }
-  ]
+  const loadRealData = async () => {
+    try {
+      const [developers, majorProjects, permitActivity] = await Promise.all([
+        realDataService.getDevelopers(10),
+        realDataService.getMajorProjects(),
+        realDataService.getPermitActivity()
+      ])
+      
+      setRealDevelopers(developers)
+      setProjects(majorProjects)
+      
+      const totalActiveProjects = developers.reduce((sum, dev) => sum + dev.activeProjects, 0)
+      const totalProjectValue = majorProjects.reduce((sum, proj) => sum + proj.value, 0)
+      const topDev = developers[0]?.name || 'D.R. Horton'
+      
+      setMetrics({
+        activeProjects: totalActiveProjects,
+        avgROI: 18.3,
+        permitApprovals: permitActivity.totalPermits,
+        topDeveloper: topDev,
+        totalValue: Math.round(totalProjectValue / 1000000000 * 10) / 10 // Convert to billions
+      })
+    } catch (error) {
+      console.error('Error loading real data:', error)
+    }
+  }
+  
+  const topDevelopers = realDevelopers.slice(0, 5).map(dev => ({
+    name: dev.name,
+    permits: dev.activeProjects,
+    avgValue: dev.averagePrice ? `$${Math.round(dev.averagePrice).toLocaleString()}` : 'N/A',
+    projects: dev.areas?.join(', ') || 'Multiple Areas',
+    type: dev.type,
+    focus: dev.focus
+  }))
 
   const tools = [
     {

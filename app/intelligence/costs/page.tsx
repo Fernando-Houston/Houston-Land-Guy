@@ -7,29 +7,16 @@ import {
   Filter, Download, Search, Info, ChevronRight,
   Home, Factory, Briefcase, TreePine, BarChart3
 } from 'lucide-react'
-import { getConstructionCostEstimates } from '@/lib/services/data-intelligence'
+import { CostData, CostStats, ConstructionCostBreakdown } from '@/lib/services/costs-data-service'
 import { format } from 'date-fns'
 
-interface CostData {
-  category: string
-  subcategory: string
-  unit: string
-  lowCost: number
-  avgCost: number
-  highCost: number
-  lastUpdated: string
-  source: string
-  notes?: string
-}
+// CostData interface imported from costs-data-service
 
 const constructionCategories = [
-  { id: 'site_work', name: 'Site Work', icon: TreePine },
-  { id: 'foundation', name: 'Foundation', icon: Building2 },
-  { id: 'structure', name: 'Structure', icon: Home },
-  { id: 'exterior', name: 'Exterior', icon: Factory },
-  { id: 'interior', name: 'Interior', icon: Briefcase },
-  { id: 'mep', name: 'MEP Systems', icon: Calculator },
-  { id: 'finishes', name: 'Finishes', icon: DollarSign }
+  { id: 'construction', name: 'Construction', icon: Building2 },
+  { id: 'labor', name: 'Labor', icon: Briefcase },
+  { id: 'land', name: 'Land', icon: TreePine },
+  { id: 'permits', name: 'Permits', icon: Factory }
 ]
 
 const projectTypes = [
@@ -42,119 +29,83 @@ const projectTypes = [
   { value: 'mixed_use', label: 'Mixed-Use Development' }
 ]
 
-// Sample cost data - in production, this would come from your database
-const sampleCostData: CostData[] = [
-  // Site Work
-  {
-    category: 'site_work',
-    subcategory: 'Clearing & Grubbing',
-    unit: 'per acre',
-    lowCost: 2500,
-    avgCost: 3500,
-    highCost: 5000,
-    lastUpdated: '2024-01-15',
-    source: 'Houston Contractor Survey',
-    notes: 'Varies by vegetation density and terrain'
-  },
-  {
-    category: 'site_work',
-    subcategory: 'Earthwork',
-    unit: 'per cubic yard',
-    lowCost: 8,
-    avgCost: 12,
-    highCost: 18,
-    lastUpdated: '2024-01-15',
-    source: 'Harris County Projects Database'
-  },
-  {
-    category: 'site_work',
-    subcategory: 'Utilities Connection',
-    unit: 'per linear foot',
-    lowCost: 75,
-    avgCost: 125,
-    highCost: 200,
-    lastUpdated: '2024-01-15',
-    source: 'City of Houston Permits'
-  },
-  // Foundation
-  {
-    category: 'foundation',
-    subcategory: 'Slab on Grade',
-    unit: 'per sqft',
-    lowCost: 4.50,
-    avgCost: 6.00,
-    highCost: 8.50,
-    lastUpdated: '2024-01-20',
-    source: 'Houston Foundation Contractors',
-    notes: 'Post-tension slab, includes rebar'
-  },
-  {
-    category: 'foundation',
-    subcategory: 'Pier & Beam',
-    unit: 'per sqft',
-    lowCost: 8.00,
-    avgCost: 11.00,
-    highCost: 15.00,
-    lastUpdated: '2024-01-20',
-    source: 'Houston Foundation Contractors'
-  },
-  // Structure
-  {
-    category: 'structure',
-    subcategory: 'Wood Framing',
-    unit: 'per sqft',
-    lowCost: 12,
-    avgCost: 18,
-    highCost: 25,
-    lastUpdated: '2024-01-25',
-    source: 'Houston Framing Contractors',
-    notes: '2x4 and 2x6 construction'
-  },
-  {
-    category: 'structure',
-    subcategory: 'Steel Frame',
-    unit: 'per sqft',
-    lowCost: 20,
-    avgCost: 28,
-    highCost: 38,
-    lastUpdated: '2024-01-25',
-    source: 'Commercial Projects Database'
-  },
-  // Add more categories as needed...
-]
+// Real cost data is now loaded from the database via API
 
 export default function CostDatabase() {
   const [selectedCategory, setSelectedCategory] = useState('all')
   const [selectedProjectType, setSelectedProjectType] = useState('single_family')
   const [searchTerm, setSearchTerm] = useState('')
-  const [costData, setCostData] = useState<CostData[]>(sampleCostData)
-  const [loading, setLoading] = useState(false)
+  const [costData, setCostData] = useState<CostData[]>([])
+  const [stats, setStats] = useState<CostStats | null>(null)
+  const [trends, setTrends] = useState<any[]>([])
+  const [breakdown, setBreakdown] = useState<ConstructionCostBreakdown[]>([])
+  const [loading, setLoading] = useState(true)
   const [showCalculator, setShowCalculator] = useState(false)
   const [projectSize, setProjectSize] = useState('2500')
 
-  const filteredData = costData.filter(item => {
-    const matchesCategory = selectedCategory === 'all' || item.category === selectedCategory
-    const matchesSearch = searchTerm === '' || 
-      item.subcategory.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      item.notes?.toLowerCase().includes(searchTerm.toLowerCase())
-    return matchesCategory && matchesSearch
-  })
+  useEffect(() => {
+    loadCostData()
+  }, [selectedCategory, searchTerm])
 
-  const calculateProjectCost = async () => {
+  const loadCostData = async () => {
     setLoading(true)
     try {
-      const sqft = parseInt(projectSize) || 2500
-      const estimates = await getConstructionCostEstimates(
-        projectTypes.find(p => p.value === selectedProjectType)?.label || 'Single Family Home',
-        sqft
-      )
-      
-      // Show results in a modal or section
-      console.log('Project estimates:', estimates)
+      const response = await fetch(`/api/costs?${new URLSearchParams({
+        ...(selectedCategory !== 'all' && { category: selectedCategory }),
+        ...(searchTerm && { search: searchTerm }),
+        limit: '100'
+      })}`)
+
+      if (response.ok) {
+        const data = await response.json()
+        setCostData(data.costData)
+        setStats(data.stats)
+        setTrends(data.trends)
+        setBreakdown(data.breakdown)
+      }
     } catch (error) {
-      console.error('Error calculating costs:', error)
+      console.error('Error loading cost data:', error)
     }
     setLoading(false)
+  }
+
+  // Data is already filtered by API
+  const filteredData = costData
+
+  const calculateProjectCost = async () => {
+    const sqft = parseInt(projectSize) || 2500
+    
+    if (!stats) {
+      alert('Loading cost data...')
+      return
+    }
+
+    let costPerSqft = stats.avgCostPerSqft
+    
+    // Use specific construction type costs if available
+    if (selectedProjectType === 'single_family') {
+      costPerSqft = stats.constructionTypes.residentialMid
+    } else if (selectedProjectType === 'townhome') {
+      costPerSqft = stats.constructionTypes.residentialMid
+    } else if (selectedProjectType === 'apartment') {
+      costPerSqft = stats.constructionTypes.residentialHigh
+    } else if (selectedProjectType === 'office') {
+      costPerSqft = stats.constructionTypes.commercialOffice
+    } else if (selectedProjectType === 'retail') {
+      costPerSqft = stats.constructionTypes.commercialRetail
+    } else if (selectedProjectType === 'industrial') {
+      costPerSqft = stats.constructionTypes.commercialIndustrial
+    }
+    
+    const estimatedCost = sqft * costPerSqft
+    const lowEstimate = sqft * stats.constructionTypes.residentialLow
+    const highEstimate = sqft * stats.constructionTypes.residentialHigh
+    
+    // Calculate material and labor breakdown
+    const materialCostTotal = sqft * (costPerSqft * 0.6) // ~60% materials
+    const laborCostTotal = sqft * (costPerSqft * 0.4) // ~40% labor
+    
+    alert(`Project Cost Estimate for ${sqft.toLocaleString()} sqft:\n\nTotal Cost: $${estimatedCost.toLocaleString()}\n\nBreakdown:\n• Materials: $${materialCostTotal.toLocaleString()}\n• Labor: $${laborCostTotal.toLocaleString()}\n\nRange:\n• Low: $${lowEstimate.toLocaleString()}\n• High: $${highEstimate.toLocaleString()}\n\nBased on real Houston market data`)
   }
 
   const exportData = () => {
@@ -217,19 +168,19 @@ export default function CostDatabase() {
             {/* Quick Stats */}
             <div className="mt-8 grid grid-cols-2 md:grid-cols-4 gap-4 max-w-4xl mx-auto">
               <div className="bg-white/10 backdrop-blur-sm rounded-lg p-4">
-                <div className="text-2xl font-bold">$142</div>
+                <div className="text-2xl font-bold">${stats?.avgCostPerSqft || 142}</div>
                 <div className="text-sm text-gray-300">Avg $/SqFt</div>
               </div>
               <div className="bg-white/10 backdrop-blur-sm rounded-lg p-4">
-                <div className="text-2xl font-bold">847</div>
+                <div className="text-2xl font-bold">{stats?.totalItems || 26}</div>
                 <div className="text-sm text-gray-300">Cost Items</div>
               </div>
               <div className="bg-white/10 backdrop-blur-sm rounded-lg p-4">
-                <div className="text-2xl font-bold">+8%</div>
+                <div className="text-2xl font-bold">+{stats?.yearlyChange || 8}%</div>
                 <div className="text-sm text-gray-300">YoY Change</div>
               </div>
               <div className="bg-white/10 backdrop-blur-sm rounded-lg p-4">
-                <div className="text-2xl font-bold">2,341</div>
+                <div className="text-2xl font-bold">{stats?.projectCount?.toLocaleString() || '2,341'}</div>
                 <div className="text-sm text-gray-300">Projects</div>
               </div>
             </div>
@@ -420,12 +371,112 @@ export default function CostDatabase() {
             </div>
           </div>
 
+          {/* Material Costs & Labor Rates */}
+          {stats && (
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5, delay: 0.2 }}
+              className="mt-8 grid grid-cols-1 lg:grid-cols-2 gap-6"
+            >
+              {/* Material Costs */}
+              <div className="bg-white rounded-lg shadow-sm p-6">
+                <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center">
+                  <Building2 className="h-5 w-5 mr-2 text-gray-600" />
+                  Material Costs
+                </h3>
+                <div className="space-y-4">
+                  <div className="flex justify-between items-center p-3 bg-gray-50 rounded-lg">
+                    <span className="font-medium text-gray-700">Concrete</span>
+                    <span className="text-lg font-bold text-gray-900">${stats.materialCosts.concrete}/cy</span>
+                  </div>
+                  <div className="flex justify-between items-center p-3 bg-gray-50 rounded-lg">
+                    <span className="font-medium text-gray-700">Steel</span>
+                    <span className="text-lg font-bold text-gray-900">${stats.materialCosts.steel}/ton</span>
+                  </div>
+                  <div className="flex justify-between items-center p-3 bg-gray-50 rounded-lg">
+                    <span className="font-medium text-gray-700">Lumber</span>
+                    <span className="text-lg font-bold text-gray-900">${stats.materialCosts.lumber}/bf</span>
+                  </div>
+                </div>
+              </div>
+
+              {/* Labor Rates */}
+              <div className="bg-white rounded-lg shadow-sm p-6">
+                <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center">
+                  <Briefcase className="h-5 w-5 mr-2 text-gray-600" />
+                  Labor Rates
+                </h3>
+                <div className="space-y-4">
+                  <div className="flex justify-between items-center p-3 bg-gray-50 rounded-lg">
+                    <span className="font-medium text-gray-700">Skilled Labor</span>
+                    <span className="text-lg font-bold text-gray-900">${stats.laborRates.skilled}/hr</span>
+                  </div>
+                  <div className="flex justify-between items-center p-3 bg-gray-50 rounded-lg">
+                    <span className="font-medium text-gray-700">Unskilled Labor</span>
+                    <span className="text-lg font-bold text-gray-900">${stats.laborRates.unskilled}/hr</span>
+                  </div>
+                  <div className="flex justify-between items-center p-3 bg-blue-50 rounded-lg">
+                    <span className="font-medium text-gray-700">Availability</span>
+                    <span className={`text-lg font-bold ${
+                      stats.laborRates.availability === 'Tight' ? 'text-red-600' :
+                      stats.laborRates.availability === 'Abundant' ? 'text-green-600' : 'text-yellow-600'
+                    }`}>
+                      {stats.laborRates.availability}
+                    </span>
+                  </div>
+                </div>
+              </div>
+            </motion.div>
+          )}
+
+          {/* Construction Types Cost Breakdown */}
+          {stats && (
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5, delay: 0.3 }}
+              className="mt-6 bg-white rounded-lg shadow-sm p-6"
+            >
+              <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center">
+                <Home className="h-5 w-5 mr-2 text-gray-600" />
+                Construction Cost by Type (per sqft)
+              </h3>
+              <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
+                <div className="text-center p-4 bg-green-50 rounded-lg">
+                  <div className="text-2xl font-bold text-green-700">${stats.constructionTypes.residentialLow}</div>
+                  <div className="text-sm text-gray-600">Residential Low</div>
+                </div>
+                <div className="text-center p-4 bg-blue-50 rounded-lg">
+                  <div className="text-2xl font-bold text-blue-700">${stats.constructionTypes.residentialMid}</div>
+                  <div className="text-sm text-gray-600">Residential Mid</div>
+                </div>
+                <div className="text-center p-4 bg-purple-50 rounded-lg">
+                  <div className="text-2xl font-bold text-purple-700">${stats.constructionTypes.residentialHigh}</div>
+                  <div className="text-sm text-gray-600">Residential High</div>
+                </div>
+                <div className="text-center p-4 bg-orange-50 rounded-lg">
+                  <div className="text-2xl font-bold text-orange-700">${stats.constructionTypes.commercialOffice}</div>
+                  <div className="text-sm text-gray-600">Office</div>
+                </div>
+                <div className="text-center p-4 bg-teal-50 rounded-lg">
+                  <div className="text-2xl font-bold text-teal-700">${stats.constructionTypes.commercialRetail}</div>
+                  <div className="text-sm text-gray-600">Retail</div>
+                </div>
+                <div className="text-center p-4 bg-gray-50 rounded-lg">
+                  <div className="text-2xl font-bold text-gray-700">${stats.constructionTypes.commercialIndustrial}</div>
+                  <div className="text-sm text-gray-600">Industrial</div>
+                </div>
+              </div>
+            </motion.div>
+          )}
+
           {/* Trends Chart */}
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5, delay: 0.2 }}
-            className="mt-8 bg-white rounded-lg shadow-sm p-6"
+            transition={{ duration: 0.5, delay: 0.4 }}
+            className="mt-6 bg-white rounded-lg shadow-sm p-6"
           >
             <div className="flex items-center justify-between mb-6">
               <h3 className="text-lg font-semibold text-gray-900">Cost Trends</h3>
@@ -445,12 +496,29 @@ export default function CostDatabase() {
               </div>
             </div>
             
-            <div className="h-64 flex items-center justify-center bg-gray-50 rounded-lg">
-              <div className="text-center">
-                <BarChart3 className="h-12 w-12 text-gray-400 mx-auto mb-3" />
-                <p className="text-gray-600">Cost trend visualization coming soon</p>
+            {trends.length > 0 ? (
+              <div className="h-64 flex items-center justify-center bg-gray-50 rounded-lg">
+                <div className="w-full">
+                  {trends.map((month, index) => (
+                    <div key={index} className="flex items-center justify-between p-2 border-b border-gray-200 last:border-b-0">
+                      <span className="text-sm font-medium text-gray-700">{month.month}</span>
+                      <div className="flex gap-4">
+                        <span className="text-sm text-green-600">${month.materials}</span>
+                        <span className="text-sm text-blue-600">${month.labor}</span>
+                        <span className="text-sm font-bold text-purple-600">${month.total}</span>
+                      </div>
+                    </div>
+                  ))}
+                </div>
               </div>
-            </div>
+            ) : (
+              <div className="h-64 flex items-center justify-center bg-gray-50 rounded-lg">
+                <div className="text-center">
+                  <BarChart3 className="h-12 w-12 text-gray-400 mx-auto mb-3" />
+                  <p className="text-gray-600">Cost trend data loading...</p>
+                </div>
+              </div>
+            )}
           </motion.div>
         </div>
       </section>

@@ -6,7 +6,19 @@ import {
   Construction, MapPin, DollarSign, Calendar, Building2,
   TrendingUp, Clock, Users, AlertCircle, Filter, Search
 } from 'lucide-react'
-import { houstonDataService, MajorProject } from '@/lib/services/houston-data-service'
+import { realDataService } from '@/lib/services/real-data-service'
+
+interface MajorProject {
+  id: string
+  name: string
+  developer: string
+  type: string
+  value: number
+  status: string
+  location: string
+  description?: string
+  completion?: Date
+}
 import { cn } from '@/lib/utils/cn'
 
 interface MajorProjectsTrackerProps {
@@ -33,7 +45,7 @@ export default function MajorProjectsTracker({
   const loadProjects = async () => {
     try {
       setLoading(true)
-      const allProjects = await houstonDataService.getMajorProjects()
+      const allProjects = await realDataService.getMajorProjects()
       setProjects(allProjects)
     } catch (error) {
       console.error('Error loading projects:', error)
@@ -54,9 +66,13 @@ export default function MajorProjectsTracker({
     })
     .sort((a, b) => {
       if (sortBy === 'investment') {
-        return b.investmentAmount - a.investmentAmount
+        return b.value - a.value
       } else {
-        return a.expectedCompletion.localeCompare(b.expectedCompletion)
+        // Sort by completion date if available, otherwise by name
+        if (a.completion && b.completion) {
+          return a.completion.getTime() - b.completion.getTime()
+        }
+        return a.name.localeCompare(b.name)
       }
     })
     .slice(0, limit)
@@ -193,7 +209,7 @@ export default function MajorProjectsTracker({
 
                   {/* Investment Amount */}
                   <div className="text-2xl font-bold text-purple-600">
-                    {formatCurrency(project.investmentAmount)}
+                    {formatCurrency(project.value)}
                   </div>
                 </div>
 
@@ -211,23 +227,25 @@ export default function MajorProjectsTracker({
                     <span className="text-sm font-medium text-gray-900">{project.type}</span>
                   </div>
 
-                  {/* Size */}
-                  {(project.sqft || project.units) && (
+                  {/* Description */}
+                  {project.description && (
                     <div className="flex items-center justify-between">
-                      <span className="text-sm text-gray-600">Size</span>
+                      <span className="text-sm text-gray-600">Description</span>
                       <span className="text-sm font-medium text-gray-900">
-                        {project.sqft ? `${project.sqft.toLocaleString()} sqft` : ''}
-                        {project.units ? `${project.units} units` : ''}
+                        {project.description.length > 30 
+                          ? project.description.substring(0, 30) + '...'
+                          : project.description
+                        }
                       </span>
                     </div>
                   )}
 
-                  {/* Expected Completion */}
+                  {/* Status */}
                   <div className="flex items-center justify-between">
-                    <span className="text-sm text-gray-600">Expected Completion</span>
+                    <span className="text-sm text-gray-600">Status</span>
                     <span className="text-sm font-medium text-gray-900 flex items-center">
                       <Calendar className="h-4 w-4 mr-1" />
-                      {project.expectedCompletion}
+                      {project.status.replace('_', ' ').replace('-', ' ')}
                     </span>
                   </div>
 

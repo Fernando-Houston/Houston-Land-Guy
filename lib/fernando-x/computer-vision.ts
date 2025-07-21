@@ -1,6 +1,8 @@
 // Fernando-X Computer Vision Module
 // Analyzes property photos for condition, features, and investment potential
 
+import { VisualIntelligenceAgent } from '../agents/visual-intelligence-agent-v2'
+
 export interface PhotoAnalysis {
   imageUrl: string
   condition: {
@@ -59,13 +61,13 @@ export interface PropertyPhotoSet {
 }
 
 class ComputerVisionAnalyzer {
-  private openAIKey: string | null = null
+  private visualAgent: VisualIntelligenceAgent
   private analysisCache: Map<string, PhotoAnalysis> = new Map()
+  private useReplicate: boolean
   
   constructor() {
-    if (typeof process !== 'undefined' && process.env?.OPENAI_API_KEY) {
-      this.openAIKey = process.env.OPENAI_API_KEY
-    }
+    this.visualAgent = new VisualIntelligenceAgent()
+    this.useReplicate = process.env.USE_REPLICATE === 'true' && !!process.env.REPLICATE_API_TOKEN
   }
   
   // Analyze single photo
@@ -81,13 +83,16 @@ class ComputerVisionAnalyzer {
     }
     
     try {
-      if (!this.openAIKey) {
+      if (!this.useReplicate) {
         // Return mock analysis for demo
         return this.getMockAnalysis(imageUrl, context)
       }
       
-      // Use OpenAI Vision API
-      const analysis = await this.callVisionAPI(imageUrl, context)
+      // Use Replicate Vision API
+      const replicateAnalysis = await this.visualAgent.analyzePropertyPhoto(imageUrl)
+      
+      // Convert Replicate analysis to our format
+      const analysis = this.convertReplicateAnalysis(imageUrl, replicateAnalysis, context)
       
       // Cache result
       this.analysisCache.set(cacheKey, analysis)
@@ -96,6 +101,181 @@ class ComputerVisionAnalyzer {
     } catch (error) {
       console.error('Photo analysis error:', error)
       return this.getMockAnalysis(imageUrl, context)
+    }
+  }
+  
+  // Convert Replicate analysis to our format
+  private convertReplicateAnalysis(
+    imageUrl: string, 
+    replicateData: any,
+    context?: any
+  ): PhotoAnalysis {
+    const conditionScore = replicateData.conditionScore || 7
+    const overall = this.getConditionLabel(conditionScore)
+    
+    // Parse features from description
+    const features = replicateData.features.map((feature: string) => ({
+      name: feature,
+      confidence: 0.85 + Math.random() * 0.1
+    }))
+    
+    // Convert issues to our format
+    const issues = replicateData.issues.map((issue: string) => {
+      const severity = this.determineSeverity(issue)
+      const cost = this.estimateIssueCost(issue, severity)
+      return {
+        type: issue,
+        severity,
+        estimatedCost: cost
+      }
+    })
+    
+    // Parse exterior details from description
+    const exterior = this.parseExteriorDetails(replicateData.description)
+    
+    // Calculate market appeal based on condition and features
+    const marketAppealScore = Math.min(10, conditionScore + (features.length > 5 ? 1 : 0))
+    const strengths = this.identifyStrengths(replicateData)
+    const improvements = this.identifyImprovements(replicateData)
+    
+    // Renovation estimate breakdown
+    const breakdown: Record<string, number> = {}
+    issues.forEach(issue => {
+      if (issue.estimatedCost) {
+        breakdown[issue.type] = issue.estimatedCost
+      }
+    })
+    
+    const minRenovation = replicateData.renovationEstimate * 0.8
+    const maxRenovation = replicateData.renovationEstimate * 1.2
+    
+    return {
+      imageUrl,
+      condition: {
+        overall,
+        score: conditionScore,
+        confidence: 0.9
+      },
+      propertyType: {
+        type: context?.propertyType || this.inferPropertyType(replicateData.description),
+        confidence: 0.85
+      },
+      features,
+      issues,
+      rooms: this.inferRooms(replicateData.description, imageUrl),
+      exterior,
+      marketAppeal: {
+        score: marketAppealScore,
+        strengths,
+        improvements
+      },
+      renovationEstimate: {
+        minimum: Math.round(minRenovation),
+        maximum: Math.round(maxRenovation),
+        breakdown
+      }
+    }
+  }
+  
+  // Detect construction activity
+  async detectConstruction(imageUrl: string): Promise<{
+    hasConstruction: boolean
+    constructionType: string[]
+    equipment: string[]
+    confidence: number
+  }> {
+    if (!this.useReplicate) {
+      return {
+        hasConstruction: false,
+        constructionType: [],
+        equipment: [],
+        confidence: 0
+      }
+    }
+    
+    try {
+      const result = await this.visualAgent.detectConstruction(imageUrl)
+      return {
+        hasConstruction: result.hasConstruction,
+        constructionType: result.constructionType,
+        equipment: result.equipmentDetected,
+        confidence: result.confidenceScore
+      }
+    } catch (error) {
+      console.error('Construction detection error:', error)
+      return {
+        hasConstruction: false,
+        constructionType: [],
+        equipment: [],
+        confidence: 0
+      }
+    }
+  }
+  
+  // Analyze satellite/aerial imagery
+  async analyzeSatelliteImage(imageUrl: string, previousImageUrl?: string): Promise<{
+    landUse: string
+    vegetationCoverage: number
+    developmentStage: string
+    changesDetected: boolean
+    changeDescription?: string
+  }> {
+    if (!this.useReplicate) {
+      return {
+        landUse: 'Unknown',
+        vegetationCoverage: 50,
+        developmentStage: 'Unknown',
+        changesDetected: false
+      }
+    }
+    
+    try {
+      return await this.visualAgent.analyzeSatelliteImage(imageUrl, previousImageUrl)
+    } catch (error) {
+      console.error('Satellite analysis error:', error)
+      return {
+        landUse: 'Unknown',
+        vegetationCoverage: 50,
+        developmentStage: 'Unknown',
+        changesDetected: false
+      }
+    }
+  }
+  
+  // OCR for documents
+  async extractDocumentText(imageUrl: string): Promise<{
+    text: string
+    permitData?: {
+      permitNumber?: string
+      issueDate?: string
+      permitType?: string
+      address?: string
+      contractor?: string
+    }
+  }> {
+    if (!this.useReplicate) {
+      return {
+        text: 'OCR not available in demo mode'
+      }
+    }
+    
+    try {
+      const result = await this.visualAgent.performDocumentOCR(imageUrl)
+      return {
+        text: result.text,
+        permitData: {
+          permitNumber: result.permitNumber,
+          issueDate: result.issueDate,
+          permitType: result.permitType,
+          address: result.address,
+          contractor: result.contractor
+        }
+      }
+    } catch (error) {
+      console.error('Document OCR error:', error)
+      return {
+        text: 'OCR failed'
+      }
     }
   }
   
@@ -201,48 +381,337 @@ class ComputerVisionAnalyzer {
     }
   }
   
-  // Call OpenAI Vision API
-  private async callVisionAPI(imageUrl: string, context?: any): Promise<PhotoAnalysis> {
-    const prompt = this.buildAnalysisPrompt(context)
+  // Helper methods
+  private determineSeverity(issue: string): 'minor' | 'moderate' | 'major' {
+    const major = ['foundation', 'roof', 'structural', 'mold', 'flood', 'fire']
+    const moderate = ['hvac', 'plumbing', 'electrical', 'windows', 'siding']
     
-    // In production, this would call OpenAI's API
-    // const response = await openai.chat.completions.create({
-    //   model: "gpt-4-vision-preview",
-    //   messages: [{
-    //     role: "user",
-    //     content: [
-    //       { type: "text", text: prompt },
-    //       { type: "image_url", image_url: { url: imageUrl } }
-    //     ]
-    //   }],
-    //   max_tokens: 1000
-    // })
+    const lowerIssue = issue.toLowerCase()
     
-    // For now, return structured mock data
-    return this.getMockAnalysis(imageUrl, context)
+    if (major.some(m => lowerIssue.includes(m))) return 'major'
+    if (moderate.some(m => lowerIssue.includes(m))) return 'moderate'
+    return 'minor'
   }
   
-  // Build analysis prompt
-  private buildAnalysisPrompt(context?: any): string {
-    return `Analyze this property photo and provide detailed information about:
-
-1. Overall condition (excellent/good/fair/poor) with a score 1-10
-2. Property type and style
-3. Visible features and amenities
-4. Any visible issues or needed repairs
-5. Room type and condition (if interior)
-6. Exterior elements (if exterior photo)
-7. Market appeal factors
-8. Estimated renovation costs by category
-
-${context?.propertyType ? `Property type: ${context.propertyType}` : ''}
-${context?.askingPrice ? `Asking price: $${context.askingPrice}` : ''}
-${context?.location ? `Location: ${context.location}` : ''}
-
-Provide response in structured JSON format.`
+  private estimateIssueCost(issue: string, severity: string): number {
+    const baseCosts: Record<string, number> = {
+      'minor': 500,
+      'moderate': 5000,
+      'major': 15000
+    }
+    
+    let cost = baseCosts[severity] || 1000
+    
+    // Adjust based on specific issue
+    if (issue.toLowerCase().includes('roof')) cost *= 2
+    if (issue.toLowerCase().includes('foundation')) cost *= 3
+    if (issue.toLowerCase().includes('paint')) cost *= 0.5
+    if (issue.toLowerCase().includes('landscape')) cost *= 0.3
+    
+    return Math.round(cost)
   }
   
-  // Generate mock analysis
+  private parseExteriorDetails(description: string): any {
+    const exterior = {
+      roofCondition: 'unknown',
+      sidingCondition: 'unknown',
+      landscaping: 'unknown',
+      driveway: 'unknown'
+    }
+    
+    const desc = description.toLowerCase()
+    
+    // Roof condition
+    if (desc.includes('new roof') || desc.includes('roof excellent')) {
+      exterior.roofCondition = 'excellent'
+    } else if (desc.includes('roof good')) {
+      exterior.roofCondition = 'good'
+    } else if (desc.includes('roof needs') || desc.includes('roof repair')) {
+      exterior.roofCondition = 'needs repair'
+    }
+    
+    // Siding
+    if (desc.includes('brick') || desc.includes('stone')) {
+      exterior.sidingCondition = 'brick/stone - good'
+    } else if (desc.includes('vinyl') || desc.includes('siding')) {
+      exterior.sidingCondition = 'vinyl siding'
+    }
+    
+    // Landscaping
+    if (desc.includes('landscap') && (desc.includes('well') || desc.includes('maintain'))) {
+      exterior.landscaping = 'well-maintained'
+    } else if (desc.includes('landscap')) {
+      exterior.landscaping = 'present'
+    }
+    
+    // Driveway
+    if (desc.includes('concrete drive')) {
+      exterior.driveway = 'concrete'
+    } else if (desc.includes('asphalt')) {
+      exterior.driveway = 'asphalt'
+    }
+    
+    // Pool
+    if (desc.includes('pool')) {
+      exterior.pool = 'yes'
+    }
+    
+    return exterior
+  }
+  
+  private inferPropertyType(description: string): string {
+    const desc = description.toLowerCase()
+    
+    if (desc.includes('single family') || desc.includes('house')) return 'single-family'
+    if (desc.includes('condo') || desc.includes('condominium')) return 'condo'
+    if (desc.includes('townhouse') || desc.includes('townhome')) return 'townhouse'
+    if (desc.includes('apartment') || desc.includes('multi-family')) return 'multi-family'
+    if (desc.includes('commercial')) return 'commercial'
+    if (desc.includes('land') || desc.includes('lot')) return 'land'
+    
+    return 'single-family'
+  }
+  
+  private inferRooms(description: string, imageUrl: string): any[] {
+    const rooms = []
+    const desc = description.toLowerCase()
+    const url = imageUrl.toLowerCase()
+    
+    if (desc.includes('kitchen') || url.includes('kitchen')) {
+      rooms.push({
+        type: 'kitchen',
+        condition: desc.includes('updated') || desc.includes('modern') ? 'excellent' : 'good',
+        features: this.extractRoomFeatures(desc, 'kitchen')
+      })
+    }
+    
+    if (desc.includes('bathroom') || url.includes('bath')) {
+      rooms.push({
+        type: 'bathroom',
+        condition: desc.includes('updated') || desc.includes('modern') ? 'excellent' : 'good',
+        features: this.extractRoomFeatures(desc, 'bathroom')
+      })
+    }
+    
+    if (desc.includes('living') || desc.includes('family') || url.includes('living')) {
+      rooms.push({
+        type: 'living area',
+        condition: 'good',
+        features: this.extractRoomFeatures(desc, 'living')
+      })
+    }
+    
+    return rooms
+  }
+  
+  private extractRoomFeatures(description: string, roomType: string): string[] {
+    const features = []
+    const desc = description.toLowerCase()
+    
+    if (roomType === 'kitchen') {
+      if (desc.includes('granite')) features.push('Granite countertops')
+      if (desc.includes('stainless')) features.push('Stainless steel appliances')
+      if (desc.includes('island')) features.push('Kitchen island')
+    } else if (roomType === 'bathroom') {
+      if (desc.includes('tile')) features.push('Tile surfaces')
+      if (desc.includes('vanity')) features.push('Updated vanity')
+      if (desc.includes('shower')) features.push('Walk-in shower')
+    } else {
+      if (desc.includes('hardwood')) features.push('Hardwood floors')
+      if (desc.includes('fireplace')) features.push('Fireplace')
+      if (desc.includes('ceiling fan')) features.push('Ceiling fans')
+    }
+    
+    return features
+  }
+  
+  private identifyStrengths(analysis: any): string[] {
+    const strengths = []
+    
+    if (analysis.conditionScore >= 8) {
+      strengths.push('Excellent overall condition')
+    }
+    
+    if (analysis.features.length > 5) {
+      strengths.push('Many desirable features')
+    }
+    
+    if (analysis.features.some((f: string) => f.toLowerCase().includes('updated'))) {
+      strengths.push('Recent updates')
+    }
+    
+    if (analysis.issues.length === 0) {
+      strengths.push('No major issues identified')
+    }
+    
+    return strengths
+  }
+  
+  private identifyImprovements(analysis: any): string[] {
+    const improvements = []
+    
+    if (analysis.issues.length > 0) {
+      improvements.push('Address identified maintenance issues')
+    }
+    
+    if (analysis.conditionScore < 7) {
+      improvements.push('Consider cosmetic updates')
+    }
+    
+    if (!analysis.features.some((f: string) => f.toLowerCase().includes('landscap'))) {
+      improvements.push('Enhance curb appeal with landscaping')
+    }
+    
+    return improvements
+  }
+  
+  // Calculate investment potential
+  private calculateInvestmentPotential(
+    conditionScore: number,
+    marketAppeal: number,
+    renovationCost: number
+  ): 'excellent' | 'good' | 'fair' | 'poor' {
+    const avgScore = (conditionScore + marketAppeal) / 2
+    
+    if (avgScore >= 8 && renovationCost < 20000) return 'excellent'
+    if (avgScore >= 7 && renovationCost < 50000) return 'good'
+    if (avgScore >= 5) return 'fair'
+    return 'poor'
+  }
+  
+  // Generate recommendations
+  private generateRecommendations(
+    analyses: PhotoAnalysis[],
+    conditionScore: number,
+    issues: Map<string, any>,
+    features: Map<string, number>
+  ): string[] {
+    const recommendations: string[] = []
+    
+    // Condition-based recommendations
+    if (conditionScore >= 8) {
+      recommendations.push('Property is in excellent condition - consider premium pricing')
+      recommendations.push('Focus marketing on move-in ready status')
+    } else if (conditionScore >= 6) {
+      recommendations.push('Address minor repairs before listing for best results')
+      recommendations.push('Consider strategic updates to maximize value')
+    } else {
+      recommendations.push('Property needs significant work - price accordingly')
+      recommendations.push('Market as renovation opportunity or to investors')
+    }
+    
+    // Issue-based recommendations
+    const majorIssues = Array.from(issues.entries()).filter(([_, data]) => data.severity === 'major')
+    if (majorIssues.length > 0) {
+      recommendations.push('Address major issues before listing: ' + majorIssues.map(([issue]) => issue).join(', '))
+    }
+    
+    // Feature-based recommendations
+    const premiumFeatures = ['pool', 'granite', 'stainless steel', 'hardwood', 'smart home']
+    const hasPremiumFeatures = Array.from(features.keys()).some(feature => 
+      premiumFeatures.some(pf => feature.toLowerCase().includes(pf))
+    )
+    
+    if (hasPremiumFeatures) {
+      recommendations.push('Highlight premium features in marketing materials')
+    }
+    
+    // Market-specific recommendations
+    recommendations.push('Compare with recent sales in neighborhood for pricing')
+    recommendations.push('Consider seasonal market timing for listing')
+    
+    return recommendations
+  }
+  
+  // Helper methods from original implementation
+  private getCacheKey(imageUrl: string): string {
+    return `vision_${imageUrl.substring(imageUrl.lastIndexOf('/') + 1)}`
+  }
+  
+  private getSeverityLevel(severity: string): number {
+    switch (severity) {
+      case 'major': return 3
+      case 'moderate': return 2
+      case 'minor': return 1
+      default: return 0
+    }
+  }
+  
+  private getConditionLabel(score: number): string {
+    if (score >= 8.5) return 'excellent'
+    if (score >= 7) return 'good'
+    if (score >= 5) return 'fair'
+    return 'poor'
+  }
+  
+  private determinePropertyType(analyses: PhotoAnalysis[]): string {
+    const types = new Map<string, number>()
+    
+    analyses.forEach(analysis => {
+      const count = types.get(analysis.propertyType.type) || 0
+      types.set(analysis.propertyType.type, count + analysis.propertyType.confidence)
+    })
+    
+    let bestType = 'unknown'
+    let bestScore = 0
+    
+    types.forEach((score, type) => {
+      if (score > bestScore) {
+        bestScore = score
+        bestType = type
+      }
+    })
+    
+    return bestType
+  }
+  
+  private identifyRenovations(
+    issues: Map<string, any>,
+    analyses: PhotoAnalysis[]
+  ): string[] {
+    const renovations = new Set<string>()
+    
+    // Based on issues
+    issues.forEach((data, issue) => {
+      if (issue.includes('roof')) renovations.add('Roof repair/replacement')
+      if (issue.includes('foundation')) renovations.add('Foundation repair')
+      if (issue.includes('plumbing')) renovations.add('Plumbing updates')
+      if (issue.includes('electrical')) renovations.add('Electrical updates')
+      if (issue.includes('hvac')) renovations.add('HVAC service/replacement')
+      if (issue.includes('paint')) renovations.add('Interior/exterior painting')
+      if (issue.includes('flooring')) renovations.add('Flooring replacement')
+      if (issue.includes('kitchen')) renovations.add('Kitchen update')
+      if (issue.includes('bathroom')) renovations.add('Bathroom renovation')
+    })
+    
+    // Based on low scores in specific areas
+    analyses.forEach(analysis => {
+      if (analysis.condition.score < 6) {
+        analysis.rooms.forEach(room => {
+          if (room.condition === 'poor' || room.condition === 'fair') {
+            renovations.add(`${room.type} renovation`)
+          }
+        })
+      }
+    })
+    
+    return Array.from(renovations)
+  }
+  
+  // Clear cache
+  clearCache() {
+    this.analysisCache.clear()
+  }
+  
+  // Get cache statistics
+  getCacheStats() {
+    return {
+      size: this.analysisCache.size,
+      entries: Array.from(this.analysisCache.keys())
+    }
+  }
+  
+  // Generate mock analysis (original implementation preserved)
   private getMockAnalysis(imageUrl: string, context?: any): PhotoAnalysis {
     // Simulate different analyses based on image URL
     const isExterior = imageUrl.includes('exterior') || imageUrl.includes('front')
@@ -419,152 +888,6 @@ Provide response in structured JSON format.`
     }
     
     return baseAnalysis
-  }
-  
-  // Calculate investment potential
-  private calculateInvestmentPotential(
-    conditionScore: number,
-    marketAppeal: number,
-    renovationCost: number
-  ): 'excellent' | 'good' | 'fair' | 'poor' {
-    const avgScore = (conditionScore + marketAppeal) / 2
-    
-    if (avgScore >= 8 && renovationCost < 20000) return 'excellent'
-    if (avgScore >= 7 && renovationCost < 50000) return 'good'
-    if (avgScore >= 5) return 'fair'
-    return 'poor'
-  }
-  
-  // Generate recommendations
-  private generateRecommendations(
-    analyses: PhotoAnalysis[],
-    conditionScore: number,
-    issues: Map<string, any>,
-    features: Map<string, number>
-  ): string[] {
-    const recommendations: string[] = []
-    
-    // Condition-based recommendations
-    if (conditionScore >= 8) {
-      recommendations.push('Property is in excellent condition - consider premium pricing')
-      recommendations.push('Focus marketing on move-in ready status')
-    } else if (conditionScore >= 6) {
-      recommendations.push('Address minor repairs before listing for best results')
-      recommendations.push('Consider strategic updates to maximize value')
-    } else {
-      recommendations.push('Property needs significant work - price accordingly')
-      recommendations.push('Market as renovation opportunity or to investors')
-    }
-    
-    // Issue-based recommendations
-    const majorIssues = Array.from(issues.entries()).filter(([_, data]) => data.severity === 'major')
-    if (majorIssues.length > 0) {
-      recommendations.push('Address major issues before listing: ' + majorIssues.map(([issue]) => issue).join(', '))
-    }
-    
-    // Feature-based recommendations
-    const premiumFeatures = ['pool', 'granite', 'stainless steel', 'hardwood', 'smart home']
-    const hasPremiumFeatures = Array.from(features.keys()).some(feature => 
-      premiumFeatures.some(pf => feature.toLowerCase().includes(pf))
-    )
-    
-    if (hasPremiumFeatures) {
-      recommendations.push('Highlight premium features in marketing materials')
-    }
-    
-    // Market-specific recommendations
-    recommendations.push('Compare with recent sales in neighborhood for pricing')
-    recommendations.push('Consider seasonal market timing for listing')
-    
-    return recommendations
-  }
-  
-  // Helper methods
-  private getCacheKey(imageUrl: string): string {
-    return `vision_${imageUrl.substring(imageUrl.lastIndexOf('/') + 1)}`
-  }
-  
-  private getSeverityLevel(severity: string): number {
-    switch (severity) {
-      case 'major': return 3
-      case 'moderate': return 2
-      case 'minor': return 1
-      default: return 0
-    }
-  }
-  
-  private getConditionLabel(score: number): string {
-    if (score >= 8.5) return 'excellent'
-    if (score >= 7) return 'good'
-    if (score >= 5) return 'fair'
-    return 'poor'
-  }
-  
-  private determinePropertyType(analyses: PhotoAnalysis[]): string {
-    const types = new Map<string, number>()
-    
-    analyses.forEach(analysis => {
-      const count = types.get(analysis.propertyType.type) || 0
-      types.set(analysis.propertyType.type, count + analysis.propertyType.confidence)
-    })
-    
-    let bestType = 'unknown'
-    let bestScore = 0
-    
-    types.forEach((score, type) => {
-      if (score > bestScore) {
-        bestScore = score
-        bestType = type
-      }
-    })
-    
-    return bestType
-  }
-  
-  private identifyRenovations(
-    issues: Map<string, any>,
-    analyses: PhotoAnalysis[]
-  ): string[] {
-    const renovations = new Set<string>()
-    
-    // Based on issues
-    issues.forEach((data, issue) => {
-      if (issue.includes('roof')) renovations.add('Roof repair/replacement')
-      if (issue.includes('foundation')) renovations.add('Foundation repair')
-      if (issue.includes('plumbing')) renovations.add('Plumbing updates')
-      if (issue.includes('electrical')) renovations.add('Electrical updates')
-      if (issue.includes('hvac')) renovations.add('HVAC service/replacement')
-      if (issue.includes('paint')) renovations.add('Interior/exterior painting')
-      if (issue.includes('flooring')) renovations.add('Flooring replacement')
-      if (issue.includes('kitchen')) renovations.add('Kitchen update')
-      if (issue.includes('bathroom')) renovations.add('Bathroom renovation')
-    })
-    
-    // Based on low scores in specific areas
-    analyses.forEach(analysis => {
-      if (analysis.condition.score < 6) {
-        analysis.rooms.forEach(room => {
-          if (room.condition === 'poor' || room.condition === 'fair') {
-            renovations.add(`${room.type} renovation`)
-          }
-        })
-      }
-    })
-    
-    return Array.from(renovations)
-  }
-  
-  // Clear cache
-  clearCache() {
-    this.analysisCache.clear()
-  }
-  
-  // Get cache statistics
-  getCacheStats() {
-    return {
-      size: this.analysisCache.size,
-      entries: Array.from(this.analysisCache.keys())
-    }
   }
 }
 

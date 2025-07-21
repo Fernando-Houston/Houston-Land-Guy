@@ -1,0 +1,284 @@
+// Schema for Data Process 1 & 2 data
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// Developers and Builders
+model Developer {
+  id             String    @id @default(cuid())
+  name           String    @unique
+  type           String    // Residential, Commercial, Mixed-Use
+  monthlyPermits Int       @default(0)
+  avgHomeValue   Float     @default(0)
+  majorProjects  String?   @db.Text
+  totalProjects  Int       @default(0)
+  ranking        Int?
+  createdAt      DateTime  @default(now())
+  updatedAt      DateTime  @updatedAt
+  
+  projects       Project[]
+}
+
+// Major Development Projects
+model Project {
+  id               String    @id @default(cuid())
+  name             String    @unique
+  developerName    String
+  type             String    // Mixed-Use, Residential, Commercial, etc.
+  investmentValue  Float     @default(0)
+  status           String    // Planning, Under Construction, Completed
+  location         String?
+  acreage          Float?
+  units            Int?
+  completionDate   DateTime?
+  description      String?   @db.Text
+  createdAt        DateTime  @default(now())
+  updatedAt        DateTime  @updatedAt
+  
+  developer        Developer? @relation(fields: [developerName], references: [name])
+}
+
+// Market Statistics
+model MarketStats {
+  id         String    @id @default(cuid())
+  metric     String
+  value      String
+  category   String
+  year       Int
+  month      String?
+  source     String?
+  createdAt  DateTime  @default(now())
+  
+  @@index([year, category])
+}
+
+// Commercial Real Estate Sectors
+model CommercialSector {
+  id                    String    @id @default(cuid())
+  sector                String    // Office, Industrial, Retail, etc.
+  sqftUnderConstruction Int       @default(0)
+  vacancyRate          Float     @default(0)
+  avgRentPsf           Float     @default(0)
+  netAbsorption        Int       @default(0)
+  year                 Int
+  quarter              String?
+  createdAt            DateTime  @default(now())
+  
+  @@unique([sector, year, quarter])
+}
+
+// Construction Permits
+model Permit {
+  id            String    @id @default(cuid())
+  permitNumber  String    @unique
+  type          String
+  address       String
+  zipCode       String?
+  value         Float     @default(0)
+  issueDate     DateTime
+  status        String
+  contractor    String?
+  owner         String?
+  sqft          Int?
+  description   String?   @db.Text
+  createdAt     DateTime  @default(now())
+  
+  @@index([zipCode, issueDate])
+  @@index([type, status])
+}
+
+// Infrastructure Projects
+model InfrastructureProject {
+  id          String    @id @default(cuid())
+  name        String
+  type        String    // Road, Transit, Utility, etc.
+  agency      String
+  budget      Float     @default(0)
+  timeline    String
+  status      String
+  impact      String?   @db.Text
+  location    String?
+  startDate   DateTime?
+  endDate     DateTime?
+  createdAt   DateTime  @default(now())
+  
+  @@index([type, status])
+}
+
+// Zoning Changes
+model ZoningChange {
+  id              String    @id @default(cuid())
+  area            String
+  previousZoning  String
+  newZoning       String
+  acreage         Float     @default(0)
+  approvalDate    DateTime
+  impact          String?   @db.Text
+  developer       String?
+  caseNumber      String?
+  createdAt       DateTime  @default(now())
+  
+  @@index([area, approvalDate])
+}
+
+// Economic Indicators
+model EconomicIndicator {
+  id              String    @id @default(cuid())
+  indicator       String
+  value           Float
+  projectedValue  Float?
+  growthRate      Float?
+  category        String    // Employment, GDP, Population, etc.
+  source          String
+  date            DateTime
+  year            Int?
+  description     String?   @db.Text
+  createdAt       DateTime  @default(now())
+  
+  @@index([category, date])
+}
+
+// Environmental Data
+model EnvironmentalData {
+  id          String    @id @default(cuid())
+  program     String
+  category    String
+  funding     Float     @default(0)
+  impact      String?   @db.Text
+  status      String
+  year        Int
+  location    String?
+  metrics     String?   @db.Text
+  createdAt   DateTime  @default(now())
+  
+  @@index([category, year])
+}
+
+// Technology and Innovation
+model TechInnovation {
+  id          String    @id @default(cuid())
+  metric      String
+  value       String
+  category    String
+  district    String
+  year        Int
+  growth      Float?
+  companies   Int?
+  jobs        Int?
+  investment  Float?
+  createdAt   DateTime  @default(now())
+  
+  @@index([district, year])
+}
+
+// Financing Data
+model FinancingData {
+  id           String    @id @default(cuid())
+  lenderType   String
+  rate         Float
+  ltv          Float     // Loan-to-Value
+  propertyType String
+  minLoan      Float
+  maxLoan      Float
+  terms        String
+  requirements String?   @db.Text
+  date         DateTime
+  createdAt    DateTime  @default(now())
+  
+  @@index([propertyType, date])
+}
+
+// Neighborhood Statistics
+model NeighborhoodStats {
+  id               String    @id @default(cuid())
+  neighborhood     String
+  zipCode          String
+  medianPrice      Float
+  priceChange      Float
+  inventory        Int
+  daysOnMarket     Int
+  salesVolume      Int
+  listToSaleRatio  Float
+  year             Int
+  month            String
+  hotMarket        Boolean   @default(false)
+  investmentGrade  String?   // A, B, C, D
+  createdAt        DateTime  @default(now())
+  
+  @@unique([neighborhood, year, month])
+  @@index([zipCode, year])
+}
+
+// Competitive Analysis
+model CompetitiveAnalysis {
+  id          String    @id @default(cuid())
+  metric      String
+  houston     String
+  dallas      String
+  austin      String
+  sanAntonio  String
+  advantage   String?   @db.Text
+  year        Int
+  category    String?
+  createdAt   DateTime  @default(now())
+  
+  @@index([metric, year])
+}
+
+// Land Acquisition
+model LandAcquisition {
+  id              String    @id @default(cuid())
+  developer       String
+  strategy        String    @db.Text
+  targetAreas     String    @db.Text
+  avgAcreage      Float
+  pricePerAcre    Float
+  totalInvestment Float
+  year            Int
+  deals           Int?
+  futureUnits     Int?
+  createdAt       DateTime  @default(now())
+  
+  @@index([developer, year])
+}
+
+// Residential Activity
+model ResidentialActivity {
+  id              String    @id @default(cuid())
+  area            String
+  newStarts       Int
+  closings        Int
+  avgPrice        Float
+  inventory       Int
+  absorptionRate  Float
+  topBuilder      String
+  year            Int
+  quarter         String
+  permitCount     Int?
+  totalValue      Float?
+  createdAt       DateTime  @default(now())
+  
+  @@unique([area, year, quarter])
+}
+
+// Demographics
+model Demographics {
+  id              String    @id @default(cuid())
+  area            String
+  population2024  Int
+  population2029  Int
+  growthRate      Float
+  newResidents    Int
+  medianAge       Float?
+  medianIncome    Float?
+  diversity       String?   @db.Text
+  source          String
+  createdAt       DateTime  @default(now())
+  
+  @@unique([area])
+}

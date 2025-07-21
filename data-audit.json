@@ -1,0 +1,95 @@
+{
+  "timestamp": "2025-07-21T04:56:34.334Z",
+  "totalDataPoints": 8548,
+  "entities": {
+    "properties": 0,
+    "developers": 27,
+    "projects": 15,
+    "permits": 3,
+    "marketMetrics": 1,
+    "harMlsReports": 8,
+    "harNeighborhoodData": 69,
+    "constructionActivity": 48,
+    "marketIntelligence": 192,
+    "costAnalysis": 52,
+    "qualityOfLife": 6,
+    "priceHistory": 0,
+    "marketAnalysis": 0,
+    "leads": 0,
+    "calculatorResults": 0
+  },
+  "validation": [
+    {
+      "entity": "Properties",
+      "totalRecords": 0,
+      "validRecords": 0,
+      "invalidRecords": 0,
+      "duplicates": 0,
+      "issues": [],
+      "qualityScore": null
+    },
+    {
+      "entity": "Developers",
+      "totalRecords": 27,
+      "validRecords": 27,
+      "invalidRecords": 0,
+      "duplicates": 0,
+      "issues": [],
+      "qualityScore": 1
+    },
+    {
+      "entity": "Projects",
+      "totalRecords": 15,
+      "validRecords": 15,
+      "invalidRecords": 0,
+      "duplicates": 0,
+      "issues": [],
+      "qualityScore": 1
+    },
+    {
+      "entity": "Permits",
+      "totalRecords": 3,
+      "validRecords": 0,
+      "invalidRecords": 3,
+      "duplicates": 0,
+      "issues": [
+        "Permit cmdclpwxd001zsbol67yxfpmq: Missing address",
+        "Permit cmdclpx0d0020sbol0ao5lstn: Missing address",
+        "Permit cmdclpx1x0021sbol5m0300zi: Missing address"
+      ],
+      "qualityScore": 0
+    },
+    {
+      "entity": "Market Metrics",
+      "totalRecords": 1,
+      "validRecords": 1,
+      "invalidRecords": 0,
+      "duplicates": 0,
+      "issues": [],
+      "qualityScore": 1
+    }
+  ],
+  "duplicates": {
+    "properties": 0,
+    "developers": 0,
+    "permits": 0
+  },
+  "relationships": {
+    "propertiesWithDevelopers": 0,
+    "permitsWithProperties": 0,
+    "permitsWithProjects": 0
+  },
+  "dataQualityScore": null,
+  "issues": [
+    "Permit cmdclpwxd001zsbol67yxfpmq: Missing address",
+    "Permit cmdclpx0d0020sbol0ao5lstn: Missing address",
+    "Permit cmdclpx1x0021sbol5m0300zi: Missing address"
+  ],
+  "recommendations": [
+    "Improve data quality for Permits (currently 0.0%)",
+    "Link more permits to properties (currently 0.0%)",
+    "Set up automated data validation checks",
+    "Implement data quality monitoring dashboard",
+    "Schedule regular data cleanup processes"
+  ]
+}

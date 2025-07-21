@@ -1,15 +1,52 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import MajorProjectsTracker from '@/components/projects/MajorProjectsTracker'
-import { MajorProject } from '@/lib/services/houston-data-service'
 import { Construction, MapPin, DollarSign, Calendar, TrendingUp, Building2 } from 'lucide-react'
 import { motion } from 'framer-motion'
+import { realDataService } from '@/lib/services/real-data-service'
+
+interface ProjectData {
+  id: string
+  name: string
+  developer: string
+  type: string
+  value: number
+  status: string
+  location: string
+  description?: string
+  completion?: Date
+}
 
 export default function ProjectsPage() {
-  const [selectedProject, setSelectedProject] = useState<MajorProject | null>(null)
+  const [selectedProject, setSelectedProject] = useState<ProjectData | null>(null)
+  const [projectStats, setProjectStats] = useState({
+    totalValue: 13.8,
+    activeProjects: 8,
+    timelineRange: '2025-2027'
+  })
 
-  const handleProjectClick = (project: MajorProject) => {
+  useEffect(() => {
+    loadProjectData()
+  }, [])
+
+  const loadProjectData = async () => {
+    try {
+      const projects = await realDataService.getMajorProjects()
+      const totalValue = projects.reduce((sum, p) => sum + p.value, 0)
+      const activeCount = projects.filter(p => p.status === 'under-construction').length
+      
+      setProjectStats({
+        totalValue: Math.round(totalValue / 1000000000 * 10) / 10, // Convert to billions
+        activeProjects: activeCount || projects.length,
+        timelineRange: '2025-2027'
+      })
+    } catch (error) {
+      console.error('Error loading project data:', error)
+    }
+  }
+
+  const handleProjectClick = (project: ProjectData) => {
     setSelectedProject(project)
   }
 
@@ -31,21 +68,21 @@ export default function ProjectsPage() {
               Track billions in active development projects shaping Houston's future
             </p>
             
-            {/* Quick Stats */}
+            {/* Real-Time Quick Stats */}
             <div className="grid grid-cols-3 gap-4 max-w-2xl mx-auto mt-8">
               <div className="bg-white/10 backdrop-blur-sm rounded-lg p-4 border border-white/20">
                 <Construction className="h-6 w-6 mx-auto mb-2" />
-                <div className="text-2xl font-bold">$13.8B</div>
-                <div className="text-sm text-purple-200">Active Projects</div>
+                <div className="text-2xl font-bold">${projectStats.totalValue}B</div>
+                <div className="text-sm text-purple-200">Total Investment</div>
               </div>
               <div className="bg-white/10 backdrop-blur-sm rounded-lg p-4 border border-white/20">
                 <Building2 className="h-6 w-6 mx-auto mb-2" />
-                <div className="text-2xl font-bold">8</div>
-                <div className="text-sm text-purple-200">Major Developments</div>
+                <div className="text-2xl font-bold">{projectStats.activeProjects}</div>
+                <div className="text-sm text-purple-200">Active Projects</div>
               </div>
               <div className="bg-white/10 backdrop-blur-sm rounded-lg p-4 border border-white/20">
                 <TrendingUp className="h-6 w-6 mx-auto mb-2" />
-                <div className="text-2xl font-bold">2025-2027</div>
+                <div className="text-2xl font-bold">{projectStats.timelineRange}</div>
                 <div className="text-sm text-purple-200">Completion Timeline</div>
               </div>
             </div>
@@ -86,7 +123,10 @@ export default function ProjectsPage() {
                 <div>
                   <p className="text-sm text-gray-600">Investment</p>
                   <p className="text-xl font-semibold text-purple-600">
-                    ${(selectedProject.investmentAmount / 1000000000).toFixed(2)}B
+                    ${selectedProject.value >= 1000000000 
+                      ? (selectedProject.value / 1000000000).toFixed(2) + 'B'
+                      : (selectedProject.value / 1000000).toFixed(0) + 'M'
+                    }
                   </p>
                 </div>
                 <div>

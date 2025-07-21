@@ -663,3 +663,648 @@ model DataImport {
   @@index([status])
   @@index([startedAt])
 }
+
+// HAR MLS Monthly Reports
+model HarMlsReport {
+  id                String   @id @default(cuid())
+  
+  month             Int      // 1-12
+  year              Int      // 2025
+  reportType        String   // monthly, quarterly, seasonal
+  
+  // Market Overview
+  totalSales        Int
+  totalVolume       Float
+  avgSalePrice      Float
+  medianSalePrice   Float
+  pricePerSqft      Float
+  
+  // YoY Changes
+  salesChangeYoY    Float
+  priceChangeYoY    Float
+  volumeChangeYoY   Float
+  
+  // Inventory Metrics
+  activeListings    Int
+  newListings       Int
+  pendingSales      Int
+  monthsInventory   Float
+  avgDaysOnMarket   Int
+  
+  // Price Segments
+  under200k         Int
+  from200to400k     Int
+  from400to600k     Int
+  from600to800k     Int
+  from800to1M       Int
+  over1M            Int
+  
+  // Property Types
+  singleFamily      Int
+  townhouse         Int
+  condo             Int
+  
+  metadata          Json?
+  
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+  
+  neighborhoods     HarNeighborhoodData[]
+  
+  @@unique([month, year, reportType])
+  @@index([year, month])
+}
+
+// HAR Neighborhood-Level Data
+model HarNeighborhoodData {
+  id                String   @id @default(cuid())
+  
+  reportId          String
+  report            HarMlsReport @relation(fields: [reportId], references: [id])
+  
+  neighborhood      String
+  zipCode           String?
+  
+  // Sales Data
+  totalSales        Int
+  avgSalePrice      Float
+  medianSalePrice   Float
+  pricePerSqft      Float
+  
+  // Inventory
+  activeListings    Int
+  monthsInventory   Float
+  avgDaysOnMarket   Int
+  
+  // Market Indicators
+  listToSaleRatio   Float?
+  sellerConcessions Float?
+  
+  metadata          Json?
+  
+  @@index([reportId])
+  @@index([neighborhood])
+  @@index([zipCode])
+}
+
+// Construction Activity Data
+model ConstructionActivity {
+  id                String   @id @default(cuid())
+  
+  permitNumber      String   @unique
+  permitType        String   // residential, commercial, mixed
+  subType           String?  // new construction, renovation, addition
+  
+  address           String
+  zipCode           String
+  neighborhood      String?
+  precinct          String?
+  
+  // Project Details
+  projectName       String?
+  developer         String?
+  contractor        String?
+  
+  // Metrics
+  estimatedCost     Float?
+  squareFootage     Int?
+  units             Int?     // for multi-family
+  stories           Int?
+  
+  // Dates
+  permitDate        DateTime
+  startDate         DateTime?
+  completionDate    DateTime?
+  
+  // Status
+  status            String   // pending, active, completed, cancelled
+  
+  metadata          Json?
+  
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+  
+  @@index([zipCode])
+  @@index([permitDate])
+  @@index([status])
+  @@index([permitType])
+}
+
+// Market Intelligence Data
+model MarketIntelligence {
+  id                String   @id @default(cuid())
+  
+  dataType          String   // competitive, micro-market, investment-sentiment
+  zipCode           String?
+  neighborhood      String?
+  
+  // Competitive Intelligence
+  marketShare       Float?
+  competitors       Int?
+  
+  // Investment Metrics
+  capRate           Float?
+  roi               Float?
+  investmentScore   Float?
+  
+  // Development Pipeline
+  plannedUnits      Int?
+  underConstruction Int?
+  
+  // Market Indicators
+  gentrificationScore Float?
+  walkabilityScore    Float?
+  schoolRating        Float?
+  crimeIndex          Float?
+  
+  // International Investment
+  foreignInvestmentPct Float?
+  institutionalPct     Float?
+  
+  dataDate          DateTime
+  metadata          Json?
+  
+  createdAt         DateTime @default(now())
+  
+  @@index([dataType])
+  @@index([zipCode])
+  @@index([dataDate])
+}
+
+// Cost Analysis Data
+model CostAnalysis {
+  id                String   @id @default(cuid())
+  
+  analysisType      String   // construction, labor, land, permits
+  location          String   // zipCode or area
+  
+  // Construction Costs
+  costPerSqft       Float?
+  materialsCost     Float?
+  laborCost         Float?
+  
+  // Labor Rates
+  hourlyRate        Float?
+  skillLevel        String?
+  tradeType         String?
+  
+  // Land Costs
+  pricePerAcre      Float?
+  pricePerSqft      Float?
+  
+  // Permit Fees
+  permitType        String?
+  baseFee           Float?
+  additionalFees    Json?
+  
+  effectiveDate     DateTime
+  metadata          Json?
+  
+  createdAt         DateTime @default(now())
+  
+  @@index([analysisType])
+  @@index([location])
+  @@index([effectiveDate])
+}
+
+// Quality of Life Metrics
+model QualityOfLife {
+  id                String   @id @default(cuid())
+  
+  zipCode           String
+  neighborhood      String?
+  
+  // Crime & Safety
+  crimeRate         Float
+  crimeReduction    Float?   // YoY change
+  safetyScore       Float    // 0-100
+  
+  // Walkability & Transit
+  walkScore         Float    // 0-100
+  transitScore      Float?   // 0-100
+  bikeScore         Float?   // 0-100
+  
+  // Amenities
+  parksCount        Int?
+  restaurantsCount  Int?
+  groceryCount      Int?
+  
+  // Education
+  schoolsCount      Int?
+  avgSchoolRating   Float?
+  
+  dataDate          DateTime
+  metadata          Json?
+  
+  createdAt         DateTime @default(now())
+  
+  @@unique([zipCode, dataDate])
+  @@index([neighborhood])
+}
+
+// DATA PROCESS 5 INTEGRATION
+// Comprehensive real estate intelligence data
+
+// Rental Market Data
+model RentalMarket {
+  id                String   @id @default(cuid())
+  
+  // Location
+  zipCode           String?
+  neighborhood      String?
+  submarket         String?
+  
+  // Rental Rates by Unit Type
+  avgRentStudio     Float?
+  avgRent1BR        Float?
+  avgRent2BR        Float?
+  avgRent3BR        Float?
+  avgRent4BR        Float?
+  
+  // Market Metrics
+  occupancyRate     Float?
+  occupancyClass    String?  // A, B, C
+  yearOverYearGrowth Float?
+  quarterOverQuarter Float?
+  
+  // Supply Metrics
+  totalUnits        Int?
+  deliveredUnits    Int?
+  underConstruction Int?
+  plannedUnits      Int?
+  
+  // Performance
+  netAbsorption     Int?
+  leasingVelocity   Float?
+  concessions       Float?
+  
+  // Time Period
+  reportDate        DateTime
+  reportPeriod      String   // monthly, quarterly
+  
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+  
+  @@unique([zipCode, reportDate])
+  @@unique([neighborhood, reportDate])
+  @@index([zipCode])
+  @@index([neighborhood])
+  @@index([submarket])
+  @@index([reportDate])
+}
+
+// Major Employers Data (Enhanced from existing Employer model)
+model EmployerDP5 {
+  id                String   @id @default(cuid())
+  
+  // Company Info
+  companyName       String   @unique
+  sector            String
+  industry          String?
+  subIndustry       String?
+  
+  // Employment Data
+  employeeCount     Int
+  employeeGrowth    Float?   // YoY percentage
+  avgSalary         Float?
+  salaryRange       String?  // e.g., "$60k-$120k"
+  
+  // Location
+  headquarters      String?
+  primaryAddress    String?
+  zipCode           String?
+  campusSize        Float?   // in acres
+  
+  // Economic Impact
+  economicImpact    Float?   // Annual $ contribution
+  taxContribution   Float?
+  
+  // Rankings
+  houstonRank       Int?
+  nationalRank      Int?
+  
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+  
+  @@index([sector])
+  @@index([zipCode])
+  @@index([employeeCount])
+}
+
+// Short-Term Rental Market
+model STRMarket {
+  id                String   @id @default(cuid())
+  
+  // Location
+  neighborhood      String
+  performanceTier   String   // Premium, High, Mid, Emerging
+  
+  // Inventory
+  activeListings    Int
+  totalProperties   Int?
+  professionalHosts Int?
+  
+  // Performance Metrics
+  avgDailyRate      Float
+  occupancyRate     Float
+  revPAR            Float?   // Revenue per available rental
+  annualRevenue     Float
+  
+  // Booking Patterns
+  avgLengthOfStay   Float?
+  weekendPremium    Float?   // % higher on weekends
+  seasonalVariance  Float?
+  
+  // Regulatory
+  regulatoryStatus  String?  // Compliant, Restricted, etc.
+  permitRequired    Boolean  @default(false)
+  
+  reportDate        DateTime
+  
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+  
+  @@unique([neighborhood, reportDate])
+  @@index([neighborhood])
+  @@index([performanceTier])
+  @@index([reportDate])
+}
+
+// Demographics by Area (Enhanced)
+model AreaDemographics {
+  id                String   @id @default(cuid())
+  
+  // Location
+  zipCode           String?
+  neighborhood      String?
+  tract             String?  // Census tract
+  
+  // Population
+  totalPopulation   Int
+  populationDensity Float?
+  householdCount    Int?
+  avgHouseholdSize  Float?
+  
+  // Age Demographics
+  medianAge         Float?
+  under18Percent    Float?
+  over65Percent     Float?
+  workingAgePercent Float?
+  
+  // Race/Ethnicity
+  whitePercent      Float?
+  blackPercent      Float?
+  hispanicPercent   Float?
+  asianPercent      Float?
+  otherRacePercent  Float?
+  
+  // Nativity
+  foreignBornPercent Float?
+  citizenPercent    Float?
+  
+  // Housing
+  ownerOccupiedPercent Float?
+  renterOccupiedPercent Float?
+  vacancyRate       Float?
+  medianHomeValue   Float?
+  
+  reportYear        Int
+  
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+  
+  @@unique([zipCode, reportYear])
+  @@unique([neighborhood, reportYear])
+  @@index([zipCode])
+  @@index([neighborhood])
+  @@index([reportYear])
+}
+
+// Income Data by Area
+model IncomeData {
+  id                String   @id @default(cuid())
+  
+  // Location
+  zipCode           String?
+  neighborhood      String?
+  
+  // Income Statistics
+  medianHouseholdIncome Float
+  meanHouseholdIncome   Float?
+  perCapitaIncome       Float?
+  
+  // Income Distribution
+  under25k          Float?  // Percentage
+  from25to50k       Float?
+  from50to75k       Float?
+  from75to100k      Float?
+  from100to150k     Float?
+  from150to200k     Float?
+  over200k          Float?
+  
+  // Housing Affordability
+  medianGrossRent   Float?
+  rentBurdenPercent Float?  // >30% of income on rent
+  homeAffordabilityIndex Float?
+  
+  reportYear        Int
+  
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+  
+  @@unique([zipCode, reportYear])
+  @@unique([neighborhood, reportYear])
+  @@index([zipCode])
+  @@index([neighborhood])
+  @@index([medianHouseholdIncome])
+  @@index([reportYear])
+}
+
+// Population Projections
+model PopulationProjection {
+  id                String   @id @default(cuid())
+  
+  // Location
+  zipCode           String?
+  county            String?
+  city              String?
+  
+  // Projections
+  projectionYear    Int
+  projectedPopulation Int
+  growthRate        Float?
+  growthAbsolute    Int?
+  
+  // Components
+  naturalIncrease   Int?     // Births - Deaths
+  netMigration      Int?     // In-migration - Out-migration
+  
+  // Demographics
+  agingIndex        Float?   // Ratio of 65+ to under 18
+  dependencyRatio   Float?   // Non-working age / working age
+  
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+  
+  @@unique([zipCode, projectionYear])
+  @@index([zipCode])
+  @@index([projectionYear])
+  @@index([growthRate])
+}
+
+// Economic Indicators (Enhanced)
+model EconomicIndicatorDP5 {
+  id                String   @id @default(cuid())
+  
+  // Location
+  area              String   // Houston Metro, Harris County, etc.
+  
+  // Employment
+  totalEmployment   Int?
+  unemploymentRate  Float?
+  laborForceParticipation Float?
+  
+  // Economic Output
+  gdpTotal          Float?   // in billions
+  gdpPerCapita      Float?
+  gdpGrowthRate     Float?
+  
+  // Industry Metrics
+  oilGasEmployment  Int?
+  healthcareEmployment Int?
+  technologyEmployment Int?
+  constructionEmployment Int?
+  
+  // Trade
+  portTonnage       Float?   // Port of Houston
+  airCargoTonnage   Float?   // Houston airports
+  
+  // Real Estate
+  commercialConstruction Float?  // $ value
+  residentialConstruction Float? // $ value
+  
+  reportDate        DateTime
+  reportPeriod      String   // monthly, quarterly, annual
+  
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+  
+  @@unique([area, reportDate])
+  @@index([area])
+  @@index([reportDate])
+  @@index([gdpGrowthRate])
+}
+
+// Migration Data
+model MigrationData {
+  id                String   @id @default(cuid())
+  
+  // Location
+  zipCode           String?
+  county            String?
+  
+  // Migration Flows
+  inMigration       Int
+  outMigration      Int
+  netMigration      Int
+  
+  // Origin/Destination Analysis
+  topOriginStates   Json?    // Array of state abbreviations
+  topDestinationStates Json? // Array of state abbreviations
+  internationalMigration Int?
+  
+  // Demographics of Migrants
+  avgAgeInMigrants  Float?
+  avgIncomeInMigrants Float?
+  educationLevelMigrants Json? // Education distribution
+  
+  migrationYear     Int
+  
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+  
+  @@unique([zipCode, migrationYear])
+  @@index([zipCode])
+  @@index([migrationYear])
+  @@index([netMigration])
+}
+
+// Education Metrics
+model EducationMetrics {
+  id                String   @id @default(cuid())
+  
+  // Location
+  zipCode           String?
+  schoolDistrict    String?
+  
+  // School Performance
+  avgSchoolRating   Float?   // 1-10 scale
+  testScoreReading  Float?
+  testScoreMath     Float?
+  graduationRate    Float?
+  
+  // Student Demographics
+  totalStudents     Int?
+  freeReducedLunch  Float?   // Percentage
+  englishLearners   Float?   // Percentage
+  
+  // Resources
+  studentTeacherRatio Float?
+  perPupilSpending  Float?
+  
+  // Educational Attainment (Adult Population)
+  collegeGradPercent Float?
+  graduateSchoolPercent Float?
+  
+  academicYear      String   // e.g., "2024-25"
+  
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+  
+  @@unique([zipCode, academicYear])
+  @@index([zipCode])
+  @@index([schoolDistrict])
+  @@index([avgSchoolRating])
+}
+
+// Construction Cost Data
+model ConstructionCostDP5 {
+  id                String   @id @default(cuid())
+  
+  // Location
+  area              String   // Houston Metro, specific ZIP, etc.
+  
+  // Cost per Square Foot
+  residentialLow    Float?   // $/sqft for basic construction
+  residentialMid    Float?   // $/sqft for standard construction
+  residentialHigh   Float?   // $/sqft for luxury construction
+  
+  commercialOffice  Float?   // $/sqft
+  commercialRetail  Float?   // $/sqft
+  commercialIndustrial Float? // $/sqft
+  
+  // Material Costs
+  concretePrice     Float?   // per cubic yard
+  steelPrice        Float?   // per ton
+  lumberPrice       Float?   // per board foot
+  
+  // Labor Costs
+  laborRateSkilled  Float?   // $/hour
+  laborRateUnskilled Float?  // $/hour
+  laborAvailability String?  // Tight, Moderate, Abundant
+  
+  // Cost Indices
+  totalCostIndex    Float?   // Baseline = 100
+  materialIndex     Float?
+  laborIndex        Float?
+  
+  effectiveDate     DateTime
+  
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+  
+  @@unique([area, effectiveDate])
+  @@index([area])
+  @@index([effectiveDate])
+  @@index([totalCostIndex])
+}

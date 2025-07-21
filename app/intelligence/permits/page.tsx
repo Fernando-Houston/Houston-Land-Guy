@@ -7,7 +7,9 @@ import {
   Filter, Download, RefreshCw, AlertCircle, Search,
   Home, Factory, Briefcase, TreePine
 } from 'lucide-react'
-import { fetchHoustonPermits, type PermitData } from '@/lib/services/data-intelligence'
+import { PermitsDataService, type PermitData } from '@/lib/services/permits-data-service'
+
+// PermitData interface is imported from permits-data-service
 import { PropertyMap } from '@/components/maps/MapWrapper'
 import { format, subDays } from 'date-fns'
 
@@ -48,61 +50,45 @@ export default function PermitTracker() {
     setLoading(true)
     try {
       const dateFrom = subDays(new Date(), parseInt(dateRange)).toISOString().split('T')[0]
-      const data = await fetchHoustonPermits({
-        limit: 100,
-        dateFrom,
-        type: permitType === 'all' ? undefined : permitType
-      })
       
-      setPermits(data)
-      calculateStats(data)
+      // Use API route to fetch permits data
+      const response = await fetch(`/api/permits?${new URLSearchParams({
+        limit: '100',
+        dateFrom,
+        ...(permitType !== 'all' && { type: permitType }),
+        ...(searchTerm && { search: searchTerm })
+      })}`)
+      
+      if (response.ok) {
+        const data = await response.json()
+        setPermits(data.permits)
+        setStats({
+          totalPermits: data.stats.totalPermits,
+          totalValue: data.stats.totalValue,
+          avgValue: data.stats.avgValue,
+          topContractor: data.stats.topContractor,
+          hotZones: data.stats.hotZones
+        })
+      }
     } catch (error) {
       console.error('Error loading permits:', error)
     }
     setLoading(false)
   }
 
-  const calculateStats = (permitData: PermitData[]) => {
-    const totalValue = permitData.reduce((sum, p) => sum + p.value, 0)
-    
-    // Count by contractor
-    const contractorCounts = permitData.reduce((acc, p) => {
-      if (p.contractor) {
-        acc[p.contractor] = (acc[p.contractor] || 0) + 1
+  // Search functionality
+  useEffect(() => {
+    const timeoutId = setTimeout(() => {
+      if (searchTerm !== '') {
+        loadPermits()
       }
-      return acc
-    }, {} as Record<string, number>)
-    
-    const topContractor = Object.entries(contractorCounts)
-      .sort(([,a], [,b]) => b - a)[0]?.[0] || 'N/A'
-    
-    // Find hot zones (simplified - group by first part of address)
-    const zoneCounts = permitData.reduce((acc, p) => {
-      const zone = p.address.split(' ').slice(-2).join(' ') // Get last two words (usually area)
-      acc[zone] = (acc[zone] || 0) + 1
-      return acc
-    }, {} as Record<string, number>)
-    
-    const hotZones = Object.entries(zoneCounts)
-      .sort(([,a], [,b]) => b - a)
-      .slice(0, 3)
-      .map(([zone]) => zone)
-    
-    setStats({
-      totalPermits: permitData.length,
-      totalValue,
-      avgValue: permitData.length > 0 ? totalValue / permitData.length : 0,
-      topContractor,
-      hotZones
-    })
-  }
+    }, 500) // Debounce search
 
-  const filteredPermits = permits.filter(permit => 
-    searchTerm === '' || 
-    permit.address.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    permit.description.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    permit.contractor?.toLowerCase().includes(searchTerm.toLowerCase())
-  )
+    return () => clearTimeout(timeoutId)
+  }, [searchTerm])
+
+  // Permits are already filtered by the API when search term is provided
+  const filteredPermits = permits
 
   const formatCurrency = (value: number) => {
     if (value >= 1000000) return `$${(value / 1000000).toFixed(1)}M`
@@ -117,7 +103,7 @@ export default function PermitTracker() {
         p.permitNumber,
         p.type,
         p.address,
-        p.description,
+        p.description || '',
         p.value.toString(),
         p.issuedDate,
         p.contractor || '',

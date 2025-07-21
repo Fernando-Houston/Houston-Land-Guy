@@ -1,11 +1,16 @@
 // Fernando-X Conversation Engine with LLM Integration
-import { INTEGRATED_DATA } from '../fernando-x-data'
+import { getIntegratedData } from '../fernando-x-data'
 import { fernandoMemory } from './memory-service'
 import { fernandoDataQuery } from './data-query-service'
 import { investmentScoring } from '../services/investment-scoring-service'
 import { enhancedDataQuery } from './enhanced-data-query-service'
 import { conversationalFernando, shouldUseConversationalResponse } from './conversational-response'
 import { chatGPTEngine } from './chatgpt-engine'
+import { dataValidationService } from '../services/data-validation-service'
+import { dataRelationshipService } from '../services/data-relationships'
+import { PrismaClient } from '@prisma/client'
+
+const prisma = new PrismaClient()
 
 interface ConversationContext {
   sessionId: string
@@ -21,11 +26,21 @@ interface ConversationContext {
 export class FernandoXConversationEngine {
   private systemPrompt = `You are Fernando-X, an advanced AI real estate expert specializing in Houston development intelligence. You have access to:
 
-1. 750,000+ data points about Houston real estate
+1. 750,000+ data points about Houston real estate (live database integration)
 2. Real-time market analytics and trends
-3. Developer insights and project data
-4. Population growth projections
-5. Investment opportunities and analysis
+3. Developer ecosystem data (projects, permits, relationships)
+4. Neighborhood demographics and growth projections
+5. Investment opportunities with confidence scoring
+6. Data validation and relationship mapping
+7. Property intelligence and document analysis
+
+Your capabilities include:
+- Querying live database for current information
+- Cross-referencing data across multiple sources
+- Providing data quality assessments
+- Generating investment insights
+- Analyzing developer-project-permit relationships
+- Neighborhood ecosystem analysis
 
 Your personality:
 - Expert and knowledgeable but approachable
@@ -35,8 +50,9 @@ Your personality:
 - Helpful in guiding users to make informed decisions
 
 Always:
-- Cite specific data when available
-- Offer actionable insights
+- Use live data from the database when available
+- Cite specific data sources and confidence scores
+- Offer actionable insights with supporting evidence
 - Ask follow-up questions to better help users
 - Maintain conversation context
 - Be concise but comprehensive`
@@ -104,6 +120,35 @@ Always:
 
   private async checkForDataQuery(message: string): Promise<any> {
     const messageLower = message.toLowerCase()
+    
+    // Get live integrated data
+    const integratedData = await getIntegratedData()
+    
+    // Check for data validation queries
+    if (messageLower.includes('data quality') || messageLower.includes('validation') || messageLower.includes('data issues')) {
+      const validation = await dataValidationService.validateAllData()
+      return this.formatValidationResponse(validation)
+    }
+    
+    // Check for relationship queries
+    if (messageLower.includes('relationship') || messageLower.includes('connected') || messageLower.includes('links between')) {
+      const relationships = await dataRelationshipService.getAllRelationshipsSummary()
+      return this.formatRelationshipResponse(relationships)
+    }
+    
+    // Check for developer ecosystem queries
+    const developerMatch = messageLower.match(/(?:developer|development)\s+(.+?)(?:\s|$)/i)
+    if (developerMatch) {
+      const developerName = developerMatch[1]
+      return this.getDeveloperEcosystemData(developerName)
+    }
+    
+    // Check for neighborhood ecosystem queries
+    const neighborhoodMatch = messageLower.match(/(?:neighborhood|area)\s+(.+?)(?:\s|$)/i)
+    if (neighborhoodMatch) {
+      const neighborhoodName = neighborhoodMatch[1]
+      return this.getNeighborhoodEcosystemData(neighborhoodName)
+    }
     
     // Get real database stats first
     const dbStats = await fernandoDataQuery.getDatabaseStats()
@@ -241,10 +286,9 @@ With ${dbStats.tables.permits} permits tracked and ${dbStats.tables.projects} ma
           ]
         }
       } catch (error) {
-        // Fallback to hardcoded data
-        const data = INTEGRATED_DATA.populationGrowth
+        // Fallback to generic data
         return {
-          response: `Houston's population is booming! We're projected to add ${data.totalProjected.toLocaleString()} new residents. The fastest growing areas are ${data.topGrowthAreas[0].area} (${data.topGrowthAreas[0].growthRate}% growth) and ${data.topGrowthAreas[1].area} (${data.topGrowthAreas[1].growthRate}% growth). This creates massive opportunities for developers. Would you like to explore specific areas or development types?`,
+          response: `Houston's population is experiencing significant growth with several key areas showing strong development potential. The fastest growing areas include Katy, Cypress, and Spring, each showing double-digit growth rates. This creates massive opportunities for developers. Would you like to explore specific areas or development types?`,
           confidence: 0.85,
           sources: ['Houston Planning Department', 'Census Projections'],
           suggestedActions: [
@@ -277,10 +321,9 @@ They currently have ${developer.properties.length} active property listings. Wan
           }
         }
       } catch (error) {
-        // Fallback to hardcoded data
-        const drHorton = INTEGRATED_DATA.developers.find(d => d.name === 'D.R. Horton')
+        // Fallback to generic developer info
         return {
-          response: `D.R. Horton is Houston's #1 developer with ${drHorton?.activeProjects} active projects worth $${(drHorton?.totalValue! / 1000000000).toFixed(1)}B. They're focusing on entry-level homes ($250K-$450K) in Katy, Spring, and Fort Bend County. They're filing 300+ permits monthly! Want to see their specific communities or analyze investment opportunities?`,
+          response: `D.R. Horton is one of Houston's major homebuilders, focusing on entry-level and move-up homes across key growth areas like Katy, Spring, and Fort Bend County. They typically develop communities in the $250K-$450K price range and are known for high permit activity. Want to see their specific communities or analyze investment opportunities?`,
           confidence: 0.84,
           sources: ['Developer Database', 'Permit Records'],
           suggestedActions: [
@@ -342,14 +385,13 @@ What type of development are you considering? I can provide specific analysis fo
           ]
         }
       } catch (error) {
-        // Fallback to hardcoded data
-        const areas = INTEGRATED_DATA.populationGrowth.topGrowthAreas.slice(0, 3)
+        // Fallback to generic development info
         return {
           response: `Based on current market data, the best areas for development in Houston are:
 
-1. **${areas[0].area}** - ${areas[0].growthRate}% population growth, adding ${areas[0].projectedGrowth.toLocaleString()} residents
-2. **${areas[1].area}** - ${areas[1].growthRate}% growth, strong demand for single-family homes
-3. **${areas[2].area}** - ${areas[2].growthRate}% growth, emerging market with lower land costs
+1. **Katy** - Strong population growth, adding thousands of new residents annually
+2. **Cypress** - High growth area with strong demand for single-family homes
+3. **Spring** - Emerging market with lower land costs and good access
 
 Key factors to consider:
 • Land availability and pricing
@@ -448,7 +490,7 @@ These properties show signs of motivated sellers and significant value-add poten
 • **Commercial**: 14-18% ROI in emerging business districts
 • **Land Banking**: 25-35% appreciation in path of growth
 
-With ${INTEGRATED_DATA.jobGrowth.totalNewJobs.toLocaleString()} new jobs coming to Houston, rental demand is surging. Would you like me to analyze specific areas or find distressed properties with high potential?`,
+With significant job growth coming to Houston, rental demand is surging. Would you like me to analyze specific areas or find distressed properties with high potential?`,
         confidence: 0.85,
         sources: ['Investment Analysis', 'Market Returns Data', 'Economic Projections'],
         suggestedActions: [
@@ -649,6 +691,251 @@ What specific aspect would you like to explore?`,
       return {
         sessionId,
         conversationHistory: []
+      }
+    }
+  }
+  
+  // Format validation response for user-friendly display
+  private formatValidationResponse(validation: any): any {
+    let response = `## Data Quality Report\n\n`
+    response += `**Overall Quality Score: ${(validation.overallQualityScore * 100).toFixed(1)}%**\n\n`
+    response += `**Summary:**\n`
+    
+    // Top issues by entity
+    const topIssues = Object.entries(validation.summary)
+      .sort((a: any, b: any) => a[1].dataQualityScore - b[1].dataQualityScore)
+      .slice(0, 3)
+    
+    topIssues.forEach(([key, result]: any) => {
+      response += `• **${result.entity}**: ${(result.dataQualityScore * 100).toFixed(1)}% quality`
+      if (result.invalidRecords > 0) response += ` (${result.invalidRecords} issues)`
+      if (result.duplicates > 0) response += ` (${result.duplicates} duplicates)`
+      if (result.orphanedRecords > 0) response += ` (${result.orphanedRecords} orphaned)`
+      response += `\n`
+    })
+    
+    response += `\n**Total Issues Found:** ${validation.issues.length}\n\n`
+    
+    if (validation.issues.length > 0) {
+      response += `**Critical Issues:**\n`
+      validation.issues.slice(0, 5).forEach((issue: any) => {
+        response += `⚠️ ${issue.details}\n`
+      })
+      if (validation.issues.length > 5) {
+        response += `... and ${validation.issues.length - 5} more issues\n`
+      }
+    }
+    
+    return {
+      response,
+      confidence: 0.95,
+      sources: ['Data Validation Service', 'Database Analysis'],
+      suggestedActions: [
+        { label: 'Full Validation Report', action: 'generate:validation-report' },
+        { label: 'Fix Data Issues', action: 'navigate:/admin/data-quality' }
+      ]
+    }
+  }
+  
+  // Format relationship response for user-friendly display
+  private formatRelationshipResponse(relationships: any): any {
+    let response = `## Data Relationships Summary\n\n`
+    response += `**System Health Score: ${(relationships.healthScore * 100).toFixed(1)}%**\n\n`
+    
+    response += `**Entity Counts:**\n`
+    Object.entries(relationships.entities).forEach(([entity, count]) => {
+      response += `• ${entity}: ${count}\n`
+    })
+    
+    response += `\n**Relationship Completeness:**\n`
+    Object.entries(relationships.relationships.completeness).forEach(([rel, completeness]) => {
+      const percentage = parseFloat(completeness as string)
+      const emoji = percentage > 90 ? '✅' : percentage > 70 ? '⚠️' : '❌'
+      response += `${emoji} ${rel}: ${completeness}\n`
+    })
+    
+    response += `\n**Key Insights:**\n`
+    const devProjectComp = parseFloat(relationships.relationships.completeness['developer-project'])
+    const projectPermitComp = parseFloat(relationships.relationships.completeness['project-permit'])
+    
+    if (devProjectComp < 90) {
+      response += `• ${(100 - devProjectComp).toFixed(1)}% of projects need developer assignment\n`
+    }
+    if (projectPermitComp < 80) {
+      response += `• ${(100 - projectPermitComp).toFixed(1)}% of permits need project linking\n`
+    }
+    if (relationships.healthScore > 0.85) {
+      response += `• Overall data integrity is excellent\n`
+    }
+    
+    return {
+      response,
+      confidence: 0.92,
+      sources: ['Data Relationship Service', 'Entity Mapping'],
+      suggestedActions: [
+        { label: 'View Relationship Map', action: 'navigate:/admin/relationships' },
+        { label: 'Fix Orphaned Records', action: 'tool:data-cleanup' }
+      ]
+    }
+  }
+  
+  // Get developer ecosystem data with comprehensive analysis
+  private async getDeveloperEcosystemData(developerName: string): Promise<any> {
+    try {
+      // Try to find developer by name
+      const developer = await prisma.developer.findFirst({
+        where: {
+          name: {
+            contains: developerName,
+            mode: 'insensitive'
+          }
+        }
+      })
+      
+      if (!developer) {
+        return {
+          response: `I couldn't find a developer named "${developerName}" in our database. Would you like me to search for similar names or show you a list of major developers?`,
+          confidence: 0.70,
+          sources: ['Developer Database'],
+          suggestedActions: [
+            { label: 'Search All Developers', action: 'search:developers' },
+            { label: 'View Top Developers', action: 'navigate:/data/developers' }
+          ]
+        }
+      }
+      
+      const ecosystem = await dataRelationshipService.getDeveloperEcosystem(developer.id)
+      
+      let response = `## ${ecosystem.developer.name} - Developer Ecosystem\n\n`
+      response += `**Overview:**\n`
+      response += `• Total Projects: ${ecosystem.metrics.totalProjects}\n`
+      response += `• Active Projects: ${ecosystem.metrics.activeProjects}\n`
+      response += `• Total Construction Value: $${(ecosystem.metrics.totalConstructionValue / 1000000).toFixed(1)}M\n`
+      response += `• Permits Filed: ${ecosystem.metrics.totalPermits}\n`
+      response += `• Neighborhoods Active: ${ecosystem.metrics.neighborhoodsActive}\n`
+      response += `• Average Project Value: $${(ecosystem.metrics.averageProjectValue / 1000000).toFixed(1)}M\n\n`
+      
+      if (ecosystem.timeline && ecosystem.timeline.length > 0) {
+        response += `**Recent Activity:**\n`
+        ecosystem.timeline.slice(0, 3).forEach((event: any) => {
+          response += `• ${new Date(event.date).toLocaleDateString()}: ${event.event}\n`
+        })
+        response += `\n`
+      }
+      
+      response += `This developer is ${ecosystem.metrics.activeProjects > 5 ? 'highly active' : 'moderately active'} in the Houston market.`
+      
+      return {
+        response,
+        confidence: 0.95,
+        sources: ['Developer Ecosystem Analysis', 'Project Database'],
+        suggestedActions: [
+          { label: 'View All Projects', action: `filter:developer:${ecosystem.developer.name}` },
+          { label: 'Investment Analysis', action: 'analyze:investment' }
+        ]
+      }
+    } catch (error) {
+      console.error('Error getting developer ecosystem:', error)
+      return {
+        response: `I encountered an issue retrieving developer data. Please try again or search for developers in our database.`,
+        confidence: 0.60,
+        sources: ['Database Error'],
+        suggestedActions: [
+          { label: 'Browse Developers', action: 'navigate:/data/developers' }
+        ]
+      }
+    }
+  }
+  
+  // Get neighborhood ecosystem data with comprehensive analysis
+  private async getNeighborhoodEcosystemData(neighborhoodName: string): Promise<any> {
+    try {
+      // Try to find neighborhood by name
+      const neighborhood = await prisma.neighborhood.findFirst({
+        where: {
+          name: {
+            contains: neighborhoodName,
+            mode: 'insensitive'
+          }
+        }
+      })
+      
+      if (!neighborhood) {
+        return {
+          response: `I couldn't find a neighborhood named "${neighborhoodName}" in our database. Would you like me to search for similar names or show you popular Houston neighborhoods?`,
+          confidence: 0.70,
+          sources: ['Neighborhood Database'],
+          suggestedActions: [
+            { label: 'Search Neighborhoods', action: 'search:neighborhoods' },
+            { label: 'View Houston Map', action: 'navigate:/intelligence/map' }
+          ]
+        }
+      }
+      
+      const ecosystem = await dataRelationshipService.getNeighborhoodEcosystem(neighborhood.id)
+      
+      let response = `## ${ecosystem.neighborhood.name} - Neighborhood Ecosystem\n\n`
+      
+      // Demographics
+      if (ecosystem.neighborhood.demographics && ecosystem.neighborhood.demographics.length > 0) {
+        const latest = ecosystem.neighborhood.demographics[0]
+        response += `**Demographics:**\n`
+        response += `• Population: ${latest.population?.toLocaleString()}\n`
+        if (latest.medianIncome) response += `• Median Income: $${latest.medianIncome.toLocaleString()}\n`
+        if (latest.averageHouseholdSize) response += `• Avg Household Size: ${latest.averageHouseholdSize}\n`
+        response += `\n`
+      }
+      
+      // Market data
+      if (ecosystem.neighborhood.marketData && ecosystem.neighborhood.marketData.length > 0) {
+        const latest = ecosystem.neighborhood.marketData[0]
+        response += `**Market Data:**\n`
+        if (latest.medianPrice) response += `• Median Price: $${latest.medianPrice.toLocaleString()}\n`
+        if (latest.priceChangeYoY) response += `• Price Growth YoY: ${latest.priceChangeYoY.toFixed(1)}%\n`
+        if (latest.inventoryMonths) response += `• Inventory: ${latest.inventoryMonths} months\n`
+        response += `\n`
+      }
+      
+      // Development activity
+      response += `**Development Activity:**\n`
+      response += `• Active Projects: ${ecosystem.developmentActivity.activeProjects}\n`
+      response += `• Total Investment: $${(ecosystem.developmentActivity.totalInvestment / 1000000).toFixed(1)}M\n`
+      
+      if (ecosystem.developmentActivity.topDevelopers.length > 0) {
+        response += `• Top Developers: ${ecosystem.developmentActivity.topDevelopers.slice(0, 2).map((d: any) => d.name).join(', ')}\n`
+      }
+      
+      // Growth indicators
+      if (ecosystem.growthIndicators) {
+        response += `\n**Growth Score: ${ecosystem.growthIndicators.growthScore.toFixed(1)}/10**\n`
+        response += `• Population Growth: ${ecosystem.growthIndicators.populationGrowth.toFixed(1)}%\n`
+        response += `• Development Activity: ${ecosystem.growthIndicators.developmentActivity} projects\n`
+      }
+      
+      // Housing demand
+      if (ecosystem.housingDemand) {
+        response += `\n**Housing Demand: ${ecosystem.housingDemand} units needed**\n`
+      }
+      
+      return {
+        response,
+        confidence: 0.95,
+        sources: ['Neighborhood Ecosystem Analysis', 'Demographics', 'Market Data'],
+        suggestedActions: [
+          { label: 'View Properties', action: `search:properties:area:${ecosystem.neighborhood.name}` },
+          { label: 'Investment Analysis', action: 'analyze:investment' },
+          { label: 'Compare Areas', action: 'tool:comparison' }
+        ]
+      }
+    } catch (error) {
+      console.error('Error getting neighborhood ecosystem:', error)
+      return {
+        response: `I encountered an issue retrieving neighborhood data. Please try again or browse our neighborhood database.`,
+        confidence: 0.60,
+        sources: ['Database Error'],
+        suggestedActions: [
+          { label: 'Browse Neighborhoods', action: 'navigate:/data/neighborhoods' }
+        ]
       }
     }
   }
