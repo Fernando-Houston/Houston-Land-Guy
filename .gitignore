@@ -45,3 +45,4 @@ env-template.txt
 *.tsbuildinfo
 next-env.d.ts
 Core Agent Architecture -Webiste/
+.env.local

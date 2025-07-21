@@ -46,6 +46,7 @@
     "clsx": "^2.1.1",
     "csv-parse": "^6.1.0",
     "date-fns": "^4.1.0",
+    "dotenv": "^17.2.0",
     "framer-motion": "^12.23.3",
     "ioredis": "^5.6.1",
     "lucide-react": "^0.525.0",

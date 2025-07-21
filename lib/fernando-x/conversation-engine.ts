@@ -5,6 +5,7 @@ import { fernandoDataQuery } from './data-query-service'
 import { investmentScoring } from '../services/investment-scoring-service'
 import { enhancedDataQuery } from './enhanced-data-query-service'
 import { conversationalFernando, shouldUseConversationalResponse } from './conversational-response'
+import { chatGPTEngine } from './chatgpt-engine'
 
 interface ConversationContext {
   sessionId: string
@@ -50,7 +51,29 @@ Always:
     suggestedActions?: Array<{ label: string; action: string }>
   }> {
     try {
-      // First check if this should be a conversational response
+      // Try ChatGPT first if available
+      if (process.env.OPENAI_API_KEY && typeof window === 'undefined') {
+        console.log('🤖 Using ChatGPT for response generation')
+        
+        // Convert conversation history to the format ChatGPT expects
+        const formattedHistory = context.conversationHistory.map(h => ({
+          role: h.role,
+          content: h.content
+        }))
+        
+        const chatGPTResponse = await chatGPTEngine.generateResponse(
+          userMessage,
+          context.sessionId,
+          formattedHistory
+        )
+        
+        // If ChatGPT gave a good response, use it
+        if (chatGPTResponse.confidence > 0.8) {
+          return chatGPTResponse
+        }
+      }
+      
+      // Fallback to conversational response for casual queries
       if (shouldUseConversationalResponse(userMessage)) {
         const conversationalResponse = await conversationalFernando.getResponse(
           userMessage,
@@ -71,8 +94,7 @@ Always:
         return fallbackResponse
       }
 
-      // For now, use enhanced pattern matching with data context
-      // In production, this would call OpenAI or another LLM
+      // Use enhanced pattern matching with data context
       return this.generateSmartResponse(userMessage, context)
     } catch (error) {
       console.error('Error generating response:', error)
