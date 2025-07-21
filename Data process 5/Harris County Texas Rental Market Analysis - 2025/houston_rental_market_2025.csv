@@ -1,0 +1,24 @@
+Category,Metric,Value,Unit,Source
+Overall Average Rent,Feb 2025,1197.0,USD/month,HAR
+Overall Average Rent,June 2025,1260.0,USD/month,Redfin
+Overall Average Rent,Q1 2025 CBRE,1367.0,USD/month,CBRE
+Overall Average Rent,Q2 2025 Median,1750.0,USD/month,Relocity
+Studio Apartments,Range Low,1071.0,USD/month,Multiple Sources
+Studio Apartments,Range High,1191.0,USD/month,Multiple Sources
+1-Bedroom Apartments,Range Low,1145.0,USD/month,Multiple Sources
+1-Bedroom Apartments,Range High,1275.0,USD/month,Multiple Sources
+2-Bedroom Apartments,Range Low,1357.0,USD/month,Multiple Sources
+2-Bedroom Apartments,Range High,1607.0,USD/month,Multiple Sources
+3-Bedroom Apartments,Range Low,1849.0,USD/month,Multiple Sources
+3-Bedroom Apartments,Range High,2091.0,USD/month,Multiple Sources
+Occupancy Rate,Overall Market Q1 2025,93.9,Percent,CBRE
+Occupancy Rate,Class A Q4 2024,84.1,Percent,Transwestern
+Occupancy Rate,Class B Q4 2024,90.7,Percent,Transwestern
+Occupancy Rate,10-Year Historical Avg,91.4,Percent,Historical Data
+Rent Growth,2025 YTD Projected,3.5,Percent,HAR/Industry Average
+Rent Growth,2025 Annual Forecast,2.1,Percent,MMG/Yardi Matrix
+Rent Growth,Leading Submarkets,7.3,Percent,Greenspoint Submarket
+Construction Activity,2024 Deliveries,20355.0,Units,Yardi Matrix
+Construction Activity,Current Under Construction,12000.0,Units,Northmarq
+Construction Activity,2025 Projected Deliveries,9400.0,Units,RealPage/Matthews
+Construction Activity,New Starts 2024,6300.0,Units,MMG

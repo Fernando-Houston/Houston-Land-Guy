@@ -3,6 +3,7 @@ import { INTEGRATED_DATA } from '../fernando-x-data'
 import { fernandoMemory } from './memory-service'
 import { fernandoDataQuery } from './data-query-service'
 import { investmentScoring } from '../services/investment-scoring-service'
+import { enhancedDataQuery } from './enhanced-data-query-service'
 
 interface ConversationContext {
   sessionId: string
@@ -68,6 +69,110 @@ Always:
     
     // Get real database stats first
     const dbStats = await fernandoDataQuery.getDatabaseStats()
+    
+    // Check for area-specific comprehensive analysis
+    const areaMatch = messageLower.match(/(?:tell me about|analyze|overview of|data on|stats for)\s+(\w+(?:\s+\w+)?)/i)
+    if (areaMatch) {
+      const area = areaMatch[1].trim()
+      const analysis = await enhancedDataQuery.getComprehensiveAreaAnalysis(area)
+      
+      if (analysis.demographics || analysis.rentalMarket || analysis.income) {
+        let response = `Here's a comprehensive analysis of **${area}**:\n\n`
+        
+        if (analysis.demographics) {
+          response += `**Demographics:**\n`
+          response += `• Population: ${analysis.demographics.population?.toLocaleString()}\n`
+          response += `• Median Age: ${analysis.demographics.medianAge}\n`
+          response += `• Foreign Born: ${analysis.demographics.foreignBorn.percentage}%\n`
+          response += `• Diversity: ${analysis.demographics.diversity.hispanic}% Hispanic, ${analysis.demographics.diversity.white}% White, ${analysis.demographics.diversity.black}% Black, ${analysis.demographics.diversity.asian}% Asian\n\n`
+        }
+        
+        if (analysis.income) {
+          response += `**Income & Wealth:**\n`
+          response += `• Median Income: $${analysis.income.median?.toLocaleString()}\n`
+          response += `• Homeownership: ${analysis.income.affordability?.homeownership}%\n`
+          response += `• Median Home Value: $${analysis.income.affordability?.medianHomeValue?.toLocaleString()}\n\n`
+        }
+        
+        if (analysis.rentalMarket) {
+          response += `**Rental Market:**\n`
+          response += `• 2BR Average: $${analysis.rentalMarket.avgRents?.twoBed?.toLocaleString()}/month\n`
+          response += `• Occupancy: ${analysis.rentalMarket.occupancy}%\n`
+          response += `• YoY Growth: ${analysis.rentalMarket.yearOverYear}%\n\n`
+        }
+        
+        if (analysis.strMarket) {
+          response += `**Short-Term Rental Market:**\n`
+          response += `• Performance Tier: ${analysis.strMarket.tier}\n`
+          response += `• Active Listings: ${analysis.strMarket.activeListings}\n`
+          response += `• Avg Daily Rate: $${analysis.strMarket.avgDailyRate}\n`
+          response += `• Annual Revenue: $${analysis.strMarket.annualRevenue?.toLocaleString()}\n\n`
+        }
+        
+        if (analysis.employers && analysis.employers.length > 0) {
+          response += `**Major Employers:**\n`
+          analysis.employers.slice(0, 3).forEach(emp => {
+            response += `• ${emp.name} - ${emp.employees.toLocaleString()} employees (${emp.sector})\n`
+          })
+          response += '\n'
+        }
+        
+        response += `**Investment Score: ${analysis.investmentScore}/100**`
+        
+        return {
+          response,
+          confidence: 0.95,
+          sources: ['Census Data', 'Rental Market Analysis', 'HCAD', 'Employment Data'],
+          suggestedActions: [
+            { label: 'View Properties', action: `search:properties:area:${area}` },
+            { label: 'Investment Analysis', action: 'analyze:investment' }
+          ]
+        }
+      }
+    }
+    
+    // Check for rental market queries
+    if (messageLower.includes('rent') || messageLower.includes('rental')) {
+      const areaMatch = messageLower.match(/(?:in|for|at)\s+(\w+(?:\s+\w+)?)/i)
+      const area = areaMatch ? areaMatch[1] : 'Houston'
+      
+      const rentalData = await enhancedDataQuery.getRentalMarketData(area)
+      if (rentalData) {
+        return {
+          response: `Rental market data for ${area}:\n\n• Studio: $${rentalData.avgRents.studio}/month\n• 1BR: $${rentalData.avgRents.oneBed}/month\n• 2BR: $${rentalData.avgRents.twoBed}/month\n• 3BR: $${rentalData.avgRents.threeBed}/month\n\nOccupancy Rate: ${rentalData.occupancy}%\nYear-over-Year Growth: ${rentalData.yearOverYear}%\n\n${rentalData.supply.underConstruction} units currently under construction.`,
+          confidence: 0.92,
+          sources: ['Rental Market Database', 'Property Management Reports'],
+          suggestedActions: [
+            { label: 'ROI Calculator', action: 'navigate:/roi-calculator' },
+            { label: 'Find Rental Properties', action: 'search:rentals' }
+          ]
+        }
+      }
+    }
+    
+    // Check for employer/jobs queries
+    if (messageLower.includes('employer') || messageLower.includes('jobs') || messageLower.includes('companies')) {
+      const employers = await enhancedDataQuery.getTopEmployers('Houston', 5)
+      if (employers.length > 0) {
+        let response = 'Top employers in Houston:\n\n'
+        employers.forEach((emp, idx) => {
+          response += `${idx + 1}. **${emp.name}**\n`
+          response += `   • Employees: ${emp.employees.toLocaleString()}\n`
+          response += `   • Sector: ${emp.sector}\n`
+          response += `   • Growth: ${emp.growth > 0 ? '+' : ''}${emp.growth}% YoY\n\n`
+        })
+        
+        return {
+          response,
+          confidence: 0.90,
+          sources: ['Major Employers Database', 'Economic Development Reports'],
+          suggestedActions: [
+            { label: 'View All Employers', action: 'navigate:/data/employers' },
+            { label: 'Economic Indicators', action: 'view:economic' }
+          ]
+        }
+      }
+    }
     
     // Population growth queries - use real data if available
     if (messageLower.includes('population') || messageLower.includes('growth')) {
@@ -316,23 +421,139 @@ With ${INTEGRATED_DATA.jobGrowth.totalNewJobs.toLocaleString()} new jobs coming 
       }
     }
 
-    // Default conversational response
+    // Check for construction cost queries
+    if (messageLower.includes('construction cost') || messageLower.includes('building cost')) {
+      const costs = await enhancedDataQuery.getConstructionCosts()
+      if (costs) {
+        return {
+          response: `Current Houston construction costs (per sq ft):\n\n**Residential:**\n• Basic: $${costs.residential.low}/sq ft\n• Standard: $${costs.residential.mid}/sq ft\n• Luxury: $${costs.residential.high}/sq ft\n\n**Commercial:**\n• Office: $${costs.commercial.office}/sq ft\n• Retail: $${costs.commercial.retail}/sq ft\n• Industrial: $${costs.commercial.industrial}/sq ft\n\n**Market Trends:**\n• Overall costs up ${costs.yearOverYear.overall}% YoY\n• Materials up ${costs.yearOverYear.materials}%\n• Labor up ${costs.yearOverYear.labor}%`,
+          confidence: 0.93,
+          sources: ['Construction Cost Index', 'Builder Reports'],
+          suggestedActions: [
+            { label: 'Calculate Project Cost', action: 'navigate:/tools/cost-calculator' },
+            { label: 'View Trends', action: 'view:construction-trends' }
+          ]
+        }
+      }
+    }
+    
+    // Check for STR/Airbnb queries
+    if (messageLower.includes('str') || messageLower.includes('airbnb') || messageLower.includes('short term') || messageLower.includes('short-term')) {
+      const neighborhoods = ['Heights', 'Montrose', 'Downtown', 'Midtown', 'Museum District']
+      const strData = await Promise.all(
+        neighborhoods.map(n => enhancedDataQuery.getSTRMarketData(n))
+      )
+      
+      const validData = strData.filter(d => d !== null).slice(0, 3)
+      if (validData.length > 0) {
+        let response = 'Top short-term rental markets in Houston:\n\n'
+        neighborhoods.forEach((neighborhood, idx) => {
+          if (strData[idx]) {
+            const data = strData[idx]!
+            response += `**${neighborhood}** (${data.tier} Tier)\n`
+            response += `• ADR: $${data.avgDailyRate}/night\n`
+            response += `• Occupancy: ${data.occupancy}%\n`
+            response += `• Annual Revenue: $${data.annualRevenue?.toLocaleString()}\n\n`
+          }
+        })
+        
+        return {
+          response,
+          confidence: 0.91,
+          sources: ['STR Market Analysis', 'AirDNA Data'],
+          suggestedActions: [
+            { label: 'STR Calculator', action: 'navigate:/tools/str-calculator' },
+            { label: 'Find STR Properties', action: 'search:str-properties' }
+          ]
+        }
+      }
+    }
+    
+    // Check for income/demographic queries
+    if (messageLower.includes('income') || messageLower.includes('demographic') || messageLower.includes('who lives')) {
+      const areaMatch = messageLower.match(/(?:in|for|at)\s+(\w+(?:\s+\w+)?)/i)
+      const area = areaMatch ? areaMatch[1] : '77019' // River Oaks as default
+      
+      const [demographics, income] = await Promise.all([
+        enhancedDataQuery.getAreaDemographics(area),
+        enhancedDataQuery.getIncomeData(area)
+      ])
+      
+      if (demographics || income) {
+        let response = `Demographics and income data for ${area}:\n\n`
+        
+        if (demographics) {
+          response += `**Population:** ${demographics.population?.toLocaleString()}\n`
+          response += `**Median Age:** ${demographics.medianAge}\n`
+          response += `**Diversity:** ${Math.round(100 - demographics.diversity.white)}% minority population\n\n`
+        }
+        
+        if (income) {
+          response += `**Income Levels:**\n`
+          response += `• Median: $${income.median?.toLocaleString()}\n`
+          response += `• Top 20%: ${income.distribution.over200k}% earn $200k+\n`
+          response += `• Middle Class: ${income.distribution['50to75k'] + income.distribution['75to100k']}% earn $50-100k\n\n`
+          response += `**Housing Affordability:**\n`
+          response += `• Median Home: $${income.affordability?.medianHomeValue?.toLocaleString()}\n`
+          response += `• Homeownership: ${income.affordability?.homeownership}%\n`
+        }
+        
+        return {
+          response,
+          confidence: 0.94,
+          sources: ['Census Data', 'Income Statistics', 'Demographic Analysis'],
+          suggestedActions: [
+            { label: 'View Full Report', action: `report:demographics:${area}` },
+            { label: 'Compare Areas', action: 'tool:comparison' }
+          ]
+        }
+      }
+    }
+    
+    // Check for economic/GDP queries
+    if (messageLower.includes('economy') || messageLower.includes('gdp') || messageLower.includes('economic')) {
+      const indicators = await enhancedDataQuery.getEconomicIndicators()
+      if (indicators.length > 0) {
+        let response = 'Houston economic indicators:\n\n'
+        indicators.slice(0, 5).forEach(ind => {
+          response += `• **${ind.name}**: ${ind.value.toLocaleString()} ${ind.unit}`
+          if (ind.change) {
+            response += ` (${ind.change > 0 ? '+' : ''}${ind.change}% YoY)`
+          }
+          response += '\n'
+        })
+        
+        response += '\nHouston ranks #4 in US metro GDP at $678 billion, with strong growth in energy, healthcare, and technology sectors.'
+        
+        return {
+          response,
+          confidence: 0.92,
+          sources: ['Economic Indicators', 'Federal Reserve Data', 'Greater Houston Partnership'],
+          suggestedActions: [
+            { label: 'View All Indicators', action: 'navigate:/data/economic' },
+            { label: 'Industry Analysis', action: 'analyze:industries' }
+          ]
+        }
+      }
+    }
+    
+    // Default conversational response with enhanced data mention
     return {
-      response: `I understand you're interested in Houston real estate. With access to 750,000+ data points, I can help you with:
+      response: `I understand you're interested in Houston real estate. With our enhanced database including demographics, rental markets, employment data, and HCAD property records, I can help you with:
 
-• Market analysis and trends
-• Development opportunities
-• Investment strategies
-• Specific area insights
-• Developer information
-• Population and job growth data
+• Comprehensive area analysis (demographics, income, rentals)
+• Employer and job market insights  
+• Construction costs and trends
+• Short-term rental opportunities
+• Property valuations from HCAD
+• Investment opportunity scoring
 
 What specific aspect would you like to explore?`,
       confidence: 0.85,
-      sources: ['Fernando-X Database'],
+      sources: ['Fernando-X Enhanced Database'],
       suggestedActions: [
-        { label: 'Market Overview', action: 'navigate:/intelligence' },
-        { label: 'Chat About Opportunities', action: 'continue' }
+        { label: 'Area Analysis', action: 'analyze:area' },
+        { label: 'Find Opportunities', action: 'search:opportunities' }
       ]
     }
   }

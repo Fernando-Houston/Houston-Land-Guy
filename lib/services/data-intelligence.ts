@@ -67,7 +67,7 @@ export const queryPerplexity = cache(async (query: string, context?: string): Pr
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        model: 'pplx-7b-online',
+        model: 'sonar',
         messages: [
           {
             role: 'system',
