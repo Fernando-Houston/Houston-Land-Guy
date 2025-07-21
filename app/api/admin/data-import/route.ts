@@ -3,6 +3,9 @@ import { dataImportService } from '@/lib/services/data-import-service'
 import { getServerSession } from 'next-auth'
 import authConfig from '@/lib/auth/auth-config'
 
+// Force dynamic rendering for this route
+export const dynamic = 'force-dynamic'
+
 export async function POST(request: Request) {
   try {
     // Check if user is authenticated and is admin

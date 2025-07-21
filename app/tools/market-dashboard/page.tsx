@@ -2,6 +2,9 @@
 
 import dynamic from 'next/dynamic';
 
+// Force dynamic rendering to avoid SSG database connection issues
+export const dynamic = 'force-dynamic';
+
 const MarketIntelligenceDashboard = dynamic(
   () => import('@/src/components/dashboard/MarketIntelligenceDashboard'),
   { 

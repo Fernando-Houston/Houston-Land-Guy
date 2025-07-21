@@ -3,6 +3,9 @@ import { marketIntelligence } from '@/lib/services/market-intelligence'
 import { realDataService } from '@/lib/services/real-data-service'
 import { PrismaClient } from '@prisma/client'
 
+// Force dynamic rendering for this route
+export const dynamic = 'force-dynamic'
+
 const prisma = new PrismaClient()
 
 export async function GET() {

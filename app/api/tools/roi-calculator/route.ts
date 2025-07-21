@@ -4,6 +4,9 @@ import { coreAgentsClient } from '@/lib/api/core-agents'
 import { handleAPIError } from '@/lib/errors/api-error'
 import { z } from 'zod'
 
+// Force dynamic rendering for this route
+export const dynamic = 'force-dynamic'
+
 const roiCalculatorSchema = z.object({
   purchasePrice: z.number().positive(),
   renovationCost: z.number().min(0),

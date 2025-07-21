@@ -4,6 +4,9 @@ import { coreAgentsClient } from '@/lib/api/core-agents'
 import { handleAPIError } from '@/lib/errors/api-error'
 import { z } from 'zod'
 
+// Force dynamic rendering for this route
+export const dynamic = 'force-dynamic'
+
 const marketIntelligenceSchema = z.object({
   neighborhoods: z.array(z.string()).min(1),
   dataTypes: z.array(z.enum(['permits', 'trends', 'demographics', 'opportunities'])).optional(),

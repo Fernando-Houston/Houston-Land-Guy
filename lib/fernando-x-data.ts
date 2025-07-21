@@ -388,6 +388,32 @@ export const getIntegratedData = cache(async () => {
   }
 })
 
+// Export INTEGRATED_DATA for backward compatibility
+export const INTEGRATED_DATA = {
+  populationGrowth: {
+    totalProjected: 750000,
+    topGrowthAreas: [
+      { area: 'EaDo', growthRate: 8.2, projectedGrowth: 12000 },
+      { area: 'Heights', growthRate: 6.8, projectedGrowth: 9500 },
+      { area: 'Midtown', growthRate: 7.1, projectedGrowth: 8800 },
+      { area: 'Museum District', growthRate: 5.4, projectedGrowth: 7200 },
+      { area: 'River Oaks', growthRate: 4.2, projectedGrowth: 6100 }
+    ]
+  },
+  lendingTrends: {
+    currentRate: 7.25,
+    yearAgoRate: 6.75,
+    constructionLoanRate: 'Prime + 1.5%',
+    preferredEquity: '25-30%',
+    capRates: {
+      multifamily: 5.5,
+      office: 7.5,
+      retail: 6.8,
+      industrial: 6.2
+    }
+  }
+}
+
 // Helper functions
 function calculateTotalDataPoints(data: any): number {
   let total = 0
