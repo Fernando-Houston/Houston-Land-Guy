@@ -70,7 +70,7 @@ export class DataProcess3ImportService {
             await prisma.marketIntelligence.create({
               data: {
                 dataType: 'competitive',
-                zipCode: record.ZIP_Code || record.zipCode,
+                zipCode: String(record.ZIP_Code || record.zipCode || ''),
                 neighborhood: record.Area || record.County || record.Platform,
                 marketShare: parseFloat(record.Market_Share || record.market_share || '0'),
                 competitors: parseInt(record.Competitors || '0'),
@@ -136,7 +136,7 @@ export class DataProcess3ImportService {
                     permitType: record.Type || record.Permit_Type || 'residential',
                     subType: record.Sub_Type || record.Project_Type,
                     address: record.Address || record.Location || 'Unknown',
-                    zipCode: record.ZIP_Code || record.zipCode || '77001',
+                    zipCode: String(record.ZIP_Code || record.zipCode || '77001'),
                     neighborhood: record.Neighborhood || record.Area,
                     precinct: record.Precinct,
                     projectName: record.Project_Name || record.Development,
@@ -195,7 +195,7 @@ export class DataProcess3ImportService {
             await prisma.marketIntelligence.create({
               data: {
                 dataType: 'financial-performance',
-                zipCode: record.ZIP_Code || record.zipCode,
+                zipCode: String(record.ZIP_Code || record.zipCode || ''),
                 neighborhood: record.Area || record.Submarket,
                 capRate: parseFloat(record.Cap_Rate || record.cap_rate || '0'),
                 roi: parseFloat(record.ROI || record.Annual_Return || '0'),
@@ -321,7 +321,7 @@ export class DataProcess3ImportService {
               await prisma.marketIntelligence.create({
                 data: {
                   dataType: 'micro-market',
-                  zipCode: record.ZIP_Code || record.zipCode,
+                  zipCode: String(record.ZIP_Code || record.zipCode || ''),
                   neighborhood: record.Neighborhood || record.Area,
                   gentrificationScore: parseFloat(record.Gentrification_Score || record.Change_Index || '0'),
                   schoolRating: parseFloat(record.Rating || record.School_Rating || record.ISD_Rating || '0'),
@@ -336,7 +336,7 @@ export class DataProcess3ImportService {
               await prisma.marketIntelligence.create({
                 data: {
                   dataType: 'micro-market',
-                  zipCode: record.ZIP_Code || record.zipCode,
+                  zipCode: String(record.ZIP_Code || record.zipCode || ''),
                   neighborhood: record.Neighborhood || record.Micro_Market,
                   investmentScore: parseFloat(record.Investment_Score || '0'),
                   dataDate: new Date('2024-01-01'),
@@ -390,7 +390,7 @@ export class DataProcess3ImportService {
             await prisma.marketIntelligence.create({
               data: {
                 dataType: 'investment-sentiment',
-                zipCode: record.ZIP_Code || record.zipCode,
+                zipCode: String(record.ZIP_Code || record.zipCode || ''),
                 neighborhood: record.Area || record.Submarket,
                 foreignInvestmentPct: parseFloat(record.Foreign_Investment_Pct || record.International_Pct || '0'),
                 institutionalPct: parseFloat(record.Institutional_Pct || record.Institutional_Share || '0'),
@@ -446,7 +446,7 @@ export class DataProcess3ImportService {
             await prisma.marketIntelligence.create({
               data: {
                 dataType: 'mls-realtime',
-                zipCode: record.ZIP_Code || record.zipCode,
+                zipCode: String(record.ZIP_Code || record.zipCode || ''),
                 neighborhood: record.Neighborhood || record.Area,
                 dataDate: new Date('2024-10-01'), // Q4 2024
                 metadata: {
@@ -503,7 +503,7 @@ export class DataProcess3ImportService {
                 permitType: 'infrastructure',
                 subType: record.Project_Type || 'major-infrastructure',
                 address: record.Location || 'Harris County',
-                zipCode: record.ZIP_Code || '77001',
+                zipCode: String(record.ZIP_Code || '77001'),
                 neighborhood: record.Area,
                 projectName: record.Project_Name || record.Project,
                 developer: record.Agency || 'Harris County',
@@ -559,7 +559,7 @@ export class DataProcess3ImportService {
             try {
               await prisma.qualityOfLife.create({
                 data: {
-                  zipCode: record.ZIP_Code || record.zipCode || '77001',
+                  zipCode: String(record.ZIP_Code || record.zipCode || '77001'),
                   neighborhood: record.Neighborhood || record.Area,
                   crimeRate: parseFloat(record.Crime_Rate || record.Crime_Index || '0'),
                   crimeReduction: parseFloat(record.Crime_Reduction || record.YoY_Change || '0'),
