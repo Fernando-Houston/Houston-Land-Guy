@@ -3,6 +3,7 @@ import { FernandoXQuery, FernandoXResponse } from '../fernando-x'
 import { INTEGRATED_DATA } from '../fernando-x-data'
 import { fernandoMemory } from './memory-service'
 import { conversationEngine } from './conversation-engine'
+import { databaseResponder } from './database-responder'
 
 export async function processServerQuery(query: FernandoXQuery): Promise<FernandoXResponse> {
   // DIAGNOSTIC: Log to verify enhanced version is being used
@@ -20,7 +21,22 @@ export async function processServerQuery(query: FernandoXQuery): Promise<Fernand
   })
   
   try {
-    // Use the conversation engine for natural responses
+    // First try the database responder for data queries
+    console.log('🔍 Checking database for relevant data...')
+    const databaseResponse = await databaseResponder.generateDatabaseResponse(query.text)
+    
+    // If database found good data, use it
+    if (databaseResponse.confidence > 0.8) {
+      console.log('✅ Using database response with confidence:', databaseResponse.confidence)
+      return {
+        text: databaseResponse.response,
+        data: databaseResponse.data,
+        confidence: databaseResponse.confidence,
+        sources: databaseResponse.sources
+      }
+    }
+    
+    // Otherwise use the conversation engine for natural responses
     const sessionId = query.context?.sessionId || `session-${Date.now()}`
     const context = await conversationEngine.getConversationContext(sessionId)
     
