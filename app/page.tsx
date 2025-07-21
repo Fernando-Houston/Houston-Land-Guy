@@ -270,59 +270,179 @@ export default function IntelligenceHub() {
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-gray-50 to-white">
-      {/* Hero Section */}
-      <div className="relative overflow-hidden bg-gradient-to-br from-purple-900 via-purple-800 to-indigo-900">
+      {/* Hero Section - Enhanced with Stunning Visuals */}
+      <div className="relative overflow-hidden bg-gradient-to-br from-gray-900 via-blue-900 to-emerald-900">
+        {/* Animated Background Elements */}
         <div className="absolute inset-0">
-          <div className="absolute inset-0 bg-black opacity-40" />
-          <div className="absolute inset-0 bg-gradient-to-t from-purple-900/50 to-transparent" />
+          <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
+          <div className="absolute inset-0 bg-gradient-to-br from-emerald-900/20 via-blue-900/20 to-gray-900/20" />
+          
+          {/* Floating Data Particles */}
+          <div className="absolute inset-0 overflow-hidden">
+            <div className="absolute -top-10 -left-10 w-20 h-20 bg-emerald-500/20 rounded-full blur-xl animate-pulse" />
+            <div className="absolute top-20 right-20 w-32 h-32 bg-blue-500/15 rounded-full blur-2xl animate-pulse" style={{ animationDelay: '1s' }} />
+            <div className="absolute bottom-20 left-20 w-24 h-24 bg-teal-500/20 rounded-full blur-xl animate-pulse" style={{ animationDelay: '2s' }} />
+            <div className="absolute top-1/3 right-1/3 w-16 h-16 bg-cyan-500/25 rounded-full blur-lg animate-pulse" style={{ animationDelay: '0.5s' }} />
+          </div>
+          
+          {/* Grid Pattern Overlay */}
+          <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAiIGhlaWdodD0iNDAiIHZpZXdCb3g9IjAgMCA0MCA0MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48ZGVmcz48cGF0dGVybiBpZD0iZ3JpZCIgd2lkdGg9IjQwIiBoZWlnaHQ9IjQwIiBwYXR0ZXJuVW5pdHM9InVzZXJTcGFjZU9uVXNlIj48cGF0aCBkPSJNIDQwIDAgTCAwIDAgMCA0MCIgZmlsbD0ibm9uZSIgc3Ryb2tlPSJyZ2JhKDI1NSwyNTUsMjU1LDAuMDMpIiBzdHJva2Utd2lkdGg9IjEiLz48L3BhdHRlcm4+PC9kZWZzPjxyZWN0IHdpZHRoPSIxMDAlIiBoZWlnaHQ9IjEwMCUiIGZpbGw9InVybCgjZ3JpZCkiLz48L3N2Zz4=')] opacity-40" />
         </div>
         
         <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-24 lg:py-32">
           <motion.div
-            initial={{ opacity: 0, y: 20 }}
+            initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8 }}
+            transition={{ duration: 1, ease: "easeOut" }}
             className="text-center"
           >
-            <h1 className="text-4xl md:text-6xl font-bold text-white mb-6">
+            {/* Status Badge */}
+            <motion.div 
+              initial={{ opacity: 0, scale: 0.8 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ delay: 0.3, duration: 0.6 }}
+              className="inline-flex items-center justify-center px-6 py-3 bg-emerald-500/20 backdrop-blur-lg border border-emerald-400/30 rounded-full mb-6"
+            >
+              <Activity className="h-5 w-5 text-emerald-400 mr-3 animate-pulse" />
+              <span className="text-sm font-semibold text-emerald-300">Live Intelligence Platform</span>
+              <div className="ml-3 w-2 h-2 bg-emerald-400 rounded-full animate-pulse" />
+            </motion.div>
+
+            <motion.h1 
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.4, duration: 0.8 }}
+              className="text-4xl md:text-6xl lg:text-7xl font-bold text-white mb-6 leading-tight"
+            >
               Houston Development
-              <span className="block text-transparent bg-clip-text bg-gradient-to-r from-purple-300 to-indigo-300">
+              <span className="block text-transparent bg-clip-text bg-gradient-to-r from-emerald-300 via-cyan-300 to-blue-300 mt-2">
                 Intelligence Hub
               </span>
-            </h1>
-            <p className="text-xl md:text-2xl text-purple-100 mb-8 max-w-3xl mx-auto">
-              Real-time data, AI insights, and powerful tools for Houston real estate professionals
-            </p>
-            
-            {/* Live Metrics */}
-            <div className="grid grid-cols-3 gap-4 max-w-3xl mx-auto mb-8">
-              <motion.div
-                whileHover={{ scale: 1.05 }}
-                className="bg-white/10 backdrop-blur-sm rounded-lg p-4 border border-white/20"
-              >
-                <div className="text-3xl font-bold text-white">{liveMetrics.activeDeals}</div>
-                <div className="text-sm text-purple-200">Active Projects</div>
-              </motion.div>
-              <motion.div
-                whileHover={{ scale: 1.05 }}
-                className="bg-white/10 backdrop-blur-sm rounded-lg p-4 border border-white/20"
-              >
-                <div className="text-3xl font-bold text-white">{liveMetrics.dataPoints}M+</div>
-                <div className="text-sm text-purple-200">Data Points</div>
-              </motion.div>
-              <motion.div
-                whileHover={{ scale: 1.05 }}
-                className="bg-white/10 backdrop-blur-sm rounded-lg p-4 border border-white/20"
-              >
-                <div className="text-3xl font-bold text-white">{liveMetrics.aiInsights}</div>
-                <div className="text-sm text-purple-200">AI Insights Daily</div>
-              </motion.div>
-            </div>
+            </motion.h1>
 
-            {/* Search Bar */}
-            <div className="max-w-2xl mx-auto">
-              <AISearchBar />
-            </div>
+            <motion.p 
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.6, duration: 0.8 }}
+              className="text-xl md:text-2xl text-gray-200 mb-12 max-w-4xl mx-auto leading-relaxed"
+            >
+              The only platform that transforms raw data into intelligent decisions. 
+              <span className="text-emerald-300 font-semibold"> Real-time insights, predictive analytics, and AI-powered intelligence</span> 
+              for Houston's development professionals.
+            </motion.p>
+            
+            {/* Enhanced Live Metrics */}
+            <motion.div 
+              initial={{ opacity: 0, y: 30 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.8, duration: 0.8 }}
+              className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-4xl mx-auto mb-12"
+            >
+              <motion.div
+                whileHover={{ scale: 1.05, y: -5 }}
+                transition={{ type: "spring", stiffness: 300 }}
+                className="relative group"
+              >
+                <div className="absolute inset-0 bg-gradient-to-r from-emerald-500/30 to-teal-500/30 rounded-2xl blur opacity-75 group-hover:opacity-100 transition-opacity" />
+                <div className="relative bg-white/10 backdrop-blur-lg rounded-2xl p-6 border border-white/20 group-hover:border-emerald-400/50 transition-all">
+                  <div className="flex items-center justify-between mb-3">
+                    <Building2 className="h-8 w-8 text-emerald-400" />
+                    <div className="text-xs text-emerald-300 font-medium">LIVE</div>
+                  </div>
+                  <div className="text-3xl md:text-4xl font-bold text-white mb-1">{liveMetrics.activeDeals}</div>
+                  <div className="text-sm text-gray-300">Active Major Projects</div>
+                  <div className="mt-3 h-1 bg-gray-700 rounded-full overflow-hidden">
+                    <div className="h-full bg-gradient-to-r from-emerald-400 to-teal-400 rounded-full animate-pulse" style={{ width: '85%' }} />
+                  </div>
+                </div>
+              </motion.div>
+
+              <motion.div
+                whileHover={{ scale: 1.05, y: -5 }}
+                transition={{ type: "spring", stiffness: 300 }}
+                className="relative group"
+              >
+                <div className="absolute inset-0 bg-gradient-to-r from-blue-500/30 to-cyan-500/30 rounded-2xl blur opacity-75 group-hover:opacity-100 transition-opacity" />
+                <div className="relative bg-white/10 backdrop-blur-lg rounded-2xl p-6 border border-white/20 group-hover:border-blue-400/50 transition-all">
+                  <div className="flex items-center justify-between mb-3">
+                    <Database className="h-8 w-8 text-blue-400" />
+                    <div className="text-xs text-blue-300 font-medium">REAL-TIME</div>
+                  </div>
+                  <div className="text-3xl md:text-4xl font-bold text-white mb-1">{liveMetrics.dataPoints}M+</div>
+                  <div className="text-sm text-gray-300">Intelligence Data Points</div>
+                  <div className="mt-3 h-1 bg-gray-700 rounded-full overflow-hidden">
+                    <div className="h-full bg-gradient-to-r from-blue-400 to-cyan-400 rounded-full animate-pulse" style={{ width: '92%' }} />
+                  </div>
+                </div>
+              </motion.div>
+
+              <motion.div
+                whileHover={{ scale: 1.05, y: -5 }}
+                transition={{ type: "spring", stiffness: 300 }}
+                className="relative group"
+              >
+                <div className="absolute inset-0 bg-gradient-to-r from-purple-500/30 to-pink-500/30 rounded-2xl blur opacity-75 group-hover:opacity-100 transition-opacity" />
+                <div className="relative bg-white/10 backdrop-blur-lg rounded-2xl p-6 border border-white/20 group-hover:border-purple-400/50 transition-all">
+                  <div className="flex items-center justify-between mb-3">
+                    <Brain className="h-8 w-8 text-purple-400" />
+                    <div className="text-xs text-purple-300 font-medium">AI POWERED</div>
+                  </div>
+                  <div className="text-3xl md:text-4xl font-bold text-white mb-1">{Math.floor(liveMetrics.aiInsights / 1000)}K+</div>
+                  <div className="text-sm text-gray-300">AI Insights Generated</div>
+                  <div className="mt-3 h-1 bg-gray-700 rounded-full overflow-hidden">
+                    <div className="h-full bg-gradient-to-r from-purple-400 to-pink-400 rounded-full animate-pulse" style={{ width: '78%' }} />
+                  </div>
+                </div>
+              </motion.div>
+            </motion.div>
+
+            {/* Enhanced Search Bar with Glow Effect */}
+            <motion.div 
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 1, duration: 0.8 }}
+              className="max-w-3xl mx-auto relative"
+            >
+              <div className="absolute inset-0 bg-gradient-to-r from-emerald-500/20 via-blue-500/20 to-purple-500/20 rounded-2xl blur-xl" />
+              <div className="relative">
+                <AISearchBar />
+              </div>
+            </motion.div>
+
+            {/* Action Buttons */}
+            <motion.div 
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 1.2, duration: 0.8 }}
+              className="flex flex-col sm:flex-row gap-4 justify-center mt-8"
+            >
+              <motion.button
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.98 }}
+                onClick={() => {
+                  const event = new CustomEvent('open-fernando-chat')
+                  window.dispatchEvent(event)
+                }}
+                className="inline-flex items-center px-8 py-4 bg-gradient-to-r from-emerald-500 to-teal-500 text-white font-semibold rounded-xl hover:from-emerald-600 hover:to-teal-600 transition-all shadow-lg hover:shadow-emerald-500/25"
+              >
+                <Bot className="h-5 w-5 mr-3" />
+                Start with Fernando-X AI
+                <ArrowRight className="ml-3 h-5 w-5" />
+              </motion.button>
+
+              <motion.div
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.98 }}
+              >
+                <Link 
+                  href="/market-intelligence"
+                  className="inline-flex items-center px-8 py-4 bg-white/10 backdrop-blur-lg text-white font-semibold rounded-xl border border-white/20 hover:bg-white/20 transition-all"
+                >
+                  <BarChart3 className="h-5 w-5 mr-3" />
+                  Explore Market Intelligence
+                </Link>
+              </motion.div>
+            </motion.div>
           </motion.div>
         </div>
       </div>
