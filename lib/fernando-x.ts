@@ -421,7 +421,6 @@ Could you be more specific about what you'd like to know? For example:
       sources: ['Enhanced Fernando-X', 'Error Handler']
     }
   }
-}
   
   async generateReport(type: string, topic: string): Promise<any> {
     const data = {
