@@ -148,10 +148,7 @@ export default function DocumentAnalysisDashboard() {
         ]
       }
       const comparison = mockComparison
-      // await documentAnalysis.compareDocuments(
-        selectedForCompare,
-        'similar'
-      )
+      // Previously used: await documentAnalysis.compareDocuments(selectedForCompare, 'similar')
       console.log('Comparison results:', comparison)
       // Handle comparison results
     } catch (error) {
