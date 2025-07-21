@@ -366,17 +366,17 @@ export class HarMlsImportServiceV2 {
         await prisma.harNeighborhoodData.create({
           data: {
             reportId,
-            neighborhood: this.safeString(record.Neighborhood || record.Area || record.Submarket || record.Market_Area) || 'Unknown',
+            neighborhood: this.safeString(record.Neighborhood || record['City/Area'] || record.Area || record.Submarket || record.Market_Area) || 'Unknown',
             zipCode: this.safeString(record.ZIP_Code || record.Zip || record.zipCode),
             
             totalSales: this.safeInt(record.Total_Sales || record.Sales || record.Closed_Sales) || 0,
-            avgSalePrice: this.safeFloat(record.Avg_Sale_Price || record.Average_Price || record.Avg_Price) || 0,
-            medianSalePrice: this.safeFloat(record.Median_Sale_Price || record.Median_Price) || 0,
-            pricePerSqft: this.safeFloat(record.Price_Per_Sqft || record.Price_Per_SF) || 0,
+            avgSalePrice: this.safeFloat(record.Avg_Sale_Price || record.Average_Price || record.Avg_Price || record['Average Price']) || 0,
+            medianSalePrice: this.safeFloat(record.Median_Sale_Price || record.Median_Price || record['Median Price'] || record.Median_Price_June_2025) || 0,
+            pricePerSqft: this.safeFloat(record.Price_Per_Sqft || record.Price_Per_SF || record.Price_Per_SqFt) || 0,
             
             activeListings: this.safeInt(record.Active_Listings || record.Active || record.For_Sale) || 0,
             monthsInventory: this.safeFloat(record.Months_Inventory || record.Months_Supply || record.Inventory) || 0,
-            avgDaysOnMarket: this.safeInt(record.Days_On_Market || record.DOM || record.Avg_DOM) || 0,
+            avgDaysOnMarket: this.safeInt(record.Days_On_Market || record.DOM || record.Avg_DOM || record['Days on Market'] || record.Avg_Days_Market) || 0,
             
             listToSaleRatio: this.safeFloat(record.List_To_Sale_Ratio || record.SP_LP_Ratio),
             sellerConcessions: this.safeFloat(record.Seller_Concessions || record.Concessions),
