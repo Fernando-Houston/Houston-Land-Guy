@@ -2,6 +2,9 @@
 
 import dynamic from 'next/dynamic';
 
+// Force dynamic rendering for this route
+export const dynamic = 'force-dynamic';
+
 const ZoningMapNew = dynamic(() => import('./ZoningMapNew'), {
   ssr: false,
   loading: () => (

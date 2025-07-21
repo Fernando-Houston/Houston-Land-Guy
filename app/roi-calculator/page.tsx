@@ -3,6 +3,9 @@
 import dynamic from 'next/dynamic'
 import Head from 'next/head'
 
+// Force dynamic rendering for this route
+export const dynamic = 'force-dynamic'
+
 // Dynamically import the ROI Calculator V2 to avoid SSR issues with Google Maps
 const ROICalculator = dynamic(
   () => import('@/src/components/calculators/ROICalculatorV2'),
