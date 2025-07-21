@@ -640,8 +640,7 @@ What specific aspect would you like to explore?`,
       }))
     }
   }
-}
-
+  
   private getConversationalActions(message: string, response: string): Array<{ label: string; action: string }> {
     const actions: Array<{ label: string; action: string }> = []
     const messageLower = message.toLowerCase()
@@ -679,5 +678,6 @@ What specific aspect would you like to explore?`,
     
     return actions
   }
+}
 
 export const conversationEngine = new FernandoXConversationEngine()
