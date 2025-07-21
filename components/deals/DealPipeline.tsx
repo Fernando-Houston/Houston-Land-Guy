@@ -8,8 +8,39 @@ import {
   Plus, Filter, Download, BarChart3, Target, Briefcase,
   Home, Building2, MapPin, Star, ArrowRight, MoreVertical
 } from 'lucide-react'
-import { dealFlow } from '@/lib/services/deal-flow'
-import type { Deal, DealMetrics } from '@/lib/services/deal-flow'
+interface Deal {
+  id: string
+  userId: string
+  title: string
+  clientName: string
+  clientType: 'buyer' | 'seller' | 'investor'
+  propertyAddress: string
+  dealValue: number
+  status: 'lead' | 'qualified' | 'negotiating' | 'under_contract' | 'closing' | 'closed'
+  stage: number
+  probability: number
+  expectedCloseDate: Date
+  commission: number
+  notes?: string
+  activities: any[]
+  createdAt: Date
+  updatedAt: Date
+}
+
+interface DealMetrics {
+  totalDeals: number
+  totalValue: number
+  totalCommission: number
+  avgDealSize: number
+  avgDaysToClose: number
+  conversionRate: number
+  dealsByStage: Record<Deal['status'], number>
+  forecastedRevenue: {
+    thisMonth: number
+    nextMonth: number
+    thisQuarter: number
+  }
+}
 
 interface DealStage {
   id: Deal['status']
@@ -43,42 +74,124 @@ export default function DealPipeline() {
   }, [filter])
 
   const loadData = async () => {
-    // Load deals
-    const filters = filter === 'all' ? undefined : { clientType: filter as any }
-    const userDeals = await dealFlow.getDeals(userId, filters)
-    setDeals(userDeals)
+    // Mock deals data
+    const mockDeals: Deal[] = [
+      {
+        id: '1',
+        userId,
+        title: 'River Oaks Luxury Home',
+        clientName: 'John Smith',
+        clientType: 'buyer',
+        propertyAddress: '123 River Oaks Blvd',
+        dealValue: 2500000,
+        status: 'negotiating',
+        stage: 3,
+        probability: 0.7,
+        expectedCloseDate: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000),
+        commission: 75000,
+        activities: [],
+        createdAt: new Date(Date.now() - 14 * 24 * 60 * 60 * 1000),
+        updatedAt: new Date()
+      },
+      {
+        id: '2',
+        userId,
+        title: 'Heights Investment Property',
+        clientName: 'Sarah Johnson',
+        clientType: 'investor',
+        propertyAddress: '456 Heights Ave',
+        dealValue: 650000,
+        status: 'under_contract',
+        stage: 4,
+        probability: 0.9,
+        expectedCloseDate: new Date(Date.now() + 15 * 24 * 60 * 60 * 1000),
+        commission: 19500,
+        activities: [],
+        createdAt: new Date(Date.now() - 30 * 24 * 60 * 60 * 1000),
+        updatedAt: new Date()
+      },
+      {
+        id: '3',
+        userId,
+        title: 'Memorial Park Townhome',
+        clientName: 'Mike Davis',
+        clientType: 'seller',
+        propertyAddress: '789 Memorial Dr',
+        dealValue: 475000,
+        status: 'lead',
+        stage: 1,
+        probability: 0.3,
+        expectedCloseDate: new Date(Date.now() + 60 * 24 * 60 * 60 * 1000),
+        commission: 14250,
+        activities: [],
+        createdAt: new Date(Date.now() - 3 * 24 * 60 * 60 * 1000),
+        updatedAt: new Date()
+      }
+    ]
     
-    // Load metrics
-    const userMetrics = await dealFlow.getDealMetrics(userId)
-    setMetrics(userMetrics)
+    const filteredDeals = filter === 'all' 
+      ? mockDeals 
+      : mockDeals.filter(d => d.clientType === filter)
     
-    // Load forecast
-    const userForecast = await dealFlow.getForecast(userId)
-    setForecast(userForecast)
+    setDeals(filteredDeals)
+    
+    // Mock metrics
+    const mockMetrics: DealMetrics = {
+      totalDeals: filteredDeals.length,
+      totalValue: filteredDeals.reduce((sum, d) => sum + d.dealValue, 0),
+      totalCommission: filteredDeals.reduce((sum, d) => sum + d.commission, 0),
+      avgDealSize: filteredDeals.reduce((sum, d) => sum + d.dealValue, 0) / filteredDeals.length || 0,
+      avgDaysToClose: 45,
+      conversionRate: 0.32,
+      dealsByStage: {
+        lead: filteredDeals.filter(d => d.status === 'lead').length,
+        qualified: filteredDeals.filter(d => d.status === 'qualified').length,
+        negotiating: filteredDeals.filter(d => d.status === 'negotiating').length,
+        under_contract: filteredDeals.filter(d => d.status === 'under_contract').length,
+        closing: filteredDeals.filter(d => d.status === 'closing').length,
+        closed: filteredDeals.filter(d => d.status === 'closed').length
+      },
+      forecastedRevenue: {
+        thisMonth: 94500,
+        nextMonth: 125000,
+        thisQuarter: 385000
+      }
+    }
+    setMetrics(mockMetrics)
+    
+    // Mock forecast
+    setForecast({
+      thisMonth: { deals: 3, revenue: 94500 },
+      nextMonth: { deals: 4, revenue: 125000 },
+      thisQuarter: { deals: 12, revenue: 385000 }
+    })
   }
 
   const handleMoveDeal = async (dealId: string, newStatus: Deal['status']) => {
-    await dealFlow.moveToStage(userId, dealId, newStatus)
+    // Mock moving deal to new stage
     loadData()
   }
 
   const handleCreateDeal = async () => {
     // In production, this would open a form
-    const newDeal = await dealFlow.createDeal(userId, {
-      property: {
-        address: '123 Main St, Houston, TX',
-        price: 500000,
-        type: 'residential'
-      },
-      client: {
-        id: 'client-' + Date.now(),
-        name: 'John Doe',
-        email: 'john@example.com',
-        type: 'buyer',
-        prequalified: true,
-        budget: 550000
-      }
-    }, 'residential')
+    // Mock creating new deal
+    const newDeal: Deal = {
+      id: Date.now().toString(),
+      userId,
+      title: 'New Deal',
+      clientName: 'New Client',
+      clientType: 'buyer',
+      propertyAddress: '123 Main St, Houston, TX',
+      dealValue: 500000,
+      status: 'lead',
+      stage: 1,
+      probability: 0.3,
+      expectedCloseDate: new Date(Date.now() + 60 * 24 * 60 * 60 * 1000),
+      commission: 15000,
+      activities: [],
+      createdAt: new Date(),
+      updatedAt: new Date()
+    }
     
     setDeals([newDeal, ...deals])
   }
@@ -433,7 +546,10 @@ export default function DealPipeline() {
                     <input
                       type="checkbox"
                       checked={task.completed}
-                      onChange={() => dealFlow.completeTask(userId, selectedDeal.id, task.id)}
+                      onChange={() => {
+                        // Mock completing task
+                        console.log(`Completed task ${task.id} for deal ${selectedDeal.id}`)
+                      }}
                       className="h-4 w-4 text-purple-600 rounded border-gray-300"
                     />
                     <span className={`flex-1 ${task.completed ? 'line-through text-gray-400' : 'text-gray-700'}`}>

@@ -8,7 +8,6 @@ import {
   AlertCircle, CheckCircle, Clock, ChevronRight, X,
   BarChart3, PieChart, FileSearch, Layers, Brain
 } from 'lucide-react'
-import { documentAnalysis } from '@/lib/services/document-analysis'
 import { useDropzone } from 'react-dropzone'
 
 interface DocumentAnalysisResult {
@@ -60,7 +59,38 @@ export default function DocumentAnalysisDashboard() {
 
       try {
         // Analyze document
-        const analysis = await documentAnalysis.analyzeDocument(file)
+        // Mock document analysis
+        const mockAnalysis: DocumentAnalysisResult = {
+          id: Date.now().toString(),
+          fileName: file.name,
+          fileType: file.type === 'application/pdf' ? 'Purchase Agreement' : 'Market Analysis',
+          status: 'completed',
+          summary: `Analysis of ${file.name} completed. Document appears to be a valid real estate document with key terms and conditions identified.`,
+          keyInsights: [
+            'Property value: $750,000',
+            'Closing date: 30 days',
+            'Contingencies: Financing and inspection',
+            'Earnest money: $25,000'
+          ],
+          extractedData: {
+            propertyAddress: '123 Main St, Houston, TX',
+            purchasePrice: 750000,
+            closingDate: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000),
+            buyerName: 'John Doe',
+            sellerName: 'Jane Smith'
+          },
+          risks: [
+            { type: 'financial', description: 'High leverage ratio', severity: 'medium' },
+            { type: 'legal', description: 'Title concerns noted', severity: 'low' }
+          ],
+          opportunities: [
+            { type: 'appreciation', description: 'Area showing strong growth', impact: 'high' },
+            { type: 'development', description: 'Zoning allows mixed-use', impact: 'medium' }
+          ],
+          confidence: 0.92,
+          analyzedAt: new Date()
+        }
+        const analysis = mockAnalysis
         
         setAnalyses(prev => [...prev, analysis])
         setUploadProgress(prev => ({ ...prev, [file.name]: 100 }))
@@ -99,7 +129,26 @@ export default function DocumentAnalysisDashboard() {
     if (selectedForCompare.length < 2) return
     
     try {
-      const comparison = await documentAnalysis.compareDocuments(
+      // Mock document comparison
+      const mockComparison = {
+        similarities: [
+          'Both properties in same zip code',
+          'Similar square footage',
+          'Comparable pricing structures'
+        ],
+        differences: [
+          'Different closing timelines',
+          'Varying contingency clauses',
+          'Different earnest money amounts'
+        ],
+        recommendations: [
+          'Consider negotiating price based on comparison',
+          'Review contingency differences carefully',
+          'Align closing dates if possible'
+        ]
+      }
+      const comparison = mockComparison
+      // await documentAnalysis.compareDocuments(
         selectedForCompare,
         'similar'
       )

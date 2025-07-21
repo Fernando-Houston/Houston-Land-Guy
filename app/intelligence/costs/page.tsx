@@ -7,10 +7,41 @@ import {
   Filter, Download, Search, Info, ChevronRight,
   Home, Factory, Briefcase, TreePine, BarChart3
 } from 'lucide-react'
-import { CostData, CostStats, ConstructionCostBreakdown } from '@/lib/services/costs-data-service'
 import { format } from 'date-fns'
 
-// CostData interface imported from costs-data-service
+// Define interfaces locally to avoid client-side service imports
+interface CostData {
+  id: string
+  category: string
+  projectType: string
+  address?: string
+  neighborhood?: string
+  totalCost: number
+  costPerSqft: number
+  projectSize: number
+  completedDate?: Date
+  contractor?: string
+  breakdown?: ConstructionCostBreakdown[]
+}
+
+interface CostStats {
+  avgCostPerSqft: number
+  medianCost: number
+  totalProjects: number
+  costByCategory: Record<string, number>
+  trendDirection: 'up' | 'down' | 'stable'
+  percentageChange: number
+}
+
+interface ConstructionCostBreakdown {
+  category: string
+  amount: number
+  percentage: number
+  subCategories?: {
+    name: string
+    amount: number
+  }[]
+}
 
 const constructionCategories = [
   { id: 'construction', name: 'Construction', icon: Building2 },

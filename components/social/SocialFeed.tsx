@@ -7,7 +7,6 @@ import {
   Users, TrendingUp, Shield, MoreHorizontal,
   ThumbsUp, ThumbsDown, Bookmark, Eye, Building2
 } from 'lucide-react'
-import { socialFeatures } from '@/lib/services/social-features'
 import Link from 'next/link'
 import Image from 'next/image'
 
@@ -60,18 +59,71 @@ export default function SocialFeed() {
   const fetchData = async () => {
     setLoading(true)
     try {
-      // Initialize sample data
-      await socialFeatures.initializeSampleData()
-      
+      // Use mock data for now
       if (activeTab === 'feed') {
-        const feedPosts = await socialFeatures.getFeed(currentUserId)
-        setPosts(feedPosts)
+        const mockPosts: Post[] = [
+          {
+            id: '1',
+            authorId: 'user1',
+            author: { id: 'user1', name: 'John Developer', role: 'Real Estate Developer', avatar: '/avatar1.jpg' },
+            content: 'Just closed on a 50-unit multifamily project in the Heights! Excited to bring more housing to this growing area.',
+            tags: ['#HoustonRealEstate', '#Multifamily', '#Heights'],
+            likes: ['user2', 'user3'],
+            comments: [],
+            createdAt: new Date(),
+            visibility: 'public'
+          },
+          {
+            id: '2',
+            authorId: 'user2',
+            author: { id: 'user2', name: 'Sarah Investor', role: 'Property Investor', avatar: '/avatar2.jpg' },
+            content: 'Market analysis shows strong ROI potential in East Downtown. Anyone else seeing similar trends?',
+            propertyId: 'prop1',
+            tags: ['#EaDo', '#Investment', '#MarketAnalysis'],
+            likes: ['user1'],
+            comments: [],
+            createdAt: new Date(),
+            visibility: 'public'
+          }
+        ]
+        setPosts(mockPosts)
       } else if (activeTab === 'insights') {
-        const trendingInsights = await socialFeatures.getTrendingInsights()
-        setInsights(trendingInsights)
+        const mockInsights: MarketInsight[] = [
+          {
+            id: '1',
+            authorId: 'user3',
+            author: { name: 'Mike Analyst', role: 'Market Analyst' },
+            title: 'Houston Housing Market Continues Strong Growth',
+            content: 'December 2024 data shows 16.3% increase in home sales YoY with median price reaching $334,290.',
+            category: 'Market Trends',
+            area: 'Houston Metro',
+            metrics: { salesGrowth: 16.3, medianPrice: 334290 },
+            votes: { up: ['user1', 'user2'], down: [] },
+            verified: true,
+            createdAt: new Date()
+          }
+        ]
+        setInsights(mockInsights)
       } else if (activeTab === 'groups') {
-        const userGroups = await socialFeatures.getGroups(currentUserId, 'all')
-        setGroups(userGroups)
+        const mockGroups = [
+          {
+            id: '1',
+            name: 'Houston Real Estate Investors',
+            description: 'Connect with fellow investors in the Houston market',
+            memberCount: 1250,
+            category: 'Investment',
+            privacy: 'public'
+          },
+          {
+            id: '2',
+            name: 'Heights Development Forum',
+            description: 'Discuss development opportunities in the Heights area',
+            memberCount: 450,
+            category: 'Development',
+            privacy: 'private'
+          }
+        ]
+        setGroups(mockGroups)
       }
     } catch (error) {
       console.error('Error fetching data:', error)
@@ -84,7 +136,18 @@ export default function SocialFeed() {
     if (!newPostContent.trim()) return
     
     try {
-      const post = await socialFeatures.createPost(currentUserId, newPostContent)
+      // Mock creating a post
+      const newPost: Post = {
+        id: Date.now().toString(),
+        authorId: currentUserId,
+        author: { id: currentUserId, name: 'Current User', role: 'Developer', avatar: '/avatar.jpg' },
+        content: newPostContent,
+        tags: [],
+        likes: [],
+        comments: [],
+        createdAt: new Date(),
+        visibility: 'public'
+      }
       setPosts([post, ...posts])
       setNewPostContent('')
     } catch (error) {
@@ -93,7 +156,16 @@ export default function SocialFeed() {
   }
 
   const handleLikePost = async (postId: string) => {
-    await socialFeatures.likePost(postId, currentUserId)
+    // Mock liking a post
+    const post = posts.find(p => p.id === postId)
+    if (post) {
+      const isLiked = post.likes.includes(currentUserId)
+      if (isLiked) {
+        post.likes = post.likes.filter(id => id !== currentUserId)
+      } else {
+        post.likes.push(currentUserId)
+      }
+    }
     setPosts(posts.map(post => {
       if (post.id === postId && !post.likes.includes(currentUserId)) {
         return { ...post, likes: [...post.likes, currentUserId] }
@@ -103,7 +175,21 @@ export default function SocialFeed() {
   }
 
   const handleVoteInsight = async (insightId: string, voteType: 'up' | 'down') => {
-    await socialFeatures.voteOnInsight(insightId, currentUserId, voteType)
+    // Mock voting on insight
+    const insight = insights.find(i => i.id === insightId)
+    if (insight) {
+      if (voteType === 'up') {
+        if (!insight.votes.up.includes(currentUserId)) {
+          insight.votes.up.push(currentUserId)
+          insight.votes.down = insight.votes.down.filter(id => id !== currentUserId)
+        }
+      } else {
+        if (!insight.votes.down.includes(currentUserId)) {
+          insight.votes.down.push(currentUserId)
+          insight.votes.up = insight.votes.up.filter(id => id !== currentUserId)
+        }
+      }
+    }
     setInsights(insights.map(insight => {
       if (insight.id === insightId) {
         const newVotes = { ...insight.votes }
@@ -401,7 +487,10 @@ export default function SocialFeed() {
           </button>
         ) : (
           <button
-            onClick={() => socialFeatures.joinGroup(group.id, currentUserId)}
+            onClick={() => {
+              // Mock joining group
+              console.log(`User ${currentUserId} joined group ${group.id}`)
+            }}
             className="px-4 py-2 bg-purple-600 text-white font-medium rounded-lg hover:bg-purple-700 transition-colors"
           >
             Join Group

@@ -7,8 +7,42 @@ import {
   Home, FileText, TrendingUp, Package, X, Check, AlertCircle,
   Clock, Mail, MessageSquare, Smartphone, Volume2, Filter
 } from 'lucide-react'
-import { marketAlerts } from '@/lib/services/market-alerts'
-import type { Alert, AlertPreference, WatchedArea } from '@/lib/services/market-alerts'
+interface Alert {
+  id: string
+  userId: string
+  type: 'price_change' | 'new_listing' | 'permit_filed' | 'market_report' | 'custom'
+  title: string
+  message: string
+  severity: 'info' | 'warning' | 'urgent'
+  read: boolean
+  createdAt: Date
+  data?: Record<string, any>
+}
+
+interface AlertPreference {
+  email: boolean
+  push: boolean
+  sms: boolean
+  alertTypes: Alert['type'][]
+  frequency: 'instant' | 'daily' | 'weekly'
+}
+
+interface WatchedArea {
+  id: string
+  userId: string
+  name: string
+  type: 'neighborhood' | 'zip' | 'custom'
+  coordinates?: number[]
+  radius?: number
+  criteria: {
+    priceMin?: number
+    priceMax?: number
+    propertyTypes?: string[]
+    alertOnNewListings?: boolean
+    alertOnPriceChanges?: boolean
+    alertOnPermits?: boolean
+  }
+}
 
 export default function MarketAlertsPanel() {
   const [alerts, setAlerts] = useState<Alert[]>([])
@@ -25,61 +59,110 @@ export default function MarketAlertsPanel() {
   useEffect(() => {
     loadData()
     
-    // Subscribe to real-time alerts
-    const unsubscribe = marketAlerts.subscribe(userId, (alert) => {
-      setAlerts(prev => [alert, ...prev])
-      setUnreadCount(prev => prev + 1)
-      
-      // Show browser notification if permitted
-      if ('Notification' in window && Notification.permission === 'granted') {
-        new Notification(alert.title, {
-          body: alert.message,
-          icon: '/icons/icon-192x192.png',
-          badge: '/icons/badge-72x72.png'
-        })
+    // Mock real-time alert subscription
+    const mockAlert = setTimeout(() => {
+      const newAlert: Alert = {
+        id: Date.now().toString(),
+        userId,
+        type: 'new_listing',
+        title: 'New Property Listed in Heights',
+        message: '3 bed, 2 bath home listed at $485,000',
+        severity: 'info',
+        read: false,
+        createdAt: new Date()
       }
-    })
+      setAlerts(prev => [newAlert, ...prev])
+      setUnreadCount(prev => prev + 1)
+    }, 5000)
 
-    return unsubscribe
+    return () => clearTimeout(mockAlert)
   }, [])
 
   const loadData = async () => {
-    const [userAlerts, userPrefs, userAreas] = await Promise.all([
-      marketAlerts.getAlerts(userId),
-      marketAlerts.getAlertPreferences(userId),
-      marketAlerts.getWatchedAreas(userId)
-    ])
+    // Mock data
+    const mockAlerts: Alert[] = [
+      {
+        id: '1',
+        userId,
+        type: 'price_change',
+        title: 'Price Drop Alert: River Oaks',
+        message: 'Property at 123 Main St reduced by $50,000',
+        severity: 'warning',
+        read: false,
+        createdAt: new Date(Date.now() - 3600000)
+      },
+      {
+        id: '2',
+        userId,
+        type: 'permit_filed',
+        title: 'New Construction Permit',
+        message: 'Commercial development permit filed in Energy Corridor',
+        severity: 'info',
+        read: true,
+        createdAt: new Date(Date.now() - 86400000)
+      }
+    ]
     
-    setAlerts(userAlerts)
-    setPreferences(userPrefs)
-    setWatchedAreas(userAreas)
-    setUnreadCount(userAlerts.filter(a => !a.read).length)
+    const mockPrefs: AlertPreference = {
+      email: true,
+      push: true,
+      sms: false,
+      alertTypes: ['price_change', 'new_listing', 'permit_filed'],
+      frequency: 'instant'
+    }
+    
+    const mockAreas: WatchedArea[] = [
+      {
+        id: '1',
+        userId,
+        name: 'River Oaks',
+        type: 'neighborhood',
+        criteria: {
+          priceMin: 500000,
+          priceMax: 2000000,
+          propertyTypes: ['single-family'],
+          alertOnNewListings: true,
+          alertOnPriceChanges: true,
+          alertOnPermits: false
+        }
+      }
+    ]
+    
+    setAlerts(mockAlerts)
+    setPreferences(mockPrefs)
+    setWatchedAreas(mockAreas)
+    setUnreadCount(mockAlerts.filter(a => !a.read).length)
   }
 
   const handleMarkAsRead = async (alertId: string) => {
-    await marketAlerts.markAsRead(userId, alertId)
+    // Mock marking as read
     setAlerts(alerts.map(a => a.id === alertId ? { ...a, read: true } : a))
     setUnreadCount(Math.max(0, unreadCount - 1))
   }
 
   const handleMarkAllAsRead = async () => {
-    await marketAlerts.markAllAsRead(userId)
+    // Mock marking all as read
     setAlerts(alerts.map(a => ({ ...a, read: true })))
     setUnreadCount(0)
   }
 
   const handleDeleteAlert = async (alertId: string) => {
-    await marketAlerts.deleteAlert(userId, alertId)
+    // Mock deleting alert
     setAlerts(alerts.filter(a => a.id !== alertId))
   }
 
   const handleUpdatePreferences = async (updates: Partial<AlertPreference>) => {
-    await marketAlerts.setAlertPreferences(userId, updates)
+    // Mock updating preferences
     setPreferences({ ...preferences!, ...updates })
   }
 
   const handleAddWatchedArea = async (area: Omit<WatchedArea, 'id' | 'userId' | 'createdAt'>) => {
-    const newArea = await marketAlerts.addWatchedArea(userId, area)
+    // Mock adding watched area
+    const newArea: WatchedArea = {
+      id: Date.now().toString(),
+      userId,
+      ...area
+    }
     setWatchedAreas([...watchedAreas, newArea])
     setShowAddArea(false)
   }

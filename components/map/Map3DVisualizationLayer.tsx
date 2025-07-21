@@ -1,8 +1,9 @@
 'use client'
 
 import React, { useEffect, useRef, useState } from 'react';
-import { map3DVisualizationService } from '@/lib/services/map-3d-visualization-service';
-import type { Visualization3DConfig } from '@/lib/services/map-3d-visualization-service';
+type Visualization3DConfig = {
+  type: 'heatTower' | 'constructionTimeLapse' | 'roiTopography' | 'schoolImpact' | 'gentrificationLayers' | 'marketPulse'
+};
 
 interface Map3DVisualizationLayerProps {
   map: any; // Mapbox GL instance
@@ -69,7 +70,13 @@ export const Map3DVisualizationLayer: React.FC<Map3DVisualizationLayerProps> = (
   };
   
   const renderPropertyValueHeatTowers = () => {
-    const towers = map3DVisualizationService.getPropertyValueHeatTowers();
+    // Mock data for property value heat towers
+    const towers = [
+      { neighborhood: 'River Oaks', coordinates: [-95.4151, 29.7573], height: 300, value: 875000, change: 6.5, color: '#10b981', tooltip: 'River Oaks: $875K median, +6.5% YoY' },
+      { neighborhood: 'Heights', coordinates: [-95.3987, 29.7989], height: 200, value: 485000, change: 8.5, color: '#22c55e', tooltip: 'Heights: $485K median, +8.5% YoY' },
+      { neighborhood: 'Memorial', coordinates: [-95.4674, 29.7641], height: 250, value: 625000, change: 7.8, color: '#16a34a', tooltip: 'Memorial: $625K median, +7.8% YoY' },
+      { neighborhood: 'Montrose', coordinates: [-95.3902, 29.7472], height: 180, value: 425000, change: 5.5, color: '#84cc16', tooltip: 'Montrose: $425K median, +5.5% YoY' }
+    ];
     
     // Create 3D extrusions for each neighborhood
     const features = towers.map(tower => ({
@@ -157,7 +164,13 @@ export const Map3DVisualizationLayer: React.FC<Map3DVisualizationLayerProps> = (
     let currentMonth = 0;
     
     const animate = () => {
-      const activities = map3DVisualizationService.getConstructionActivityTimeLapse(months[currentMonth]);
+      // Mock construction activities data
+      const mockActivities = [
+        { id: 1, coordinates: [-95.4151, 29.7573], type: 'residential', phase: 'foundation', height: 20, color: '#3b82f6' },
+        { id: 2, coordinates: [-95.3987, 29.7989], type: 'commercial', phase: 'framing', height: 50, color: '#10b981' },
+        { id: 3, coordinates: [-95.4674, 29.7641], type: 'mixed-use', phase: 'finishing', height: 100, color: '#f59e0b' }
+      ];
+      const activities = currentMonth < 6 ? mockActivities.slice(0, 2) : mockActivities;
       
       const features = activities.map((activity, index) => ({
         type: 'Feature',
@@ -212,7 +225,17 @@ export const Map3DVisualizationLayer: React.FC<Map3DVisualizationLayerProps> = (
   };
   
   const renderROITopography = () => {
-    const topography = map3DVisualizationService.getROITopography();
+    // Mock ROI topography data
+    const topography = [];
+    for (let i = 0; i < 50; i++) {
+      for (let j = 0; j < 50; j++) {
+        topography.push({
+          coordinates: [-95.4 + (i * 0.002), 29.7 + (j * 0.002)],
+          roi: Math.sin(i * 0.1) * Math.cos(j * 0.1) * 15 + 10,
+          color: `hsl(${120 - (Math.random() * 60)}, 70%, 50%)`
+        });
+      }
+    }
     
     // Create contour lines
     const contourFeatures = topography.contourLevels.map(level => ({
@@ -289,7 +312,12 @@ export const Map3DVisualizationLayer: React.FC<Map3DVisualizationLayerProps> = (
   };
   
   const renderSchoolImpactZones = () => {
-    const zones = map3DVisualizationService.getSchoolImpactZones();
+    // Mock school impact zones
+    const zones = [
+      { id: 1, name: 'River Oaks Elementary', coordinates: [-95.4151, 29.7573], rating: 9.5, impactRadius: 0.02, color: '#10b981' },
+      { id: 2, name: 'Heights High School', coordinates: [-95.3987, 29.7989], rating: 8.0, impactRadius: 0.015, color: '#22c55e' },
+      { id: 3, name: 'Memorial Middle School', coordinates: [-95.4674, 29.7641], rating: 8.8, impactRadius: 0.018, color: '#16a34a' }
+    ];
     
     const features = zones.map(zone => ({
       type: 'Feature',
@@ -350,7 +378,25 @@ export const Map3DVisualizationLayer: React.FC<Map3DVisualizationLayerProps> = (
   };
   
   const renderGentrificationLayers = () => {
-    const layers = map3DVisualizationService.getGentrificationLayers();
+    // Mock gentrification layers
+    const layers = [
+      {
+        id: 'east-downtown',
+        coordinates: [[-95.35, 29.74], [-95.34, 29.74], [-95.34, 29.75], [-95.35, 29.75], [-95.35, 29.74]],
+        gentrificationScore: 0.7,
+        displacementRisk: 0.6,
+        medianIncomeChange: 45,
+        rentChange: 38
+      },
+      {
+        id: 'third-ward',
+        coordinates: [[-95.36, 29.72], [-95.35, 29.72], [-95.35, 29.73], [-95.36, 29.73], [-95.36, 29.72]],
+        gentrificationScore: 0.8,
+        displacementRisk: 0.7,
+        medianIncomeChange: 52,
+        rentChange: 45
+      }
+    ];
     
     // Render each layer with different opacity and effects
     layers.layers.forEach((layer, index) => {
@@ -389,7 +435,13 @@ export const Map3DVisualizationLayer: React.FC<Map3DVisualizationLayerProps> = (
   };
   
   const renderMarketPulses = () => {
-    const pulses = map3DVisualizationService.getMarketPulses();
+    // Mock market pulses
+    const pulses = [
+      { id: 1, coordinates: [-95.4151, 29.7573], intensity: 0.9, color: '#ef4444', activityLevel: 'Very High' },
+      { id: 2, coordinates: [-95.3987, 29.7989], intensity: 0.8, color: '#f59e0b', activityLevel: 'High' },
+      { id: 3, coordinates: [-95.4674, 29.7641], intensity: 0.7, color: '#10b981', activityLevel: 'Moderate' },
+      { id: 4, coordinates: [-95.3902, 29.7472], intensity: 0.6, color: '#3b82f6', activityLevel: 'Stable' }
+    ];
     let pulseStep = 0;
     
     const animatePulses = () => {

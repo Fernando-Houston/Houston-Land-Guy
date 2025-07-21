@@ -7,9 +7,21 @@ import {
   Filter, Download, RefreshCw, AlertCircle, Search,
   Home, Factory, Briefcase, TreePine
 } from 'lucide-react'
-import { PermitsDataService, type PermitData } from '@/lib/services/permits-data-service'
-
-// PermitData interface is imported from permits-data-service
+// Define PermitData interface locally to avoid client-side service imports
+interface PermitData {
+  id: string
+  permitNumber: string
+  address: string
+  type: string
+  status: string
+  value: number
+  issuedDate: string
+  contractor?: string
+  owner?: string
+  description?: string
+  coordinates?: { lat: number; lng: number }
+  neighborhood?: string
+}
 import { PropertyMap } from '@/components/maps/MapWrapper'
 import { format, subDays } from 'date-fns'
 

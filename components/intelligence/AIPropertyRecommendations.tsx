@@ -8,7 +8,25 @@ import {
   Star, Clock, AlertCircle, ChevronRight, Filter,
   BarChart3, Heart, Eye, Calendar, Sparkles, Zap, Building2
 } from 'lucide-react'
-import { PropertyRecommendation } from '@/lib/services/ai-recommendations'
+interface PropertyRecommendation {
+  id: string
+  property: {
+    id: string
+    address: string
+    neighborhood: string
+    price: number
+    bedrooms: number
+    bathrooms: number
+    sqft: number
+    type: string
+    imageUrl?: string
+  }
+  score: number
+  reasons: string[]
+  matchedCriteria: string[]
+  potentialROI?: number
+  marketTrend?: 'rising' | 'stable' | 'declining'
+}
 
 interface AIPropertyRecommendationsProps {
   userId?: string

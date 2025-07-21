@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server'
 import { fernandoX } from '@/lib/fernando-x'
+import { enhancedConversationEngine } from '@/lib/fernando-x/conversation-engine-enhanced'
 
 export async function POST(request: Request) {
   try {
@@ -13,13 +14,26 @@ export async function POST(request: Request) {
       apiKeyPrefix: process.env.OPENAI_API_KEY ? process.env.OPENAI_API_KEY.substring(0, 10) + '...' : 'NOT SET'
     })
     
-    // Process the query server-side where env vars are available
-    const response = await fernandoX.processQuery({
-      text: body.text,
-      voice: body.voice,
-      images: body.images,
-      context: body.context
-    })
+    // Try enhanced conversation engine first, fallback to original
+    let response
+    try {
+      response = await enhancedConversationEngine.processQuery({
+        userId: body.context?.userId,
+        sessionId: body.context?.sessionId || `session_${Date.now()}`,
+        currentQuery: body.text,
+        conversationHistory: body.context?.history || [],
+        userProfile: body.context?.userProfile
+      })
+    } catch (enhancedError) {
+      console.log('Enhanced engine failed, using fallback:', enhancedError.message)
+      // Fallback to original Fernando-X
+      response = await fernandoX.processQuery({
+        text: body.text,
+        voice: body.voice,
+        images: body.images,
+        context: body.context
+      })
+    }
     
     return NextResponse.json(response)
   } catch (error) {
