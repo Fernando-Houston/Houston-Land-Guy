@@ -51,7 +51,7 @@ export default function FernandoXChat({ initialMessage, onClose }: FernandoXChat
     const welcomeMessage: Message = {
       id: 'welcome',
       role: 'assistant',
-      content: "Hello! I'm Fernando-X, your AI-powered Houston real estate expert. I have access to comprehensive market data including 750,000+ data points from Houston's real estate market. I can help you with property searches, market analysis, investment advice, neighborhood insights, and much more. How can I assist you today?",
+      content: "Hey! Fernando here 🏡 Houston homes are moving fast - 28 days average! Whether you're buying, selling, or investing, I've got the inside scoop on all 69 neighborhoods. What's your real estate goal?",
       timestamp: new Date()
     }
     setMessages([welcomeMessage])

@@ -351,44 +351,46 @@ export class DataProcess5ImportFixed {
     const errors: string[] = []
 
     try {
-      // Create sample income data based on Houston demographics
+      // Create sample income data based on Houston demographics - FIXED SCHEMA
       const incomeData = [
         {
           zipCode: '77001',
           neighborhood: 'Downtown',
-          medianIncome: 65000.0,
-          averageIncome: 85000.0,
+          medianHouseholdIncome: 65000.0, // Fixed field name
+          meanHouseholdIncome: 85000.0, // Fixed field name
+          perCapitaIncome: 55000.0,
           under25k: 15.2,
-          income25to50k: 25.8,
-          income50to75k: 22.4,
-          income75to100k: 18.6,
-          income100to150k: 12.3,
-          income150to200k: 3.8,
+          from25to50k: 25.8, // Fixed field names
+          from50to75k: 22.4,
+          from75to100k: 18.6,
+          from100to150k: 12.3,
+          from150to200k: 3.8,
           over200k: 1.9,
-          reportYear: 2025
+          medianGrossRent: 1800.0,
+          rentBurdenPercent: 28.5,
+          reportYear: 2025 // Added missing required field
         },
         {
           zipCode: '77002',
           neighborhood: 'Midtown',
-          medianIncome: 58000.0,
-          averageIncome: 72000.0,
+          medianHouseholdIncome: 58000.0,
+          meanHouseholdIncome: 72000.0,
+          perCapitaIncome: 48000.0,
           under25k: 18.5,
-          income25to50k: 28.2,
-          income50to75k: 24.1,
-          income75to100k: 16.8,
-          income100to150k: 9.2,
-          income150to200k: 2.5,
+          from25to50k: 28.2,
+          from50to75k: 24.1,
+          from75to100k: 16.8,
+          from100to150k: 9.2,
+          from150to200k: 2.5,
           over200k: 0.7,
-          reportYear: 2025
+          medianGrossRent: 1650.0,
+          rentBurdenPercent: 32.1,
+          reportYear: 2025 // Added missing required field
         }
       ]
 
       for (const data of incomeData) {
-        await prisma.incomeData.upsert({
-          where: { zipCode_reportYear: { zipCode: data.zipCode, reportYear: data.reportYear } },
-          update: data,
-          create: data
-        })
+        await prisma.incomeData.create({ data }) // Changed to create since no unique constraint
         imported++
       }
 
@@ -402,21 +404,33 @@ export class DataProcess5ImportFixed {
     console.log('📈 Importing Migration Data...')
     
     try {
-      // Create sample migration data
+      // Create sample migration data - FIXED SCHEMA
       const migrationData = [
         {
-          year: 2025,
-          quarter: 1,
-          geographyLevel: 'county',
-          geographyName: 'Harris County',
-          totalInMigration: 125000,
-          domesticInflow: 95000,
-          internationalInflow: 30000,
-          totalOutMigration: 87000,
-          domesticOutflow: 72000,
-          netMigration: 38000,
-          netDomestic: 23000,
-          netInternational: 15000
+          zipCode: '77001',
+          county: 'Harris County',
+          inMigration: 12500, // Fixed field names to match schema
+          outMigration: 8700,
+          netMigration: 3800,
+          internationalMigration: 1500,
+          avgAgeInMigrants: 32.5,
+          avgIncomeInMigrants: 68000.0,
+          topOriginStates: ['California', 'New York', 'Florida'],
+          topDestinationStates: ['Austin', 'Dallas', 'California'],
+          migrationYear: 2025 // Fixed field name
+        },
+        {
+          zipCode: '77002', 
+          county: 'Harris County',
+          inMigration: 9800,
+          outMigration: 7200,
+          netMigration: 2600,
+          internationalMigration: 800,
+          avgAgeInMigrants: 29.8,
+          avgIncomeInMigrants: 62000.0,
+          topOriginStates: ['California', 'Illinois', 'Louisiana'],
+          topDestinationStates: ['Austin', 'San Antonio', 'Denver'],
+          migrationYear: 2025
         }
       ]
 
@@ -436,34 +450,49 @@ export class DataProcess5ImportFixed {
     console.log('🎓 Importing Education Metrics...')
     
     try {
-      // Create Houston ISD education data
-      const educationData = {
-        districtName: 'Houston ISD',
-        districtCode: 'HISD',
-        overallRating: 'B',
-        totalSchools: 274,
-        aRatedSchools: 170,
-        bRatedSchools: 63,
-        cRatedSchools: 30,
-        dRatedSchools: 8,
-        fRatedSchools: 3,
-        totalEnrollment: 189000,
-        economicDisadvantaged: 75.2,
-        englishLearners: 34.8,
-        specialEducation: 8.9,
-        graduationRate: 84.3,
-        collegeReadiness: 52.1,
-        dropoutRate: 1.8,
-        reportYear: 2025
+      // Create Houston education data - FIXED SCHEMA
+      const educationData = [
+        {
+          zipCode: '77001',
+          schoolDistrict: 'Houston ISD',
+          avgSchoolRating: 7.2,
+          testScoreReading: 78.5,
+          testScoreMath: 75.2,
+          graduationRate: 84.3,
+          totalStudents: 12500,
+          freeReducedLunch: 75.2,
+          englishLearners: 34.8,
+          studentTeacherRatio: 18.5,
+          perPupilSpending: 9800.0,
+          collegeGradPercent: 45.2,
+          graduateSchoolPercent: 12.8,
+          academicYear: '2024-25' // Added missing required field
+        },
+        {
+          zipCode: '77002',
+          schoolDistrict: 'Houston ISD',
+          avgSchoolRating: 6.8,
+          testScoreReading: 74.3,
+          testScoreMath: 71.9,
+          graduationRate: 82.1,
+          totalStudents: 9800,
+          freeReducedLunch: 68.5,
+          englishLearners: 28.2,
+          studentTeacherRatio: 17.2,
+          perPupilSpending: 9600.0,
+          collegeGradPercent: 38.7,
+          graduateSchoolPercent: 9.5,
+          academicYear: '2024-25' // Added missing required field
+        }
+      ]
+
+      let imported = 0
+      for (const data of educationData) {
+        await prisma.educationMetrics.create({ data })
+        imported++
       }
 
-      await prisma.educationMetrics.upsert({
-        where: { districtName_reportYear: { districtName: 'Houston ISD', reportYear: 2025 } },
-        update: educationData,
-        create: educationData
-      })
-
-      return { imported: 1, failed: 0, errors: [] }
+      return { imported, failed: 0, errors: [] }
     } catch (error) {
       return { imported: 0, failed: 1, errors: [`Education data error: ${error}`] }
     }
@@ -473,49 +502,47 @@ export class DataProcess5ImportFixed {
     console.log('📊 Importing Economic Indicators...')
     
     try {
-      // Create key Houston economic indicators
+      // Create key Houston economic indicators - FIXED SCHEMA
       const indicators = [
         {
-          indicatorName: 'Houston Metro GDP',
-          category: 'gdp',
-          currentValue: 678000000000, // $678B
-          yearOverYear: 4.2,
-          unit: '$',
-          frequency: 'annual',
-          reportDate: new Date('2025-01-01')
+          area: 'Houston Metro',
+          totalEmployment: 3250000,
+          unemploymentRate: 3.8,
+          laborForceParticipation: 67.2,
+          gdpTotal: 678.0, // In billions
+          gdpPerCapita: 85000.0,
+          gdpGrowthRate: 4.2,
+          oilGasEmployment: 280000,
+          healthcareEmployment: 385000,
+          technologyEmployment: 195000,
+          constructionEmployment: 245000,
+          portTonnage: 285000000.0, // Port of Houston tonnage
+          airCargoTonnage: 820000.0, // Houston airports
+          reportDate: new Date('2025-01-01'), // Added missing required field
+          reportPeriod: 'annual' // Added missing required field
         },
         {
-          indicatorName: 'Employment Growth Rate',
-          category: 'employment',
-          currentValue: 3.8,
-          yearOverYear: 0.5,
-          unit: '%',
-          frequency: 'monthly',
-          reportDate: new Date('2025-01-01')
-        },
-        {
-          indicatorName: 'Port of Houston TEUs',
-          category: 'trade',
-          currentValue: 4200000,
-          yearOverYear: 20.0,
-          unit: 'TEUs',
-          frequency: 'annual',
-          reportDate: new Date('2025-01-01')
+          area: 'Harris County',
+          totalEmployment: 2100000,
+          unemploymentRate: 3.6,
+          laborForceParticipation: 68.5,
+          gdpTotal: 445.0,
+          gdpPerCapita: 89000.0,
+          gdpGrowthRate: 4.8,
+          oilGasEmployment: 195000,
+          healthcareEmployment: 285000,
+          technologyEmployment: 145000,
+          constructionEmployment: 180000,
+          portTonnage: 285000000.0,
+          airCargoTonnage: 650000.0,
+          reportDate: new Date('2025-01-01'), // Added missing required field
+          reportPeriod: 'annual' // Added missing required field
         }
       ]
 
       let imported = 0
       for (const indicator of indicators) {
-        await prisma.economicIndicatorDP5.upsert({
-          where: { 
-            indicatorName_reportDate: { 
-              indicatorName: indicator.indicatorName, 
-              reportDate: indicator.reportDate 
-            } 
-          },
-          update: indicator,
-          create: indicator
-        })
+        await prisma.economicIndicatorDP5.create({ data: indicator }) // Changed to create
         imported++
       }
 
@@ -529,38 +556,59 @@ export class DataProcess5ImportFixed {
     console.log('🏗️ Importing Construction Costs...')
     
     try {
-      // Create construction cost data
-      const data = {
-        reportDate: new Date('2025-01-01'),
-        quarter: 'Q1 2025',
-        overallIndex: 115.2,
-        materialsIndex: 118.5,
-        laborIndex: 112.8,
-        equipmentIndex: 108.3,
-        residentialLow: 115,
-        residentialMid: 145,
-        residentialHigh: 225,
-        commercialOffice: 185,
-        commercialRetail: 165,
-        industrial: 95,
-        lumber: 425.50,
-        steel: 1250.00,
-        concrete: 155.00,
-        avgHourlyWage: 28.50,
-        skilledWage: 38.75,
-        unskilledWage: 18.25,
-        overallYoY: 4.8,
-        materialsYoY: 3.2,
-        laborYoY: 6.5
+      // Create construction cost data - FIXED SCHEMA
+      const costData = [
+        {
+          area: 'Houston Metro',
+          residentialLow: 115.0,
+          residentialMid: 145.0,
+          residentialHigh: 225.0,
+          commercialOffice: 185.0,
+          commercialRetail: 165.0,
+          commercialIndustrial: 95.0,
+          concretePrice: 155.00,
+          steelPrice: 1250.00,
+          lumberPrice: 4.25, // per board foot
+          laborRateSkilled: 38.75,
+          laborRateUnskilled: 18.25,
+          laborAvailability: 'Moderate',
+          totalCostIndex: 115.2,
+          materialIndex: 118.5,
+          laborIndex: 112.8,
+          effectiveDate: new Date('2025-01-01')
+        },
+        {
+          area: 'Harris County',
+          residentialLow: 110.0,
+          residentialMid: 140.0,
+          residentialHigh: 220.0,
+          commercialOffice: 180.0,
+          commercialRetail: 160.0,
+          commercialIndustrial: 92.0,
+          concretePrice: 150.00,
+          steelPrice: 1225.00,
+          lumberPrice: 4.15,
+          laborRateSkilled: 37.50,
+          laborRateUnskilled: 17.80,
+          laborAvailability: 'Moderate',
+          totalCostIndex: 112.8,
+          materialIndex: 116.2,
+          laborIndex: 110.5,
+          effectiveDate: new Date('2025-01-01')
+        }
+      ]
+
+      let imported = 0
+      for (const data of costData) {
+        await prisma.constructionCostDP5.upsert({
+          where: { area_effectiveDate: { area: data.area, effectiveDate: data.effectiveDate } },
+          update: data,
+          create: data
+        })
+        imported++
       }
 
-      await prisma.constructionCostDP5.upsert({
-        where: { reportDate: data.reportDate },
-        update: data,
-        create: data
-      })
-
-      return { imported: 1, failed: 0, errors: [] }
+      return { imported, failed: 0, errors: [] }
     } catch (error) {
       return { imported: 0, failed: 1, errors: [`Construction cost error: ${error}`] }
     }
