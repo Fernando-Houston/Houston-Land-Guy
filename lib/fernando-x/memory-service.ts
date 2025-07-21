@@ -225,6 +225,76 @@ export class FernandoMemoryService {
     return facts
   }
 
+  // Search training data for relevant Q&As
+  async searchTrainingData(query: string, limit: number = 5): Promise<Array<{ question: string; answer: string; confidence: number }>> {
+    const queryLower = query.toLowerCase()
+    const keywords = queryLower.split(' ').filter(word => word.length > 2)
+    
+    try {
+      // Search for training Q&As that contain keywords
+      const trainingData = await prisma.fernandoMemory.findMany({
+        where: {
+          AND: [
+            {
+              memoryType: {
+                contains: 'training'
+              }
+            },
+            {
+              OR: keywords.map(keyword => ({
+                content: {
+                  path: ['keywords'],
+                  array_contains: keyword
+                }
+              }))
+            }
+          ]
+        },
+        orderBy: {
+          importance: 'desc'
+        },
+        take: limit * 2 // Get extra to filter
+      })
+
+      // Process and score results
+      const results = trainingData
+        .map(record => {
+          const content = record.content as any
+          if (!content.question || !content.answer) return null
+          
+          // Calculate relevance score
+          let score = 0
+          const questionLower = content.question.toLowerCase()
+          const answerLower = content.answer.toLowerCase()
+          
+          // Exact keyword matches
+          for (const keyword of keywords) {
+            if (questionLower.includes(keyword)) score += 2
+            if (answerLower.includes(keyword)) score += 1
+          }
+          
+          // Bonus for similar question structure
+          if (questionLower.includes('what') && queryLower.includes('what')) score += 1
+          if (questionLower.includes('how') && queryLower.includes('how')) score += 1
+          if (questionLower.includes('where') && queryLower.includes('where')) score += 1
+          
+          return {
+            question: content.question,
+            answer: content.answer,
+            confidence: Math.min(score / (keywords.length + 2), 1.0)
+          }
+        })
+        .filter(result => result !== null && result.confidence > 0.3)
+        .sort((a, b) => b.confidence - a.confidence)
+        .slice(0, limit)
+
+      return results
+    } catch (error) {
+      console.error('Error searching training data:', error)
+      return []
+    }
+  }
+
   // Clean up old memories
   async cleanupOldMemories(daysToKeep: number = 90): Promise<number> {
     const cutoffDate = new Date()

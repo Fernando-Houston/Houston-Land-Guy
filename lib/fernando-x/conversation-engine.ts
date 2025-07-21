@@ -67,7 +67,21 @@ Always:
     suggestedActions?: Array<{ label: string; action: string }>
   }> {
     try {
-      // Try ChatGPT first if available
+      // FIRST: Search training data for exact or similar Q&As
+      console.log('🎓 Searching Fernando training data for:', userMessage)
+      const trainingResults = await fernandoMemory.searchTrainingData(userMessage, 3)
+      
+      if (trainingResults.length > 0 && trainingResults[0].confidence > 0.5) {
+        console.log(`✅ Found training match with confidence: ${trainingResults[0].confidence}`)
+        return {
+          response: trainingResults[0].answer,
+          confidence: trainingResults[0].confidence,
+          sources: ['Fernando-X Training Data', 'Houston Real Estate Knowledge Base'],
+          suggestedActions: this.getTrainingBasedActions(userMessage, trainingResults[0])
+        }
+      }
+      
+      // Try ChatGPT if no good training match
       if (process.env.OPENAI_API_KEY && typeof window === 'undefined') {
         console.log('🤖 Using ChatGPT for response generation')
         
@@ -976,6 +990,43 @@ What specific aspect would you like to explore?`,
     }
     
     return actions
+  }
+
+  // Generate suggested actions based on training data match
+  private getTrainingBasedActions(userMessage: string, trainingMatch: { question: string; answer: string; confidence: number }) {
+    const actions: Array<{ label: string; action: string }> = []
+    const messageLower = userMessage.toLowerCase()
+    const answerLower = trainingMatch.answer.toLowerCase()
+    
+    // Property-related actions
+    if (messageLower.includes('property') || messageLower.includes('home') || messageLower.includes('house')) {
+      actions.push({ label: 'Search Properties', action: 'search:properties' })
+    }
+    
+    // Neighborhood-related actions
+    if (messageLower.includes('neighborhood') || messageLower.includes('area')) {
+      actions.push({ label: 'Explore Neighborhoods', action: 'navigate:/neighborhoods' })
+    }
+    
+    // Investment-related actions
+    if (messageLower.includes('invest') || messageLower.includes('roi') || messageLower.includes('return')) {
+      actions.push({ label: 'View Investment Opportunities', action: 'navigate:/investment-opportunities' })
+    }
+    
+    // Developer-related actions
+    if (messageLower.includes('developer') || messageLower.includes('builder')) {
+      actions.push({ label: 'Browse Developers', action: 'navigate:/developers' })
+    }
+    
+    // Market data actions
+    if (messageLower.includes('market') || messageLower.includes('trend') || messageLower.includes('data')) {
+      actions.push({ label: 'View Market Intelligence', action: 'navigate:/intelligence' })
+    }
+    
+    // Always include follow-up option
+    actions.push({ label: 'Ask Follow-up', action: 'continue:conversation' })
+    
+    return actions.slice(0, 3) // Limit to 3 actions
   }
 }
 
