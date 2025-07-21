@@ -26,6 +26,33 @@ class FernandoX {
   private baseUrl = '/api/fernando-x'
   
   async processQuery(query: FernandoXQuery): Promise<FernandoXResponse> {
+    // If running on client, call the API route
+    if (typeof window !== 'undefined') {
+      try {
+        const response = await fetch(this.baseUrl, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(query)
+        })
+        
+        if (!response.ok) {
+          throw new Error(`API request failed: ${response.status}`)
+        }
+        
+        return await response.json()
+      } catch (error) {
+        console.error('Error calling Fernando-X API:', error)
+        return {
+          text: "I'm having trouble connecting to my services. Please try again.",
+          confidence: 0.5,
+          sources: ['API Error']
+        }
+      }
+    }
+    
+    // Server-side processing continues below
     // DIAGNOSTIC: Log to verify enhanced version is being used
     console.log('🚀 FERNANDO-X ENHANCED: Processing query with 750,000+ data points and memory')
     console.log('📊 Data verification:', {
@@ -34,6 +61,8 @@ class FernandoX {
       majorProjects: INTEGRATED_DATA.majorProjects.length,
       memoryEnabled: true,
       conversationEngineActive: true,
+      chatGPTEnabled: !!process.env.OPENAI_API_KEY,
+      apiKeyPrefix: process.env.OPENAI_API_KEY ? process.env.OPENAI_API_KEY.substring(0, 10) + '...' : 'NOT SET',
       queryText: query.text,
       sessionId: query.context?.sessionId || 'no-session'
     })
