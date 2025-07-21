@@ -7,6 +7,9 @@ import {
 import { realDataService } from '@/lib/services/real-data-service'
 import { MarketMetricsCard } from '@/components/market/MarketMetricsCard'
 
+// Force dynamic rendering to avoid SSG database connection issues
+export const dynamic = 'force-dynamic'
+
 export const metadata: Metadata = {
   title: 'Houston Market Intelligence Hub | Real-Time Development Data & Analytics',
   description: 'Access real-time Houston development market data, weekly reports, permit tracking, and investment analytics. Updated hourly with live MLS and permit databases.',

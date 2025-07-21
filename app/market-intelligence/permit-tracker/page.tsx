@@ -3,6 +3,9 @@ import { PermitTrackerPage } from './PermitTrackerPage'
 import { coreAgentsClient } from '@/lib/core-agents/client'
 import { houstonDataService } from '@/lib/services/houston-data-service'
 
+// Force dynamic rendering to avoid SSG database connection issues
+export const dynamic = 'force-dynamic'
+
 export const metadata: Metadata = {
   title: 'Houston Development Permit Tracker | Real-Time Construction Activity',
   description: 'Track real-time development permits across Houston neighborhoods. Monitor residential, commercial, and industrial construction activity updated hourly.',

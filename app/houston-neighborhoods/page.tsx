@@ -4,6 +4,9 @@ import { MapPin, TrendingUp, Home, Users, School, DollarSign, ArrowRight } from 
 import { coreAgentsClient } from '@/lib/core-agents/client'
 import { houstonDataService } from '@/lib/services/houston-data-service'
 
+// Force dynamic rendering to avoid SSG database connection issues
+export const dynamic = 'force-dynamic'
+
 export const metadata: Metadata = {
   title: 'Houston Neighborhoods Development Guide | Real Estate Investment by Area',
   description: 'Explore development opportunities across 15+ Houston neighborhoods. Compare real-time market data, demographics, permit activity, and investment potential by area.',
