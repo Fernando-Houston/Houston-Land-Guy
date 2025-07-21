@@ -138,22 +138,18 @@ export class DataProcess5ImportFixed {
               zipCode: this.safeString(record.ZIP_Code || record.Zip_Code) || '77001',
               neighborhood: this.safeString(record.Neighborhood || record.Area) || 'Houston',
               
-              avgRent1Bed: this.safeFloat(record.Avg_Rent_1BR || record.rent_1br),
-              avgRent2Bed: this.safeFloat(record.Avg_Rent_2BR || record.rent_2br),
-              avgRent3Bed: this.safeFloat(record.Avg_Rent_3BR || record.rent_3br),
-              avgRentOverall: this.safeFloat(record.Avg_Rent_Overall || record.avg_rent),
+              avgRent1BR: this.safeFloat(record.Avg_Rent_1BR || record.rent_1br),
+              avgRent2BR: this.safeFloat(record.Avg_Rent_2BR || record.rent_2br),
+              avgRent3BR: this.safeFloat(record.Avg_Rent_3BR || record.rent_3br),
               
               occupancyRate: this.safeFloat(record.Occupancy_Rate || record.occupancy),
-              vacancyRate: this.safeFloat(record.Vacancy_Rate || record.vacancy),
-              rentGrowthYoY: this.safeFloat(record.Rent_Growth_YoY || record.growth),
+              yearOverYearGrowth: this.safeFloat(record.Rent_Growth_YoY || record.growth),
               
               totalUnits: this.safeInt(record.Total_Units || record.units),
-              newSupply: this.safeInt(record.New_Supply || record.new_units),
+              deliveredUnits: this.safeInt(record.New_Supply || record.new_units),
               
-              medianIncome: this.safeFloat(record.Median_Income || record.income),
-              rentToIncomeRatio: this.safeFloat(record.Rent_to_Income || record.ratio),
-              
-              reportDate: new Date('2025-01-01')
+              reportDate: new Date('2025-01-01'),
+              reportPeriod: 'monthly'
             }
             
             await prisma.rentalMarket.upsert({
@@ -196,26 +192,24 @@ export class DataProcess5ImportFixed {
         for (const record of records) {
           try {
             const data = {
-              zipCode: this.safeString(record.ZIP_Code || record.Zip_Code) || '77001',
               neighborhood: this.safeString(record.Neighborhood || record.Area) || 'Houston',
+              performanceTier: this.safeString(record.Tier || record.Performance_Tier) || 'Mid',
               
-              totalListings: this.safeInt(record.Total_Listings || record.listings),
-              activeListings: this.safeInt(record.Active_Listings || record.active),
-              avgDailyRate: this.safeFloat(record.Avg_Daily_Rate || record.adr),
-              occupancyRate: this.safeFloat(record.Occupancy_Rate || record.occupancy),
+              activeListings: this.safeInt(record.Active_Listings || record.listings) || 1,
+              totalProperties: this.safeInt(record.Total_Properties || record.total_listings),
+              
+              avgDailyRate: this.safeFloat(record.Avg_Daily_Rate || record.adr) || 100.0,
+              occupancyRate: this.safeFloat(record.Occupancy_Rate || record.occupancy) || 0.6,
               revPAR: this.safeFloat(record.RevPAR || record.revenue_per_available),
+              annualRevenue: this.safeFloat(record.Annual_Revenue || record.avg_revenue || record.monthly_rev) || 25000.0,
               
-              avgMonthlyRevenue: this.safeFloat(record.Avg_Monthly_Revenue || record.monthly_rev),
-              medianMonthlyRevenue: this.safeFloat(record.Median_Monthly_Revenue || record.median_rev),
-              
-              superhostPercentage: this.safeFloat(record.Superhost_Pct || record.superhost),
-              avgReviewScore: this.safeFloat(record.Avg_Review_Score || record.review_score),
+              avgLengthOfStay: this.safeFloat(record.Avg_Length_Stay || record.ALOS),
               
               reportDate: new Date('2025-01-01')
             }
             
-            await prisma.strMarket.upsert({
-              where: { zipCode_reportDate: { zipCode: data.zipCode, reportDate: data.reportDate } },
+            await prisma.sTRMarket.upsert({
+              where: { neighborhood_reportDate: { neighborhood: data.neighborhood, reportDate: data.reportDate } },
               update: data,
               create: data
             })
@@ -255,25 +249,23 @@ export class DataProcess5ImportFixed {
           try {
             const data = {
               companyName: this.safeString(record.Company_Name || record.Employer || record.Name) || 'Unknown',
-              industry: this.safeString(record.Industry || record.Sector) || 'General',
+              sector: this.safeString(record.Sector || record.Industry) || 'General',
+              industry: this.safeString(record.Industry || record.Sector),
+              
               employeeCount: this.safeInt(record.Employee_Count || record.Employees) || 100,
-              location: this.safeString(record.Location || record.City) || 'Houston',
+              employeeGrowth: this.safeFloat(record.Job_Growth_Rate || record.Growth_Rate),
+              avgSalary: this.safeFloat(record.Avg_Salary || record.Average_Salary),
+              
+              headquarters: this.safeString(record.Headquarters || record.HQ_Location),
+              primaryAddress: this.safeString(record.Address || record.Location),
               zipCode: this.safeString(record.ZIP_Code || record.Zip_Code),
               
-              avgSalary: this.safeFloat(record.Avg_Salary || record.Average_Salary),
-              jobGrowthRate: this.safeFloat(record.Job_Growth_Rate || record.Growth_Rate),
-              
-              headquarters: this.safeString(record.Headquarters) === 'true' || this.safeString(record.HQ) === 'true',
-              publicCompany: this.safeString(record.Public_Company) === 'true' || this.safeString(record.Public) === 'true',
-              
-              description: this.safeString(record.Description),
-              website: this.safeString(record.Website),
-              
-              reportYear: 2025
+              economicImpact: this.safeFloat(record.Economic_Impact),
+              houstonRank: this.safeInt(record.Houston_Rank || record.Rank)
             }
             
-            await prisma.employer.upsert({
-              where: { companyName_reportYear: { companyName: data.companyName, reportYear: 2025 } },
+            await prisma.employerDP5.upsert({
+              where: { companyName: data.companyName },
               update: data,
               create: data
             })
