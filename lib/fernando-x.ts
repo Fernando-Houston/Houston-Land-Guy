@@ -24,90 +24,39 @@ class FernandoX {
   private baseUrl = '/api/fernando-x'
   
   async processQuery(query: FernandoXQuery): Promise<FernandoXResponse> {
-    // If running on client, call the API route
-    if (typeof window !== 'undefined') {
-      try {
-        const response = await fetch(this.baseUrl, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify(query)
-        })
-        
-        if (!response.ok) {
-          throw new Error(`API request failed: ${response.status}`)
-        }
-        
-        return await response.json()
-      } catch (error) {
-        console.error('Error calling Fernando-X API:', error)
-        return {
-          text: "I'm having trouble connecting to my services. Please try again.",
-          confidence: 0.5,
-          sources: ['API Error']
-        }
-      }
-    }
-    
-    // Server-side processing continues below
-    // Import server-side modules dynamically to prevent client bundling
-    const { fernandoMemory } = await import('./fernando-x/memory-service')
-    const { conversationEngine } = await import('./fernando-x/conversation-engine')
-    
-    // DIAGNOSTIC: Log to verify enhanced version is being used
-    console.log('🚀 FERNANDO-X ENHANCED: Processing query with 750,000+ data points and memory')
-    console.log('📊 Data verification:', {
-      populationGrowth: INTEGRATED_DATA.populationGrowth.totalProjected,
-      totalDevelopers: INTEGRATED_DATA.developers.length,
-      majorProjects: INTEGRATED_DATA.majorProjects.length,
-      memoryEnabled: true,
-      conversationEngineActive: true,
-      chatGPTEnabled: !!process.env.OPENAI_API_KEY,
-      apiKeyPrefix: process.env.OPENAI_API_KEY ? process.env.OPENAI_API_KEY.substring(0, 10) + '...' : 'NOT SET',
-      queryText: query.text,
-      sessionId: query.context?.sessionId || 'no-session'
-    })
-    
+    // Always use API route for both client and server to prevent Prisma bundling
     try {
-      // Use the conversation engine for natural responses
-      const sessionId = query.context?.sessionId || `session-${Date.now()}`
-      const context = await conversationEngine.getConversationContext(sessionId)
-      
-      // Log whether this will use conversational or data engine
-      const isConversational = query.text.toLowerCase().includes('budget') || 
-                              query.text.toLowerCase().includes('what else') ||
-                              query.text.toLowerCase().includes('build') ||
-                              query.text.split(' ').length < 10
-      
-      console.log('🤖 Response type:', isConversational ? 'CONVERSATIONAL' : 'DATA-DRIVEN')
-      
-      const result = await conversationEngine.generateResponse(query.text, {
-        ...context,
-        userId: query.context?.userId
+      // On client side, use relative URL
+      // On server side during SSR, use full URL
+      const baseUrl = typeof window !== 'undefined' 
+        ? this.baseUrl 
+        : `${process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000'}${this.baseUrl}`
+        
+      const response = await fetch(baseUrl, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(query)
       })
       
-      // Store the conversation
-      if (query.context?.sessionId) {
-        await conversationEngine.storeConversation(
-          sessionId,
-          query.context.userId,
-          query.text,
-          result.response
-        )
+      if (!response.ok) {
+        throw new Error(`API request failed: ${response.status}`)
       }
       
-      return {
-        text: result.response,
-        data: result.suggestedActions,
-        confidence: result.confidence,
-        sources: result.sources
-      }
+      return await response.json()
     } catch (error) {
-      console.error('Error in conversation engine, falling back to pattern matching:', error)
+      console.error('Error calling Fernando-X API:', error)
       
-      // Fallback to pattern matching if conversation engine fails
-      const queryLower = query.text.toLowerCase()
+      // Return fallback response with static data
+      return this.getFallbackResponse(query.text)
+    }
+  }
+  
+  private getFallbackResponse(queryText: string): FernandoXResponse {
+    const queryLower = queryText.toLowerCase()
+    
+    // Use INTEGRATED_DATA for fallback responses
       
       // Population & Growth Queries
       if (queryLower.includes('population') || queryLower.includes('growth') || queryLower.includes('750')) {
@@ -453,14 +402,6 @@ Could you be more specific about what you'd like to know? For example:
         confidence: 0.85,
         sources: ['Houston Development Intelligence', 'DataProcess Analysis', 'Market Overview']
       }
-    }
-  } catch (error) {
-    console.error('🚨 Fernando-X ENHANCED query error:', error)
-    return {
-      text: "🚀 FERNANDO-X ENHANCED VERSION ERROR HANDLER - I'm having trouble with that specific query, but I'm definitely the enhanced version with 750,000+ data points! Try asking about Houston population growth, D.R. Horton projects, or East River development to verify I'm working correctly.",
-      confidence: 0.5,
-      sources: ['Enhanced Fernando-X', 'Error Handler']
-    }
   }
   
   async generateReport(type: string, topic: string): Promise<any> {
@@ -495,5 +436,4 @@ Could you be more specific about what you'd like to know? For example:
 }
 
 export const fernandoX = new FernandoX()
-export default FernandoX// Cache cleared: Sun Jul 20 14:14:29 EDT 2025
-// Force rebuild: Mon Jul 21 2025
+export default FernandoX
