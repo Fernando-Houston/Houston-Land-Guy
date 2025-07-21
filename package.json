@@ -27,7 +27,18 @@
     "cron:status": "tsx scripts/cron-status.ts",
     "alerts:test": "tsx scripts/test-alerts.ts",
     "alerts:config": "tsx scripts/configure-alerts.ts",
-    "test:agents": "tsx scripts/test-all-agents.ts"
+    "test:agents": "tsx scripts/test-all-agents.ts",
+    "db:stats": "tsx scripts/db-stats.ts",
+    "import:neighborhoods": "tsx scripts/import-neighborhoods.ts",
+    "import:market-metrics": "tsx scripts/import-market-metrics.ts",
+    "import:permits": "tsx scripts/import-permits.ts",
+    "import:construction-costs": "tsx scripts/import-construction-costs.ts",
+    "import:demographics": "tsx scripts/import-demographics.ts",
+    "import:fix-failed": "tsx scripts/fix-failed-imports.ts",
+    "db:validate": "tsx scripts/validate-data.ts",
+    "db:quality-report": "tsx scripts/quality-report.ts",
+    "db:check": "tsx scripts/check-connection.ts",
+    "import:test": "tsx scripts/test-import.ts"
   },
   "prisma": {
     "seed": "tsx prisma/seed.ts"
