@@ -170,8 +170,8 @@ I can pull up specific listings or walk you through what's driving values there.
       }
     }
     
-    // Handle home buying queries
-    if (cleanedMessage.includes('buy') && (cleanedMessage.includes('home') || cleanedMessage.includes('house') || cleanedMessage.includes('property'))) {
+    // Handle home buying queries (broader match to catch "buy in Houston")
+    if (cleanedMessage.includes('buy') && (cleanedMessage.includes('home') || cleanedMessage.includes('house') || cleanedMessage.includes('property') || cleanedMessage.includes('houston') || cleanedMessage.includes('in houston'))) {
       userMemory.userGoal = 'buy'
       this.memory.set(sessionId, userMemory)
       
