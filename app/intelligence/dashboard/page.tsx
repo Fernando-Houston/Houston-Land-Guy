@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { motion } from 'framer-motion'
 import Link from 'next/link'
 import {
@@ -12,6 +12,21 @@ import LiveMarketDashboard from '@/components/intelligence/LiveMarketDashboard'
 
 export default function IntelligenceDashboardPage() {
   const [activeTab, setActiveTab] = useState('market')
+  const [dashboardStats, setDashboardStats] = useState<any>(null)
+
+  useEffect(() => {
+    fetchDashboardStats()
+  }, [])
+
+  const fetchDashboardStats = async () => {
+    try {
+      const response = await fetch('/api/dashboard-stats')
+      const data = await response.json()
+      setDashboardStats(data.stats)
+    } catch (error) {
+      console.error('Error fetching dashboard stats:', error)
+    }
+  }
 
   const quickActions = [
     {
@@ -44,7 +59,12 @@ export default function IntelligenceDashboardPage() {
     }
   ]
 
-  const stats = [
+  const stats = dashboardStats ? [
+    { label: 'Major Projects', value: dashboardStats.majorProjects.value, change: dashboardStats.majorProjects.change, icon: Building2 },
+    { label: 'Hottest ZIP', value: dashboardStats.hottestZip.value, change: dashboardStats.hottestZip.change, icon: MapPin },
+    { label: 'Top Developer', value: dashboardStats.topDeveloper.value, change: dashboardStats.topDeveloper.change, icon: Users },
+    { label: 'Best ROI', value: dashboardStats.bestROI.value, change: dashboardStats.bestROI.change, icon: TrendingUp }
+  ] : [
     { label: 'Major Projects', value: '$13.8B', change: '8 Active', icon: Building2 },
     { label: 'Hottest ZIP', value: '77433', change: 'Cypress', icon: MapPin },
     { label: 'Top Developer', value: 'D.R. Horton', change: '326 permits', icon: Users },
