@@ -1,6 +1,3 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
 generator client {
   provider = "prisma-client-js"
 }
@@ -10,22 +7,20 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-// NextAuth Models
 model Account {
   id                String  @id @default(cuid())
   userId            String
   type              String
   provider          String
   providerAccountId String
-  refresh_token     String? @db.Text
-  access_token      String? @db.Text
+  refresh_token     String?
+  access_token      String?
   expires_at        Int?
   token_type        String?
   scope             String?
-  id_token          String? @db.Text
+  id_token          String?
   session_state     String?
-
-  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user              User    @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@unique([provider, providerAccountId])
   @@index([userId])
@@ -42,23 +37,21 @@ model Session {
 }
 
 model User {
-  id            String    @id @default(cuid())
+  id            String              @id @default(cuid())
   name          String?
-  email         String?   @unique
+  email         String?             @unique
   emailVerified DateTime?
   image         String?
   password      String?
-  role          String    @default("USER")
-  
+  role          String              @default("USER")
+  createdAt     DateTime            @default(now())
+  updatedAt     DateTime            @updatedAt
   accounts      Account[]
-  sessions      Session[]
-  profile       UserProfile?
-  savedSearches SavedSearch[]
   portfolio     PortfolioProperty[]
+  savedSearches SavedSearch[]
+  sessions      Session[]
   activities    UserActivity[]
-  
-  createdAt     DateTime  @default(now())
-  updatedAt     DateTime  @updatedAt
+  profile       UserProfile?
 }
 
 model VerificationToken {
@@ -70,110 +63,93 @@ model VerificationToken {
 }
 
 model UserProfile {
-  id            String   @id @default(cuid())
-  userId        String   @unique
-  user          User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-  
-  userType      String   @default("INVESTOR") // DEVELOPER, INVESTOR, SELLER, AGENT, LENDER
-  company       String?
-  license       String?
-  bio           String?
-  phone         String?
-  website       String?
-  
-  preferences   Json     @default("{}")
-  watchlist     String[] @default([])
-  
-  createdAt     DateTime @default(now())
-  updatedAt     DateTime @updatedAt
-  
+  id          String   @id @default(cuid())
+  userId      String   @unique
+  userType    String   @default("INVESTOR")
+  company     String?
+  license     String?
+  bio         String?
+  phone       String?
+  website     String?
+  preferences Json     @default("{}")
+  watchlist   String[] @default([])
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
   @@index([userId])
 }
 
 model SavedSearch {
   id            String   @id @default(cuid())
   userId        String
-  user          User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-  
   name          String
   criteria      Json
   alertsEnabled Boolean  @default(true)
   lastRun       DateTime @default(now())
   resultCount   Int      @default(0)
-  
   createdAt     DateTime @default(now())
   updatedAt     DateTime @updatedAt
-  
+  user          User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
   @@index([userId])
 }
 
 model PortfolioProperty {
   id            String   @id @default(cuid())
   userId        String
-  user          User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-  
   propertyId    String
   purchasePrice Float
   purchaseDate  DateTime
   currentValue  Float?
   notes         String?
   status        String   @default("owned")
-  
   createdAt     DateTime @default(now())
   updatedAt     DateTime @updatedAt
-  
+  user          User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
   @@index([userId])
 }
 
 model UserActivity {
-  id            String   @id @default(cuid())
-  userId        String
-  user          User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-  
-  type          String   // property_view, search, analysis, report_download, share
-  propertyId    String?
-  metadata      Json?
-  timestamp     DateTime @default(now())
-  
+  id         String   @id @default(cuid())
+  userId     String
+  type       String
+  propertyId String?
+  metadata   Json?
+  timestamp  DateTime @default(now())
+  user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
   @@index([userId])
   @@index([type])
   @@index([timestamp])
 }
 
-// Models
 model Lead {
-  id              String       @id @default(cuid())
-  email           String       @unique
-  phone           String?
-  name            String?
-  company         String?
-  source          LEAD_SOURCE
-  status          LEAD_STATUS  @default(NEW)
-  score           Int          @default(0)
-  
-  // Lead interests
-  neighborhoods   String[]
-  projectTypes    PROJECT_TYPE[]
-  budgetMin       Float?
-  budgetMax       Float?
-  timeline        String?
-  message         String?
-  
-  // Tracking
-  utmSource       String?
-  utmMedium       String?
-  utmCampaign     String?
-  referrer        String?
-  
-  // Timestamps
-  createdAt       DateTime     @default(now())
-  updatedAt       DateTime     @updatedAt
-  lastContactedAt DateTime?
-  
-  // Relations
-  interactions    Interaction[]
+  id                String             @id @default(cuid())
+  email             String             @unique
+  phone             String?
+  name              String?
+  company           String?
+  source            LEAD_SOURCE
+  status            LEAD_STATUS        @default(NEW)
+  score             Int                @default(0)
+  neighborhoods     String[]
+  projectTypes      PROJECT_TYPE[]
+  budgetMin         Float?
+  budgetMax         Float?
+  timeline          String?
+  message           String?
+  utmSource         String?
+  utmMedium         String?
+  utmCampaign       String?
+  referrer          String?
+  createdAt         DateTime           @default(now())
+  updatedAt         DateTime           @updatedAt
+  lastContactedAt   DateTime?
   calculatorResults CalculatorResult[]
-  
+  interactions      Interaction[]
+
   @@index([email])
   @@index([status])
   @@index([source])
@@ -181,13 +157,13 @@ model Lead {
 }
 
 model Interaction {
-  id          String   @id @default(cuid())
-  leadId      String
-  lead        Lead     @relation(fields: [leadId], references: [id])
-  type        String   // e.g., "page_view", "tool_use", "form_submission"
-  details     Json     // Flexible JSON field for interaction-specific data
-  createdAt   DateTime @default(now())
-  
+  id        String   @id @default(cuid())
+  leadId    String
+  type      String
+  details   Json
+  createdAt DateTime @default(now())
+  lead      Lead     @relation(fields: [leadId], references: [id])
+
   @@index([leadId])
   @@index([type])
   @@index([createdAt])
@@ -196,44 +172,764 @@ model Interaction {
 model CalculatorResult {
   id              String   @id @default(cuid())
   leadId          String?
-  lead            Lead?    @relation(fields: [leadId], references: [id])
-  
-  // Calculator inputs
-  calculatorType  String   // "roi", "financing", "feasibility"
-  inputs          Json     // All calculator inputs
-  
-  // Results
+  calculatorType  String
+  inputs          Json
   roi             Float?
   totalCost       Float?
   projectedProfit Float?
   timeline        String?
-  risks           Json?    // Risk assessment data
-  
-  // Tracking
+  risks           Json?
   sessionId       String?
   completed       Boolean  @default(false)
   createdAt       DateTime @default(now())
-  
+  lead            Lead?    @relation(fields: [leadId], references: [id])
+
   @@index([leadId])
   @@index([calculatorType])
   @@index([createdAt])
 }
 
 model MarketData {
-  id            String   @id @default(cuid())
-  neighborhood  String
-  dataType      String   // "permits", "trends", "demographics"
-  data          Json     // Flexible JSON field for various data types
-  source        String   // "core_agents", "census", etc.
-  lastUpdated   DateTime @default(now())
-  
+  id           String   @id @default(cuid())
+  neighborhood String
+  dataType     String
+  data         Json
+  source       String
+  lastUpdated  DateTime @default(now())
+
   @@unique([neighborhood, dataType])
   @@index([neighborhood])
   @@index([dataType])
   @@index([lastUpdated])
 }
 
-// Enums
+model FernandoMemory {
+  id           String   @id @default(cuid())
+  userId       String?
+  sessionId    String?
+  memoryType   String
+  content      Json
+  embedding    Float[]
+  metadata     Json?
+  importance   Float    @default(0.5)
+  accessCount  Int      @default(0)
+  lastAccessed DateTime @default(now())
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  @@index([userId])
+  @@index([sessionId])
+  @@index([memoryType])
+  @@index([importance])
+  @@index([lastAccessed])
+}
+
+model FernandoConversation {
+  id        String    @id @default(cuid())
+  userId    String?
+  sessionId String
+  messages  Json[]
+  summary   String?
+  topics    String[]
+  sentiment String?
+  startedAt DateTime  @default(now())
+  endedAt   DateTime?
+  duration  Int?
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+
+  @@index([userId])
+  @@index([sessionId])
+  @@index([startedAt])
+}
+
+model FernandoInsight {
+  id          String    @id @default(cuid())
+  insightType String
+  title       String
+  content     String
+  data        Json
+  confidence  Float
+  tags        String[]
+  relevantTo  String[]
+  validFrom   DateTime  @default(now())
+  validUntil  DateTime?
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
+  @@index([insightType])
+  @@index([confidence])
+  @@index([validFrom])
+}
+
+model Property {
+  id               String           @id @default(cuid())
+  mlsNumber        String?          @unique
+  address          String
+  city             String
+  state            String           @default("TX")
+  zipCode          String
+  neighborhood     String?
+  county           String?
+  coordinates      Json?
+  propertyType     String
+  propertySubType  String?
+  status           String
+  listPrice        Float?
+  soldPrice        Float?
+  pricePerSqft     Float?
+  taxAssessedValue Float?
+  lotSize          Float?
+  squareFeet       Float?
+  bedrooms         Int?
+  bathrooms        Float?
+  yearBuilt        Int?
+  stories          Int?
+  parkingSpaces    Int?
+  features         String[]
+  amenities        String[]
+  appliances       String[]
+  listDate         DateTime?
+  soldDate         DateTime?
+  lastModified     DateTime         @updatedAt
+  createdAt        DateTime         @default(now())
+  developerId      String?
+  marketAnalyses   MarketAnalysis[]
+  permits          Permit[]
+  priceHistory     PriceHistory[]
+  developer        Developer?       @relation(fields: [developerId], references: [id])
+
+  @@index([mlsNumber])
+  @@index([zipCode])
+  @@index([neighborhood])
+  @@index([propertyType])
+  @@index([status])
+  @@index([listPrice])
+  @@index([coordinates], type: Gin)
+}
+
+model Developer {
+  id                String     @id @default(cuid())
+  name              String     @unique
+  companyType       String
+  website           String?
+  phone             String?
+  email             String?
+  headquarters      String?
+  activeProjects    Int        @default(0)
+  completedProjects Int        @default(0)
+  totalValue        Float      @default(0)
+  averagePrice      Float?
+  primaryFocus      String
+  secondaryFocus    String?
+  targetMarket      String[]
+  primaryAreas      String[]
+  foundedYear       Int?
+  createdAt         DateTime   @default(now())
+  updatedAt         DateTime   @updatedAt
+  permits           Permit[]
+  projects          Project[]
+  properties        Property[]
+}
+
+model Project {
+  id               String    @id @default(cuid())
+  name             String
+  projectType      String
+  address          String?
+  area             String
+  coordinates      Json?
+  totalAcres       Float?
+  description      String?
+  totalValue       Float
+  phase            String
+  startDate        DateTime?
+  completionDate   DateTime?
+  residentialUnits Int?
+  commercialSqft   Float?
+  retailSqft       Float?
+  officeSqft       Float?
+  developerId      String
+  announcedDate    DateTime?
+  createdAt        DateTime  @default(now())
+  updatedAt        DateTime  @updatedAt
+  permits          Permit[]
+  developer        Developer @relation(fields: [developerId], references: [id])
+
+  @@index([developerId])
+  @@index([area])
+  @@index([phase])
+}
+
+model Permit {
+  id                String     @id @default(cuid())
+  permitNumber      String     @unique
+  address           String
+  zipCode           String
+  coordinates       Json?
+  permitType        String
+  workType          String
+  description       String?
+  declaredValue     Float?
+  estimatedValue    Float?
+  status            String
+  applicationDate   DateTime
+  approvalDate      DateTime?
+  issueDate         DateTime?
+  completionDate    DateTime?
+  expirationDate    DateTime?
+  ownerName         String?
+  contractorName    String?
+  contractorLicense String?
+  propertyId        String?
+  developerId       String?
+  projectId         String?
+  createdAt         DateTime   @default(now())
+  updatedAt         DateTime   @updatedAt
+  developer         Developer? @relation(fields: [developerId], references: [id])
+  project           Project?   @relation(fields: [projectId], references: [id])
+  property          Property?  @relation(fields: [propertyId], references: [id])
+
+  @@index([permitNumber])
+  @@index([zipCode])
+  @@index([permitType])
+  @@index([status])
+  @@index([applicationDate])
+}
+
+model MarketMetrics {
+  id                String   @id @default(cuid())
+  areaName          String
+  areaType          String
+  zipCode           String?
+  period            String
+  startDate         DateTime
+  endDate           DateTime
+  activeListings    Int
+  newListings       Int
+  closedSales       Int
+  pendingSales      Int
+  inventory         Float
+  medianPrice       Float
+  averagePrice      Float
+  pricePerSqft      Float
+  medianPriceChange Float
+  avgPriceChange    Float
+  avgDaysOnMarket   Int
+  avgDaysToClose    Int
+  listToSaleRatio   Float
+  absorptionRate    Float?
+  marketHeatIndex   Float?
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+
+  @@unique([areaName, period, startDate])
+  @@index([areaName])
+  @@index([zipCode])
+  @@index([period])
+  @@index([startDate])
+}
+
+model PriceHistory {
+  id            String   @id @default(cuid())
+  propertyId    String
+  price         Float
+  priceType     String
+  changeAmount  Float?
+  changePercent Float?
+  date          DateTime
+  source        String?
+  createdAt     DateTime @default(now())
+  property      Property @relation(fields: [propertyId], references: [id])
+
+  @@index([propertyId])
+  @@index([date])
+}
+
+model MarketAnalysis {
+  id              String   @id @default(cuid())
+  propertyId      String
+  analysisType    String
+  estimatedValue  Float
+  valueLow        Float
+  valueHigh       Float
+  confidence      Float
+  comparableCount Int
+  avgCompPrice    Float
+  avgCompSqft     Float
+  avgCompDays     Int
+  marketPosition  String
+  demandLevel     String
+  estimatedRent   Float?
+  capRate         Float?
+  cashFlow        Float?
+  analysisData    Json
+  createdAt       DateTime @default(now())
+  validUntil      DateTime
+  property        Property @relation(fields: [propertyId], references: [id])
+
+  @@index([propertyId])
+  @@index([analysisType])
+  @@index([createdAt])
+}
+
+model DataImport {
+  id               String    @id @default(cuid())
+  importType       String
+  source           String
+  status           String
+  totalRecords     Int?
+  processedRecords Int?
+  failedRecords    Int?
+  startedAt        DateTime
+  completedAt      DateTime?
+  errors           Json?
+  metadata         Json?
+  createdAt        DateTime  @default(now())
+
+  @@index([importType])
+  @@index([status])
+  @@index([startedAt])
+}
+
+model HarMlsReport {
+  id              String                @id @default(cuid())
+  month           Int
+  year            Int
+  reportType      String
+  totalSales      Int
+  totalVolume     Float
+  avgSalePrice    Float
+  medianSalePrice Float
+  pricePerSqft    Float
+  salesChangeYoY  Float
+  priceChangeYoY  Float
+  volumeChangeYoY Float
+  activeListings  Int
+  newListings     Int
+  pendingSales    Int
+  monthsInventory Float
+  avgDaysOnMarket Int
+  under200k       Int
+  from200to400k   Int
+  from400to600k   Int
+  from600to800k   Int
+  from800to1M     Int
+  over1M          Int
+  singleFamily    Int
+  townhouse       Int
+  condo           Int
+  metadata        Json?
+  createdAt       DateTime              @default(now())
+  updatedAt       DateTime              @updatedAt
+  neighborhoods   HarNeighborhoodData[]
+
+  @@unique([month, year, reportType])
+  @@index([year, month])
+}
+
+model HarNeighborhoodData {
+  id                String       @id @default(cuid())
+  reportId          String
+  neighborhood      String
+  zipCode           String?
+  totalSales        Int
+  avgSalePrice      Float
+  medianSalePrice   Float
+  pricePerSqft      Float
+  activeListings    Int
+  monthsInventory   Float
+  avgDaysOnMarket   Int
+  listToSaleRatio   Float?
+  sellerConcessions Float?
+  metadata          Json?
+  report            HarMlsReport @relation(fields: [reportId], references: [id])
+
+  @@index([reportId])
+  @@index([neighborhood])
+  @@index([zipCode])
+}
+
+model ConstructionActivity {
+  id             String    @id @default(cuid())
+  permitNumber   String    @unique
+  permitType     String
+  subType        String?
+  address        String
+  zipCode        String
+  neighborhood   String?
+  precinct       String?
+  projectName    String?
+  developer      String?
+  contractor     String?
+  estimatedCost  Float?
+  squareFootage  Int?
+  units          Int?
+  stories        Int?
+  permitDate     DateTime
+  startDate      DateTime?
+  completionDate DateTime?
+  status         String
+  metadata       Json?
+  createdAt      DateTime  @default(now())
+  updatedAt      DateTime  @updatedAt
+
+  @@index([zipCode])
+  @@index([permitDate])
+  @@index([status])
+  @@index([permitType])
+}
+
+model MarketIntelligence {
+  id                   String   @id @default(cuid())
+  dataType             String
+  zipCode              String?
+  neighborhood         String?
+  marketShare          Float?
+  competitors          Int?
+  capRate              Float?
+  roi                  Float?
+  investmentScore      Float?
+  plannedUnits         Int?
+  underConstruction    Int?
+  gentrificationScore  Float?
+  walkabilityScore     Float?
+  schoolRating         Float?
+  crimeIndex           Float?
+  foreignInvestmentPct Float?
+  institutionalPct     Float?
+  dataDate             DateTime
+  metadata             Json?
+  createdAt            DateTime @default(now())
+
+  @@index([dataType])
+  @@index([zipCode])
+  @@index([dataDate])
+}
+
+model CostAnalysis {
+  id             String   @id @default(cuid())
+  analysisType   String
+  location       String
+  costPerSqft    Float?
+  materialsCost  Float?
+  laborCost      Float?
+  hourlyRate     Float?
+  skillLevel     String?
+  tradeType      String?
+  pricePerAcre   Float?
+  pricePerSqft   Float?
+  permitType     String?
+  baseFee        Float?
+  additionalFees Json?
+  effectiveDate  DateTime
+  metadata       Json?
+  createdAt      DateTime @default(now())
+
+  @@index([analysisType])
+  @@index([location])
+  @@index([effectiveDate])
+}
+
+model QualityOfLife {
+  id               String   @id @default(cuid())
+  zipCode          String
+  neighborhood     String?
+  crimeRate        Float
+  crimeReduction   Float?
+  safetyScore      Float
+  walkScore        Float
+  transitScore     Float?
+  bikeScore        Float?
+  parksCount       Int?
+  restaurantsCount Int?
+  groceryCount     Int?
+  schoolsCount     Int?
+  avgSchoolRating  Float?
+  dataDate         DateTime
+  metadata         Json?
+  createdAt        DateTime @default(now())
+
+  @@unique([zipCode, dataDate])
+  @@index([neighborhood])
+}
+
+model RentalMarket {
+  id                 String   @id @default(cuid())
+  zipCode            String?
+  neighborhood       String?
+  submarket          String?
+  avgRentStudio      Float?
+  avgRent1BR         Float?
+  avgRent2BR         Float?
+  avgRent3BR         Float?
+  avgRent4BR         Float?
+  occupancyRate      Float?
+  occupancyClass     String?
+  yearOverYearGrowth Float?
+  quarterOverQuarter Float?
+  totalUnits         Int?
+  deliveredUnits     Int?
+  underConstruction  Int?
+  plannedUnits       Int?
+  netAbsorption      Int?
+  leasingVelocity    Float?
+  concessions        Float?
+  reportDate         DateTime
+  reportPeriod       String
+  createdAt          DateTime @default(now())
+  updatedAt          DateTime @updatedAt
+
+  @@unique([zipCode, reportDate])
+  @@unique([neighborhood, reportDate])
+  @@index([zipCode])
+  @@index([neighborhood])
+  @@index([submarket])
+  @@index([reportDate])
+}
+
+model EmployerDP5 {
+  id              String   @id @default(cuid())
+  companyName     String   @unique
+  sector          String
+  industry        String?
+  subIndustry     String?
+  employeeCount   Int
+  employeeGrowth  Float?
+  avgSalary       Float?
+  salaryRange     String?
+  headquarters    String?
+  primaryAddress  String?
+  zipCode         String?
+  campusSize      Float?
+  economicImpact  Float?
+  taxContribution Float?
+  houstonRank     Int?
+  nationalRank    Int?
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  @@index([sector])
+  @@index([zipCode])
+  @@index([employeeCount])
+}
+
+model STRMarket {
+  id                String   @id @default(cuid())
+  neighborhood      String
+  performanceTier   String
+  activeListings    Int
+  totalProperties   Int?
+  professionalHosts Int?
+  avgDailyRate      Float
+  occupancyRate     Float
+  revPAR            Float?
+  annualRevenue     Float
+  avgLengthOfStay   Float?
+  weekendPremium    Float?
+  seasonalVariance  Float?
+  regulatoryStatus  String?
+  permitRequired    Boolean  @default(false)
+  reportDate        DateTime
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+
+  @@unique([neighborhood, reportDate])
+  @@index([neighborhood])
+  @@index([performanceTier])
+  @@index([reportDate])
+}
+
+model AreaDemographics {
+  id                    String   @id @default(cuid())
+  zipCode               String?
+  neighborhood          String?
+  tract                 String?
+  totalPopulation       Int
+  populationDensity     Float?
+  householdCount        Int?
+  avgHouseholdSize      Float?
+  medianAge             Float?
+  under18Percent        Float?
+  over65Percent         Float?
+  workingAgePercent     Float?
+  whitePercent          Float?
+  blackPercent          Float?
+  hispanicPercent       Float?
+  asianPercent          Float?
+  otherRacePercent      Float?
+  foreignBornPercent    Float?
+  citizenPercent        Float?
+  ownerOccupiedPercent  Float?
+  renterOccupiedPercent Float?
+  vacancyRate           Float?
+  medianHomeValue       Float?
+  reportYear            Int
+  createdAt             DateTime @default(now())
+  updatedAt             DateTime @updatedAt
+
+  @@unique([zipCode, reportYear])
+  @@unique([neighborhood, reportYear])
+  @@index([zipCode])
+  @@index([neighborhood])
+  @@index([reportYear])
+}
+
+model IncomeData {
+  id                     String   @id @default(cuid())
+  zipCode                String?
+  neighborhood           String?
+  medianHouseholdIncome  Float
+  meanHouseholdIncome    Float?
+  perCapitaIncome        Float?
+  under25k               Float?
+  from25to50k            Float?
+  from50to75k            Float?
+  from75to100k           Float?
+  from100to150k          Float?
+  from150to200k          Float?
+  over200k               Float?
+  medianGrossRent        Float?
+  rentBurdenPercent      Float?
+  homeAffordabilityIndex Float?
+  reportYear             Int
+  createdAt              DateTime @default(now())
+  updatedAt              DateTime @updatedAt
+
+  @@unique([zipCode, reportYear])
+  @@unique([neighborhood, reportYear])
+  @@index([zipCode])
+  @@index([neighborhood])
+  @@index([medianHouseholdIncome])
+  @@index([reportYear])
+}
+
+model PopulationProjection {
+  id                  String   @id @default(cuid())
+  zipCode             String?
+  county              String?
+  city                String?
+  projectionYear      Int
+  projectedPopulation Int
+  growthRate          Float?
+  growthAbsolute      Int?
+  naturalIncrease     Int?
+  netMigration        Int?
+  agingIndex          Float?
+  dependencyRatio     Float?
+  createdAt           DateTime @default(now())
+  updatedAt           DateTime @updatedAt
+
+  @@unique([zipCode, projectionYear])
+  @@index([zipCode])
+  @@index([projectionYear])
+  @@index([growthRate])
+}
+
+model EconomicIndicatorDP5 {
+  id                      String   @id @default(cuid())
+  area                    String
+  totalEmployment         Int?
+  unemploymentRate        Float?
+  laborForceParticipation Float?
+  gdpTotal                Float?
+  gdpPerCapita            Float?
+  gdpGrowthRate           Float?
+  oilGasEmployment        Int?
+  healthcareEmployment    Int?
+  technologyEmployment    Int?
+  constructionEmployment  Int?
+  portTonnage             Float?
+  airCargoTonnage         Float?
+  commercialConstruction  Float?
+  residentialConstruction Float?
+  reportDate              DateTime
+  reportPeriod            String
+  createdAt               DateTime @default(now())
+  updatedAt               DateTime @updatedAt
+
+  @@unique([area, reportDate])
+  @@index([area])
+  @@index([reportDate])
+  @@index([gdpGrowthRate])
+}
+
+model MigrationData {
+  id                     String   @id @default(cuid())
+  zipCode                String?
+  county                 String?
+  inMigration            Int
+  outMigration           Int
+  netMigration           Int
+  topOriginStates        Json?
+  topDestinationStates   Json?
+  internationalMigration Int?
+  avgAgeInMigrants       Float?
+  avgIncomeInMigrants    Float?
+  educationLevelMigrants Json?
+  migrationYear          Int
+  createdAt              DateTime @default(now())
+  updatedAt              DateTime @updatedAt
+
+  @@unique([zipCode, migrationYear])
+  @@index([zipCode])
+  @@index([migrationYear])
+  @@index([netMigration])
+}
+
+model EducationMetrics {
+  id                    String   @id @default(cuid())
+  zipCode               String?
+  schoolDistrict        String?
+  avgSchoolRating       Float?
+  testScoreReading      Float?
+  testScoreMath         Float?
+  graduationRate        Float?
+  totalStudents         Int?
+  freeReducedLunch      Float?
+  englishLearners       Float?
+  studentTeacherRatio   Float?
+  perPupilSpending      Float?
+  collegeGradPercent    Float?
+  graduateSchoolPercent Float?
+  academicYear          String
+  createdAt             DateTime @default(now())
+  updatedAt             DateTime @updatedAt
+
+  @@unique([zipCode, academicYear])
+  @@index([zipCode])
+  @@index([schoolDistrict])
+  @@index([avgSchoolRating])
+}
+
+model ConstructionCostDP5 {
+  id                   String   @id @default(cuid())
+  area                 String
+  residentialLow       Float?
+  residentialMid       Float?
+  residentialHigh      Float?
+  commercialOffice     Float?
+  commercialRetail     Float?
+  commercialIndustrial Float?
+  concretePrice        Float?
+  steelPrice           Float?
+  lumberPrice          Float?
+  laborRateSkilled     Float?
+  laborRateUnskilled   Float?
+  laborAvailability    String?
+  totalCostIndex       Float?
+  materialIndex        Float?
+  laborIndex           Float?
+  effectiveDate        DateTime
+  createdAt            DateTime @default(now())
+  updatedAt            DateTime @updatedAt
+
+  @@unique([area, effectiveDate])
+  @@index([area])
+  @@index([effectiveDate])
+  @@index([totalCostIndex])
+}
+
 enum LEAD_STATUS {
   NEW
   QUALIFIED
@@ -264,1047 +960,4 @@ enum PROJECT_TYPE {
   CONDO
   MIXED_USE
   COMMERCIAL
-}
-
-// Fernando-X Memory Models
-model FernandoMemory {
-  id            String   @id @default(cuid())
-  userId        String?  // Optional - for user-specific memories
-  sessionId     String?  // Optional - for session-specific memories
-  
-  memoryType    String   // "conversation", "fact", "preference", "context"
-  content       Json     // The actual memory content
-  embedding     Float[]  // Vector embedding for similarity search
-  metadata      Json?    // Additional metadata
-  
-  importance    Float    @default(0.5) // 0-1 score
-  accessCount   Int      @default(0)
-  lastAccessed  DateTime @default(now())
-  
-  createdAt     DateTime @default(now())
-  updatedAt     DateTime @updatedAt
-  
-  @@index([userId])
-  @@index([sessionId])
-  @@index([memoryType])
-  @@index([importance])
-  @@index([lastAccessed])
-}
-
-model FernandoConversation {
-  id            String   @id @default(cuid())
-  userId        String?
-  sessionId     String
-  
-  messages      Json[]   // Array of messages
-  summary       String?  @db.Text
-  topics        String[]
-  sentiment     String?  // "positive", "neutral", "negative"
-  
-  startedAt     DateTime @default(now())
-  endedAt       DateTime?
-  duration      Int?     // in seconds
-  
-  createdAt     DateTime @default(now())
-  updatedAt     DateTime @updatedAt
-  
-  @@index([userId])
-  @@index([sessionId])
-  @@index([startedAt])
-}
-
-model FernandoInsight {
-  id            String   @id @default(cuid())
-  
-  insightType   String   // "market", "property", "user_behavior", "trend"
-  title         String
-  content       String   @db.Text
-  data          Json     // Supporting data
-  confidence    Float    // 0-1 confidence score
-  
-  tags          String[]
-  relevantTo    String[] // User IDs or segments this is relevant to
-  
-  validFrom     DateTime @default(now())
-  validUntil    DateTime?
-  
-  createdAt     DateTime @default(now())
-  updatedAt     DateTime @updatedAt
-  
-  @@index([insightType])
-  @@index([confidence])
-  @@index([validFrom])
-}// Real Estate Data Schema Extension
-// This file contains the schema for storing actual Houston real estate data
-
-// Property listings from MLS and other sources
-model Property {
-  id                String   @id @default(cuid())
-  mlsNumber         String?  @unique
-  
-  // Location
-  address           String
-  city              String
-  state             String   @default("TX")
-  zipCode           String
-  neighborhood      String?
-  county            String?
-  coordinates       Json?    // { lat, lng }
-  
-  // Property Details
-  propertyType      String   // residential, commercial, land, multi-family, etc
-  propertySubType   String?  // single-family, condo, townhome, etc
-  status            String   // active, pending, sold, off-market
-  
-  // Pricing
-  listPrice         Float?
-  soldPrice         Float?
-  pricePerSqft      Float?
-  taxAssessedValue  Float?
-  
-  // Size & Features
-  lotSize           Float?   // in acres
-  squareFeet        Float?
-  bedrooms          Int?
-  bathrooms         Float?
-  yearBuilt         Int?
-  stories           Int?
-  parkingSpaces     Int?
-  
-  // Additional Features
-  features          String[] // pool, garage, updated kitchen, etc
-  amenities         String[]
-  appliances        String[]
-  
-  // Dates
-  listDate          DateTime?
-  soldDate          DateTime?
-  lastModified      DateTime @updatedAt
-  createdAt         DateTime @default(now())
-  
-  // Relationships
-  developerId       String?
-  developer         Developer? @relation(fields: [developerId], references: [id])
-  permits           Permit[]
-  priceHistory      PriceHistory[]
-  marketAnalyses    MarketAnalysis[]
-  
-  @@index([mlsNumber])
-  @@index([zipCode])
-  @@index([neighborhood])
-  @@index([propertyType])
-  @@index([status])
-  @@index([listPrice])
-  @@index([coordinates(ops: JsonbOps)], type: Gin)
-}
-
-// Developer/Builder Information
-model Developer {
-  id                String   @id @default(cuid())
-  name              String   @unique
-  companyType       String   // builder, developer, investor
-  
-  // Contact
-  website           String?
-  phone             String?
-  email             String?
-  headquarters      String?
-  
-  // Metrics
-  activeProjects    Int      @default(0)
-  completedProjects Int      @default(0)
-  totalValue        Float    @default(0)
-  averagePrice      Float?
-  
-  // Specialization
-  primaryFocus      String   // single-family, multi-family, commercial, mixed-use
-  secondaryFocus    String?
-  targetMarket      String[] // entry-level, luxury, affordable, etc
-  
-  // Geographic Focus
-  primaryAreas      String[]
-  
-  // Dates
-  foundedYear       Int?
-  createdAt         DateTime @default(now())
-  updatedAt         DateTime @updatedAt
-  
-  // Relationships
-  properties        Property[]
-  projects          Project[]
-  permits           Permit[]
-}
-
-// Major Development Projects
-model Project {
-  id                String   @id @default(cuid())
-  name              String
-  projectType       String   // residential, commercial, mixed-use, infrastructure
-  
-  // Location
-  address           String?
-  area              String   // neighborhood or district
-  coordinates       Json?    // { lat, lng }
-  totalAcres        Float?
-  
-  // Project Details
-  description       String?  @db.Text
-  totalValue        Float
-  phase             String   // planning, approved, under-construction, completed
-  startDate         DateTime?
-  completionDate    DateTime?
-  
-  // Scope
-  residentialUnits  Int?
-  commercialSqft    Float?
-  retailSqft        Float?
-  officeSqft        Float?
-  
-  // Developer
-  developerId       String
-  developer         Developer @relation(fields: [developerId], references: [id])
-  
-  // Dates
-  announcedDate     DateTime?
-  createdAt         DateTime @default(now())
-  updatedAt         DateTime @updatedAt
-  
-  // Relationships
-  permits           Permit[]
-  
-  @@index([developerId])
-  @@index([area])
-  @@index([phase])
-}
-
-// Building Permits
-model Permit {
-  id                String   @id @default(cuid())
-  permitNumber      String   @unique
-  
-  // Location
-  address           String
-  zipCode           String
-  coordinates       Json?    // { lat, lng }
-  
-  // Permit Details
-  permitType        String   // building, electrical, plumbing, mechanical
-  workType          String   // new construction, renovation, addition
-  description       String?  @db.Text
-  
-  // Values
-  declaredValue     Float?
-  estimatedValue    Float?
-  
-  // Status
-  status            String   // submitted, approved, issued, completed, expired
-  
-  // Dates
-  applicationDate   DateTime
-  approvalDate      DateTime?
-  issueDate         DateTime?
-  completionDate    DateTime?
-  expirationDate    DateTime?
-  
-  // Parties
-  ownerName         String?
-  contractorName    String?
-  contractorLicense String?
-  
-  // Relationships
-  propertyId        String?
-  property          Property? @relation(fields: [propertyId], references: [id])
-  developerId       String?
-  developer         Developer? @relation(fields: [developerId], references: [id])
-  projectId         String?
-  project           Project? @relation(fields: [projectId], references: [id])
-  
-  createdAt         DateTime @default(now())
-  updatedAt         DateTime @updatedAt
-  
-  @@index([permitNumber])
-  @@index([zipCode])
-  @@index([permitType])
-  @@index([status])
-  @@index([applicationDate])
-}
-
-// Market Statistics by Area
-model MarketMetrics {
-  id                String   @id @default(cuid())
-  
-  // Location
-  areaName          String
-  areaType          String   // neighborhood, zipcode, city, county
-  zipCode           String?
-  
-  // Time Period
-  period            String   // monthly, quarterly, yearly
-  startDate         DateTime
-  endDate           DateTime
-  
-  // Inventory Metrics
-  activeListings    Int
-  newListings       Int
-  closedSales       Int
-  pendingSales      Int
-  inventory         Float   // months of supply
-  
-  // Pricing Metrics
-  medianPrice       Float
-  averagePrice      Float
-  pricePerSqft      Float
-  
-  // Price Changes
-  medianPriceChange Float   // % change from previous period
-  avgPriceChange    Float   // % change from previous period
-  
-  // Market Velocity
-  avgDaysOnMarket   Int
-  avgDaysToClose    Int
-  listToSaleRatio   Float   // as percentage
-  
-  // Additional Metrics
-  absorptionRate    Float?
-  marketHeatIndex   Float?  // 0-100 score
-  
-  createdAt         DateTime @default(now())
-  updatedAt         DateTime @updatedAt
-  
-  @@unique([areaName, period, startDate])
-  @@index([areaName])
-  @@index([zipCode])
-  @@index([period])
-  @@index([startDate])
-}
-
-// Price History for Properties
-model PriceHistory {
-  id                String   @id @default(cuid())
-  
-  propertyId        String
-  property          Property @relation(fields: [propertyId], references: [id])
-  
-  price             Float
-  priceType         String   // list, sold, reduced, increased
-  changeAmount      Float?
-  changePercent     Float?
-  
-  date              DateTime
-  source            String?  // MLS, public records, etc
-  
-  createdAt         DateTime @default(now())
-  
-  @@index([propertyId])
-  @@index([date])
-}
-
-// Market Analysis for Specific Properties
-model MarketAnalysis {
-  id                String   @id @default(cuid())
-  
-  propertyId        String
-  property          Property @relation(fields: [propertyId], references: [id])
-  
-  analysisType      String   // CMA, investment, development
-  
-  // Valuation
-  estimatedValue    Float
-  valueLow          Float
-  valueHigh         Float
-  confidence        Float    // 0-1
-  
-  // Comparables
-  comparableCount   Int
-  avgCompPrice      Float
-  avgCompSqft       Float
-  avgCompDays       Int
-  
-  // Market Position
-  marketPosition    String   // under-valued, fair, over-valued
-  demandLevel       String   // low, moderate, high, very-high
-  
-  // Investment Metrics
-  estimatedRent     Float?
-  capRate           Float?
-  cashFlow          Float?
-  
-  analysisData      Json     // detailed analysis data
-  
-  createdAt         DateTime @default(now())
-  validUntil        DateTime
-  
-  @@index([propertyId])
-  @@index([analysisType])
-  @@index([createdAt])
-}
-
-// Data Import Logs
-model DataImport {
-  id                String   @id @default(cuid())
-  
-  importType        String   // mls, permits, market-stats, etc
-  source            String   // source system/file
-  
-  status            String   // pending, processing, completed, failed
-  totalRecords      Int?
-  processedRecords  Int?
-  failedRecords     Int?
-  
-  startedAt         DateTime
-  completedAt       DateTime?
-  
-  errors            Json?
-  metadata          Json?
-  
-  createdAt         DateTime @default(now())
-  
-  @@index([importType])
-  @@index([status])
-  @@index([startedAt])
-}
-
-// HAR MLS Monthly Reports
-model HarMlsReport {
-  id                String   @id @default(cuid())
-  
-  month             Int      // 1-12
-  year              Int      // 2025
-  reportType        String   // monthly, quarterly, seasonal
-  
-  // Market Overview
-  totalSales        Int
-  totalVolume       Float
-  avgSalePrice      Float
-  medianSalePrice   Float
-  pricePerSqft      Float
-  
-  // YoY Changes
-  salesChangeYoY    Float
-  priceChangeYoY    Float
-  volumeChangeYoY   Float
-  
-  // Inventory Metrics
-  activeListings    Int
-  newListings       Int
-  pendingSales      Int
-  monthsInventory   Float
-  avgDaysOnMarket   Int
-  
-  // Price Segments
-  under200k         Int
-  from200to400k     Int
-  from400to600k     Int
-  from600to800k     Int
-  from800to1M       Int
-  over1M            Int
-  
-  // Property Types
-  singleFamily      Int
-  townhouse         Int
-  condo             Int
-  
-  metadata          Json?
-  
-  createdAt         DateTime @default(now())
-  updatedAt         DateTime @updatedAt
-  
-  neighborhoods     HarNeighborhoodData[]
-  
-  @@unique([month, year, reportType])
-  @@index([year, month])
-}
-
-// HAR Neighborhood-Level Data
-model HarNeighborhoodData {
-  id                String   @id @default(cuid())
-  
-  reportId          String
-  report            HarMlsReport @relation(fields: [reportId], references: [id])
-  
-  neighborhood      String
-  zipCode           String?
-  
-  // Sales Data
-  totalSales        Int
-  avgSalePrice      Float
-  medianSalePrice   Float
-  pricePerSqft      Float
-  
-  // Inventory
-  activeListings    Int
-  monthsInventory   Float
-  avgDaysOnMarket   Int
-  
-  // Market Indicators
-  listToSaleRatio   Float?
-  sellerConcessions Float?
-  
-  metadata          Json?
-  
-  @@index([reportId])
-  @@index([neighborhood])
-  @@index([zipCode])
-}
-
-// Construction Activity Data
-model ConstructionActivity {
-  id                String   @id @default(cuid())
-  
-  permitNumber      String   @unique
-  permitType        String   // residential, commercial, mixed
-  subType           String?  // new construction, renovation, addition
-  
-  address           String
-  zipCode           String
-  neighborhood      String?
-  precinct          String?
-  
-  // Project Details
-  projectName       String?
-  developer         String?
-  contractor        String?
-  
-  // Metrics
-  estimatedCost     Float?
-  squareFootage     Int?
-  units             Int?     // for multi-family
-  stories           Int?
-  
-  // Dates
-  permitDate        DateTime
-  startDate         DateTime?
-  completionDate    DateTime?
-  
-  // Status
-  status            String   // pending, active, completed, cancelled
-  
-  metadata          Json?
-  
-  createdAt         DateTime @default(now())
-  updatedAt         DateTime @updatedAt
-  
-  @@index([zipCode])
-  @@index([permitDate])
-  @@index([status])
-  @@index([permitType])
-}
-
-// Market Intelligence Data
-model MarketIntelligence {
-  id                String   @id @default(cuid())
-  
-  dataType          String   // competitive, micro-market, investment-sentiment
-  zipCode           String?
-  neighborhood      String?
-  
-  // Competitive Intelligence
-  marketShare       Float?
-  competitors       Int?
-  
-  // Investment Metrics
-  capRate           Float?
-  roi               Float?
-  investmentScore   Float?
-  
-  // Development Pipeline
-  plannedUnits      Int?
-  underConstruction Int?
-  
-  // Market Indicators
-  gentrificationScore Float?
-  walkabilityScore    Float?
-  schoolRating        Float?
-  crimeIndex          Float?
-  
-  // International Investment
-  foreignInvestmentPct Float?
-  institutionalPct     Float?
-  
-  dataDate          DateTime
-  metadata          Json?
-  
-  createdAt         DateTime @default(now())
-  
-  @@index([dataType])
-  @@index([zipCode])
-  @@index([dataDate])
-}
-
-// Cost Analysis Data
-model CostAnalysis {
-  id                String   @id @default(cuid())
-  
-  analysisType      String   // construction, labor, land, permits
-  location          String   // zipCode or area
-  
-  // Construction Costs
-  costPerSqft       Float?
-  materialsCost     Float?
-  laborCost         Float?
-  
-  // Labor Rates
-  hourlyRate        Float?
-  skillLevel        String?
-  tradeType         String?
-  
-  // Land Costs
-  pricePerAcre      Float?
-  pricePerSqft      Float?
-  
-  // Permit Fees
-  permitType        String?
-  baseFee           Float?
-  additionalFees    Json?
-  
-  effectiveDate     DateTime
-  metadata          Json?
-  
-  createdAt         DateTime @default(now())
-  
-  @@index([analysisType])
-  @@index([location])
-  @@index([effectiveDate])
-}
-
-// Quality of Life Metrics
-model QualityOfLife {
-  id                String   @id @default(cuid())
-  
-  zipCode           String
-  neighborhood      String?
-  
-  // Crime & Safety
-  crimeRate         Float
-  crimeReduction    Float?   // YoY change
-  safetyScore       Float    // 0-100
-  
-  // Walkability & Transit
-  walkScore         Float    // 0-100
-  transitScore      Float?   // 0-100
-  bikeScore         Float?   // 0-100
-  
-  // Amenities
-  parksCount        Int?
-  restaurantsCount  Int?
-  groceryCount      Int?
-  
-  // Education
-  schoolsCount      Int?
-  avgSchoolRating   Float?
-  
-  dataDate          DateTime
-  metadata          Json?
-  
-  createdAt         DateTime @default(now())
-  
-  @@unique([zipCode, dataDate])
-  @@index([neighborhood])
-}
-
-// DATA PROCESS 5 INTEGRATION
-// Comprehensive real estate intelligence data
-
-// Rental Market Data
-model RentalMarket {
-  id                String   @id @default(cuid())
-  
-  // Location
-  zipCode           String?
-  neighborhood      String?
-  submarket         String?
-  
-  // Rental Rates by Unit Type
-  avgRentStudio     Float?
-  avgRent1BR        Float?
-  avgRent2BR        Float?
-  avgRent3BR        Float?
-  avgRent4BR        Float?
-  
-  // Market Metrics
-  occupancyRate     Float?
-  occupancyClass    String?  // A, B, C
-  yearOverYearGrowth Float?
-  quarterOverQuarter Float?
-  
-  // Supply Metrics
-  totalUnits        Int?
-  deliveredUnits    Int?
-  underConstruction Int?
-  plannedUnits      Int?
-  
-  // Performance
-  netAbsorption     Int?
-  leasingVelocity   Float?
-  concessions       Float?
-  
-  // Time Period
-  reportDate        DateTime
-  reportPeriod      String   // monthly, quarterly
-  
-  createdAt         DateTime @default(now())
-  updatedAt         DateTime @updatedAt
-  
-  @@unique([zipCode, reportDate])
-  @@unique([neighborhood, reportDate])
-  @@index([zipCode])
-  @@index([neighborhood])
-  @@index([submarket])
-  @@index([reportDate])
-}
-
-// Major Employers Data (Enhanced from existing Employer model)
-model EmployerDP5 {
-  id                String   @id @default(cuid())
-  
-  // Company Info
-  companyName       String   @unique
-  sector            String
-  industry          String?
-  subIndustry       String?
-  
-  // Employment Data
-  employeeCount     Int
-  employeeGrowth    Float?   // YoY percentage
-  avgSalary         Float?
-  salaryRange       String?  // e.g., "$60k-$120k"
-  
-  // Location
-  headquarters      String?
-  primaryAddress    String?
-  zipCode           String?
-  campusSize        Float?   // in acres
-  
-  // Economic Impact
-  economicImpact    Float?   // Annual $ contribution
-  taxContribution   Float?
-  
-  // Rankings
-  houstonRank       Int?
-  nationalRank      Int?
-  
-  createdAt         DateTime @default(now())
-  updatedAt         DateTime @updatedAt
-  
-  @@index([sector])
-  @@index([zipCode])
-  @@index([employeeCount])
-}
-
-// Short-Term Rental Market
-model STRMarket {
-  id                String   @id @default(cuid())
-  
-  // Location
-  neighborhood      String
-  performanceTier   String   // Premium, High, Mid, Emerging
-  
-  // Inventory
-  activeListings    Int
-  totalProperties   Int?
-  professionalHosts Int?
-  
-  // Performance Metrics
-  avgDailyRate      Float
-  occupancyRate     Float
-  revPAR            Float?   // Revenue per available rental
-  annualRevenue     Float
-  
-  // Booking Patterns
-  avgLengthOfStay   Float?
-  weekendPremium    Float?   // % higher on weekends
-  seasonalVariance  Float?
-  
-  // Regulatory
-  regulatoryStatus  String?  // Compliant, Restricted, etc.
-  permitRequired    Boolean  @default(false)
-  
-  reportDate        DateTime
-  
-  createdAt         DateTime @default(now())
-  updatedAt         DateTime @updatedAt
-  
-  @@unique([neighborhood, reportDate])
-  @@index([neighborhood])
-  @@index([performanceTier])
-  @@index([reportDate])
-}
-
-// Demographics by Area (Enhanced)
-model AreaDemographics {
-  id                String   @id @default(cuid())
-  
-  // Location
-  zipCode           String?
-  neighborhood      String?
-  tract             String?  // Census tract
-  
-  // Population
-  totalPopulation   Int
-  populationDensity Float?
-  householdCount    Int?
-  avgHouseholdSize  Float?
-  
-  // Age Demographics
-  medianAge         Float?
-  under18Percent    Float?
-  over65Percent     Float?
-  workingAgePercent Float?
-  
-  // Race/Ethnicity
-  whitePercent      Float?
-  blackPercent      Float?
-  hispanicPercent   Float?
-  asianPercent      Float?
-  otherRacePercent  Float?
-  
-  // Nativity
-  foreignBornPercent Float?
-  citizenPercent    Float?
-  
-  // Housing
-  ownerOccupiedPercent Float?
-  renterOccupiedPercent Float?
-  vacancyRate       Float?
-  medianHomeValue   Float?
-  
-  reportYear        Int
-  
-  createdAt         DateTime @default(now())
-  updatedAt         DateTime @updatedAt
-  
-  @@unique([zipCode, reportYear])
-  @@unique([neighborhood, reportYear])
-  @@index([zipCode])
-  @@index([neighborhood])
-  @@index([reportYear])
-}
-
-// Income Data by Area
-model IncomeData {
-  id                String   @id @default(cuid())
-  
-  // Location
-  zipCode           String?
-  neighborhood      String?
-  
-  // Income Statistics
-  medianHouseholdIncome Float
-  meanHouseholdIncome   Float?
-  perCapitaIncome       Float?
-  
-  // Income Distribution
-  under25k          Float?  // Percentage
-  from25to50k       Float?
-  from50to75k       Float?
-  from75to100k      Float?
-  from100to150k     Float?
-  from150to200k     Float?
-  over200k          Float?
-  
-  // Housing Affordability
-  medianGrossRent   Float?
-  rentBurdenPercent Float?  // >30% of income on rent
-  homeAffordabilityIndex Float?
-  
-  reportYear        Int
-  
-  createdAt         DateTime @default(now())
-  updatedAt         DateTime @updatedAt
-  
-  @@unique([zipCode, reportYear])
-  @@unique([neighborhood, reportYear])
-  @@index([zipCode])
-  @@index([neighborhood])
-  @@index([medianHouseholdIncome])
-  @@index([reportYear])
-}
-
-// Population Projections
-model PopulationProjection {
-  id                String   @id @default(cuid())
-  
-  // Location
-  zipCode           String?
-  county            String?
-  city              String?
-  
-  // Projections
-  projectionYear    Int
-  projectedPopulation Int
-  growthRate        Float?
-  growthAbsolute    Int?
-  
-  // Components
-  naturalIncrease   Int?     // Births - Deaths
-  netMigration      Int?     // In-migration - Out-migration
-  
-  // Demographics
-  agingIndex        Float?   // Ratio of 65+ to under 18
-  dependencyRatio   Float?   // Non-working age / working age
-  
-  createdAt         DateTime @default(now())
-  updatedAt         DateTime @updatedAt
-  
-  @@unique([zipCode, projectionYear])
-  @@index([zipCode])
-  @@index([projectionYear])
-  @@index([growthRate])
-}
-
-// Economic Indicators (Enhanced)
-model EconomicIndicatorDP5 {
-  id                String   @id @default(cuid())
-  
-  // Location
-  area              String   // Houston Metro, Harris County, etc.
-  
-  // Employment
-  totalEmployment   Int?
-  unemploymentRate  Float?
-  laborForceParticipation Float?
-  
-  // Economic Output
-  gdpTotal          Float?   // in billions
-  gdpPerCapita      Float?
-  gdpGrowthRate     Float?
-  
-  // Industry Metrics
-  oilGasEmployment  Int?
-  healthcareEmployment Int?
-  technologyEmployment Int?
-  constructionEmployment Int?
-  
-  // Trade
-  portTonnage       Float?   // Port of Houston
-  airCargoTonnage   Float?   // Houston airports
-  
-  // Real Estate
-  commercialConstruction Float?  // $ value
-  residentialConstruction Float? // $ value
-  
-  reportDate        DateTime
-  reportPeriod      String   // monthly, quarterly, annual
-  
-  createdAt         DateTime @default(now())
-  updatedAt         DateTime @updatedAt
-  
-  @@unique([area, reportDate])
-  @@index([area])
-  @@index([reportDate])
-  @@index([gdpGrowthRate])
-}
-
-// Migration Data
-model MigrationData {
-  id                String   @id @default(cuid())
-  
-  // Location
-  zipCode           String?
-  county            String?
-  
-  // Migration Flows
-  inMigration       Int
-  outMigration      Int
-  netMigration      Int
-  
-  // Origin/Destination Analysis
-  topOriginStates   Json?    // Array of state abbreviations
-  topDestinationStates Json? // Array of state abbreviations
-  internationalMigration Int?
-  
-  // Demographics of Migrants
-  avgAgeInMigrants  Float?
-  avgIncomeInMigrants Float?
-  educationLevelMigrants Json? // Education distribution
-  
-  migrationYear     Int
-  
-  createdAt         DateTime @default(now())
-  updatedAt         DateTime @updatedAt
-  
-  @@unique([zipCode, migrationYear])
-  @@index([zipCode])
-  @@index([migrationYear])
-  @@index([netMigration])
-}
-
-// Education Metrics
-model EducationMetrics {
-  id                String   @id @default(cuid())
-  
-  // Location
-  zipCode           String?
-  schoolDistrict    String?
-  
-  // School Performance
-  avgSchoolRating   Float?   // 1-10 scale
-  testScoreReading  Float?
-  testScoreMath     Float?
-  graduationRate    Float?
-  
-  // Student Demographics
-  totalStudents     Int?
-  freeReducedLunch  Float?   // Percentage
-  englishLearners   Float?   // Percentage
-  
-  // Resources
-  studentTeacherRatio Float?
-  perPupilSpending  Float?
-  
-  // Educational Attainment (Adult Population)
-  collegeGradPercent Float?
-  graduateSchoolPercent Float?
-  
-  academicYear      String   // e.g., "2024-25"
-  
-  createdAt         DateTime @default(now())
-  updatedAt         DateTime @updatedAt
-  
-  @@unique([zipCode, academicYear])
-  @@index([zipCode])
-  @@index([schoolDistrict])
-  @@index([avgSchoolRating])
-}
-
-// Construction Cost Data
-model ConstructionCostDP5 {
-  id                String   @id @default(cuid())
-  
-  // Location
-  area              String   // Houston Metro, specific ZIP, etc.
-  
-  // Cost per Square Foot
-  residentialLow    Float?   // $/sqft for basic construction
-  residentialMid    Float?   // $/sqft for standard construction
-  residentialHigh   Float?   // $/sqft for luxury construction
-  
-  commercialOffice  Float?   // $/sqft
-  commercialRetail  Float?   // $/sqft
-  commercialIndustrial Float? // $/sqft
-  
-  // Material Costs
-  concretePrice     Float?   // per cubic yard
-  steelPrice        Float?   // per ton
-  lumberPrice       Float?   // per board foot
-  
-  // Labor Costs
-  laborRateSkilled  Float?   // $/hour
-  laborRateUnskilled Float?  // $/hour
-  laborAvailability String?  // Tight, Moderate, Abundant
-  
-  // Cost Indices
-  totalCostIndex    Float?   // Baseline = 100
-  materialIndex     Float?
-  laborIndex        Float?
-  
-  effectiveDate     DateTime
-  
-  createdAt         DateTime @default(now())
-  updatedAt         DateTime @updatedAt
-  
-  @@unique([area, effectiveDate])
-  @@index([area])
-  @@index([effectiveDate])
-  @@index([totalCostIndex])
 }

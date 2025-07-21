@@ -36,16 +36,6 @@ async function importDemographicsData() {
       if (!hood.Neighborhood || !hood.Population_2025) continue;
       
       try {
-        // Get the neighborhood object first
-        const neighborhood = await prisma.neighborhoods.findFirst({
-          where: { 
-            name: {
-              contains: hood.Neighborhood,
-              mode: 'insensitive'
-            }
-          }
-        });
-        
         const totalPop = parseInt(hood.Population_2025) || 0;
         
         await prisma.areaDemographics.create({
