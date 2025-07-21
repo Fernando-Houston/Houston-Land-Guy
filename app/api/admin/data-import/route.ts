@@ -1,12 +1,12 @@
 import { NextResponse } from 'next/server'
 import { dataImportService } from '@/lib/services/data-import-service'
 import { getServerSession } from 'next-auth'
-import { authOptions } from '@/lib/auth'
+import authConfig from '@/lib/auth/auth-config'
 
 export async function POST(request: Request) {
   try {
     // Check if user is authenticated and is admin
-    const session = await getServerSession(authOptions)
+    const session = await getServerSession(authConfig)
     if (!session || session.user?.role !== 'ADMIN') {
       return NextResponse.json(
         { error: 'Unauthorized - Admin access required' },

@@ -412,16 +412,16 @@ Could you be more specific about what you'd like to know? For example:
         confidence: 0.85,
         sources: ['Houston Development Intelligence', 'DataProcess Analysis', 'Market Overview']
       }
-      
-    } catch (error) {
-      console.error('🚨 Fernando-X ENHANCED query error:', error)
-      return {
-        text: "🚀 FERNANDO-X ENHANCED VERSION ERROR HANDLER - I'm having trouble with that specific query, but I'm definitely the enhanced version with 750,000+ data points! Try asking about Houston population growth, D.R. Horton projects, or East River development to verify I'm working correctly.",
-        confidence: 0.5,
-        sources: ['Enhanced Fernando-X', 'Error Handler']
-      }
+    }
+  } catch (error) {
+    console.error('🚨 Fernando-X ENHANCED query error:', error)
+    return {
+      text: "🚀 FERNANDO-X ENHANCED VERSION ERROR HANDLER - I'm having trouble with that specific query, but I'm definitely the enhanced version with 750,000+ data points! Try asking about Houston population growth, D.R. Horton projects, or East River development to verify I'm working correctly.",
+      confidence: 0.5,
+      sources: ['Enhanced Fernando-X', 'Error Handler']
     }
   }
+}
   
   async generateReport(type: string, topic: string): Promise<any> {
     const data = {
