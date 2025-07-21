@@ -16,6 +16,12 @@ export class ConversationalFernando {
     const userMemory = this.memory.get(sessionId) || {}
     const messageLower = message.toLowerCase()
     
+    // Handle common typos and variations
+    const cleanedMessage = messageLower
+      .replace(/\bi\s*sm\b/g, "i am")
+      .replace(/\bi\s*m\b/g, "i am")
+      .replace(/\bbuy\.\s*a\b/g, "buy a")
+    
     // Extract budget if mentioned
     const budgetMatch = message.match(/\$?(\d+)k?/i)
     if (budgetMatch) {
@@ -164,6 +170,20 @@ I can pull up specific listings or walk you through what's driving values there.
       }
     }
     
+    // Handle home buying queries
+    if (cleanedMessage.includes('buy') && (cleanedMessage.includes('home') || cleanedMessage.includes('house') || cleanedMessage.includes('property'))) {
+      userMemory.userGoal = 'buy'
+      this.memory.set(sessionId, userMemory)
+      
+      return `Perfect! Houston's a great place to buy right now. To help you find the right home, I need to know:
+
+1. What's your budget range?
+2. Are you looking for a house, townhome, or condo?
+3. Any preferred areas or important factors (schools, commute, etc.)?
+
+Once I know that, I can show you exactly what's available and where you'll get the best value.`
+    }
+    
     // Default greeting - but make it conversational
     if (messageLower.includes('hello') || messageLower.includes('hi') || messageLower.includes('hey')) {
       return `Hey! I'm Fernando-X. 
@@ -270,6 +290,8 @@ export function shouldUseConversationalResponse(message: string): boolean {
     'what about',
     'i want to',
     'i\'m looking',
+    'i am looking',
+    'i sm looking',  // common typo
     'should i',
     'what do you think',
     'yes',
@@ -282,7 +304,13 @@ export function shouldUseConversationalResponse(message: string): boolean {
     'suggest',
     'help me',
     'first time',
-    'new to'
+    'new to',
+    'buy',
+    'buying',
+    'purchase',
+    'home',
+    'house',
+    'property'
   ]
   
   const dataRequestTriggers = [
