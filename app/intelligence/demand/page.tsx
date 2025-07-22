@@ -4,13 +4,7 @@ import { useState, useEffect } from 'react'
 import Link from 'next/link'
 import { ArrowRight, Eye, MapPin, Users, DollarSign, TrendingUp, Home, Filter, Brain, Activity } from 'lucide-react'
 import { motion } from 'framer-motion'
-import dynamic from 'next/dynamic'
-
-// Dynamically import map component to avoid SSR issues
-const Map = dynamic(() => import('react-map-gl').then(mod => mod.default), { 
-  ssr: false,
-  loading: () => <div className="h-full bg-gray-100 animate-pulse rounded-xl" />
-})
+// Removed map import to fix build error - will implement later
 
 interface DemandZone {
   zipCode: string

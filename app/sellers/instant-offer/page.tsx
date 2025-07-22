@@ -1,369 +1,450 @@
-'use client';
+'use client'
 
-import { useState } from 'react';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Badge } from '@/components/ui/badge';
-import { ArrowRight, DollarSign, Users, Clock, Shield, TrendingUp, CheckCircle } from 'lucide-react';
-import { Alert, AlertDescription } from '@/components/ui/alert';
+import { useState } from 'react'
+import Link from 'next/link'
+import { ArrowRight, DollarSign, Clock, Shield, Users, CheckCircle, Home, AlertCircle, Loader2, TrendingUp, Brain } from 'lucide-react'
+import { motion } from 'framer-motion'
+
+interface PropertyDetails {
+  address: string
+  bedrooms: number
+  bathrooms: number
+  sqft: number
+  yearBuilt: number
+  condition: 'excellent' | 'good' | 'fair' | 'needs-work'
+}
+
+interface CashOffer {
+  buyerId: string
+  buyerName: string
+  buyerType: string
+  offerAmount: number
+  closingDays: number
+  contingencies: string[]
+  proofOfFunds: boolean
+  expiresIn: number // hours
+}
+
+interface OfferResult {
+  instantEstimate: {
+    low: number
+    mid: number
+    high: number
+  }
+  cashOffers: CashOffer[]
+  marketComparison: {
+    vsListPrice: number
+    vsRecentSales: number
+  }
+  totalBuyers: number
+}
 
 export default function InstantOfferEngine() {
-  const [propertyData, setPropertyData] = useState({
+  const [property, setProperty] = useState<PropertyDetails>({
     address: '',
-    bedrooms: '',
-    bathrooms: '',
-    squareFeet: '',
-    propertyType: 'single-family',
+    bedrooms: 3,
+    bathrooms: 2,
+    sqft: 2000,
+    yearBuilt: 2000,
     condition: 'good'
-  });
-  const [offers, setOffers] = useState<any[]>([]);
-  const [loading, setLoading] = useState(false);
-  const [submitted, setSubmitted] = useState(false);
+  })
+  const [loading, setLoading] = useState(false)
+  const [result, setResult] = useState<OfferResult | null>(null)
+  const [error, setError] = useState('')
 
   const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setLoading(true);
+    e.preventDefault()
+    setLoading(true)
+    setError('')
     
-    // Simulate API call
-    setTimeout(() => {
-      setOffers([
-        {
-          id: 1,
-          buyerType: 'Cash Investor',
-          offerAmount: 385000,
-          closingDays: 7,
-          contingencies: ['None'],
-          proofOfFunds: true,
-          buyerRating: 4.8
+    try {
+      const response = await fetch('/api/sellers/instant-offer', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(property)
+      })
+      
+      if (!response.ok) {
+        throw new Error('Failed to get offers')
+      }
+      
+      const data = await response.json()
+      setResult(data)
+    } catch (err) {
+      setError('Using demo data. Connect to see real cash offers.')
+      // Mock data for demonstration
+      setResult({
+        instantEstimate: {
+          low: 385000,
+          mid: 425000,
+          high: 465000
         },
-        {
-          id: 2,
-          buyerType: 'International Buyer',
-          offerAmount: 378000,
-          closingDays: 14,
-          contingencies: ['None'],
-          proofOfFunds: true,
-          buyerRating: 4.5
+        cashOffers: [
+          {
+            buyerId: '1',
+            buyerName: 'Houston Property Investors LLC',
+            buyerType: 'Investment Firm',
+            offerAmount: 405000,
+            closingDays: 14,
+            contingencies: ['Property Inspection'],
+            proofOfFunds: true,
+            expiresIn: 48
+          },
+          {
+            buyerId: '2',
+            buyerName: 'Quick Home Buyers TX',
+            buyerType: 'Cash Buyer Network',
+            offerAmount: 395000,
+            closingDays: 7,
+            contingencies: [],
+            proofOfFunds: true,
+            expiresIn: 24
+          },
+          {
+            buyerId: '3',
+            buyerName: 'Memorial Real Estate Group',
+            buyerType: 'Local Developer',
+            offerAmount: 415000,
+            closingDays: 21,
+            contingencies: ['Title Clear', 'Survey'],
+            proofOfFunds: true,
+            expiresIn: 72
+          }
+        ],
+        marketComparison: {
+          vsListPrice: -2.5,
+          vsRecentSales: 1.2
         },
-        {
-          id: 3,
-          buyerType: 'Traditional Buyer',
-          offerAmount: 395000,
-          closingDays: 30,
-          contingencies: ['Financing', 'Inspection'],
-          proofOfFunds: false,
-          buyerRating: 4.2
-        }
-      ]);
-      setLoading(false);
-      setSubmitted(true);
-    }, 2000);
-  };
+        totalBuyers: 527
+      })
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  const getBuyerTypeColor = (type: string) => {
+    switch (type) {
+      case 'Investment Firm':
+        return 'bg-blue-100 text-blue-800'
+      case 'Cash Buyer Network':
+        return 'bg-green-100 text-green-800'
+      case 'Local Developer':
+        return 'bg-purple-100 text-purple-800'
+      default:
+        return 'bg-gray-100 text-gray-800'
+    }
+  }
 
   return (
-    <div className="min-h-screen bg-gray-50 py-8">
+    <>
       {/* Hero Section */}
-      <div className="bg-gradient-to-br from-blue-600 to-blue-800 text-white py-16">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center">
-            <Badge className="mb-4 bg-white/20 text-white border-white/30">
-              500+ Pre-Qualified Buyers
-            </Badge>
-            <h1 className="text-4xl md:text-5xl font-bold mb-4">
-              Instant Offer Engine
-            </h1>
-            <p className="text-xl md:text-2xl text-blue-100 max-w-3xl mx-auto">
-              Get instant cash offers from our network of verified buyers in under 48 hours
+      <section className="relative overflow-hidden bg-gradient-to-br from-gray-900 via-green-900/20 to-gray-900 min-h-[40vh]">
+        <div className="absolute inset-0">
+          <motion.div
+            animate={{
+              backgroundPosition: ['0% 0%', '100% 100%'],
+            }}
+            transition={{ duration: 20, repeat: Infinity, repeatType: 'reverse' }}
+            className="absolute inset-0 opacity-30"
+            style={{
+              backgroundImage: 'radial-gradient(circle at 20% 50%, green 0%, transparent 50%), radial-gradient(circle at 80% 80%, emerald 0%, transparent 50%)'
+            }}
+          />
+        </div>
+
+        <div className="mx-auto max-w-7xl px-4 py-16 sm:px-6 sm:py-20 lg:px-8 relative z-10">
+          <div className="text-center max-w-4xl mx-auto">
+            <motion.div
+              initial={{ opacity: 0, y: -20 }}
+              animate={{ opacity: 1, y: 0 }}
+              className="inline-flex items-center justify-center px-4 py-2 bg-green-500/20 backdrop-blur-sm rounded-full mb-6"
+            >
+              <DollarSign className="h-5 w-5 text-green-400 mr-2" />
+              <span className="text-sm font-medium text-green-300">500+ Active Buyers</span>
+            </motion.div>
+            
+            <motion.h1
+              initial={{ opacity: 0, scale: 0.9 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ duration: 0.5 }}
+              className="text-4xl font-bold tracking-tight text-white sm:text-5xl lg:text-6xl"
+            >
+              Instant Offer
+              <span className="block bg-gradient-to-r from-green-400 via-emerald-400 to-teal-400 bg-clip-text text-transparent">
+                Engine
+              </span>
+            </motion.h1>
+            
+            <motion.p
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.2 }}
+              className="mt-6 text-xl text-gray-300 lg:text-2xl font-light"
+            >
+              Get competitive cash offers from our network of pre-qualified Houston buyers.
+              <span className="block mt-2 text-lg">No obligations. 48-hour response. Multiple offers.</span>
+            </motion.p>
+          </div>
+        </div>
+      </section>
+
+      {/* Property Form */}
+      <section className="py-12 bg-gray-50">
+        <div className="mx-auto max-w-4xl px-4 sm:px-6 lg:px-8">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="bg-white rounded-2xl shadow-xl p-8"
+          >
+            <h2 className="text-2xl font-bold text-gray-900 mb-6">Get Instant Cash Offers</h2>
+            
+            <form onSubmit={handleSubmit} className="space-y-6">
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Property Address
+                </label>
+                <input
+                  type="text"
+                  value={property.address}
+                  onChange={(e) => setProperty({ ...property, address: e.target.value })}
+                  placeholder="Enter your Houston property address"
+                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent"
+                  required
+                />
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    Bedrooms
+                  </label>
+                  <select
+                    value={property.bedrooms}
+                    onChange={(e) => setProperty({ ...property, bedrooms: Number(e.target.value) })}
+                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent"
+                  >
+                    {[1, 2, 3, 4, 5, 6].map(num => (
+                      <option key={num} value={num}>{num}</option>
+                    ))}
+                  </select>
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    Bathrooms
+                  </label>
+                  <select
+                    value={property.bathrooms}
+                    onChange={(e) => setProperty({ ...property, bathrooms: Number(e.target.value) })}
+                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent"
+                  >
+                    {[1, 1.5, 2, 2.5, 3, 3.5, 4].map(num => (
+                      <option key={num} value={num}>{num}</option>
+                    ))}
+                  </select>
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    Square Feet
+                  </label>
+                  <input
+                    type="number"
+                    value={property.sqft}
+                    onChange={(e) => setProperty({ ...property, sqft: Number(e.target.value) })}
+                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent"
+                    min="500"
+                    max="10000"
+                    required
+                  />
+                </div>
+              </div>
+
+              <button
+                type="submit"
+                disabled={loading || !property.address}
+                className="w-full py-4 bg-gradient-to-r from-green-600 to-emerald-600 text-white font-semibold rounded-lg hover:from-green-700 hover:to-emerald-700 transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center"
+              >
+                {loading ? (
+                  <>
+                    <Loader2 className="animate-spin h-5 w-5 mr-2" />
+                    Getting Offers...
+                  </>
+                ) : (
+                  <>
+                    Get Instant Offers
+                    <ArrowRight className="ml-2 h-5 w-5" />
+                  </>
+                )}
+              </button>
+            </form>
+
+            {error && (
+              <div className="mt-4 p-4 bg-yellow-50 border border-yellow-200 rounded-lg flex items-start">
+                <AlertCircle className="h-5 w-5 text-yellow-500 mr-2 flex-shrink-0 mt-0.5" />
+                <p className="text-sm text-yellow-700">{error}</p>
+              </div>
+            )}
+          </motion.div>
+        </div>
+      </section>
+
+      {/* Results Section */}
+      {result && (
+        <section className="py-12 bg-white">
+          <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              className="space-y-8"
+            >
+              {/* Instant Estimate */}
+              <div className="bg-gradient-to-r from-green-50 to-emerald-50 rounded-2xl p-8 border border-green-200">
+                <h2 className="text-2xl font-bold text-gray-900 mb-6 text-center">
+                  Your Instant Cash Offer Range
+                </h2>
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                  <div className="text-center">
+                    <p className="text-sm text-gray-600 mb-2">Low Offer</p>
+                    <p className="text-3xl font-bold text-gray-900">
+                      ${result.instantEstimate.low.toLocaleString()}
+                    </p>
+                  </div>
+                  <div className="text-center">
+                    <p className="text-sm text-green-700 font-medium mb-2">Expected Offers</p>
+                    <p className="text-4xl font-bold text-green-700">
+                      ${result.instantEstimate.mid.toLocaleString()}
+                    </p>
+                  </div>
+                  <div className="text-center">
+                    <p className="text-sm text-gray-600 mb-2">High Offer</p>
+                    <p className="text-3xl font-bold text-gray-900">
+                      ${result.instantEstimate.high.toLocaleString()}
+                    </p>
+                  </div>
+                </div>
+              </div>
+
+              {/* Cash Offers */}
+              <div>
+                <h3 className="text-xl font-bold text-gray-900 mb-6">
+                  Cash Offers from Pre-Qualified Buyers
+                </h3>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  {result.cashOffers.map((offer, index) => (
+                    <motion.div
+                      key={offer.buyerId}
+                      initial={{ opacity: 0, y: 20 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ delay: index * 0.1 }}
+                      className="bg-white rounded-xl shadow-lg border border-gray-200 p-6"
+                    >
+                      <div className="flex items-start justify-between mb-4">
+                        <div>
+                          <h4 className="font-semibold text-gray-900">{offer.buyerName}</h4>
+                          <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${getBuyerTypeColor(offer.buyerType)} mt-1`}>
+                            {offer.buyerType}
+                          </span>
+                        </div>
+                        {offer.proofOfFunds && (
+                          <div className="flex items-center text-green-600">
+                            <Shield className="h-4 w-4 mr-1" />
+                            <span className="text-xs font-medium">Verified</span>
+                          </div>
+                        )}
+                      </div>
+
+                      <div className="space-y-3">
+                        <div className="flex items-center justify-between">
+                          <span className="text-sm text-gray-600">Offer Amount</span>
+                          <span className="text-2xl font-bold text-gray-900">
+                            ${offer.offerAmount.toLocaleString()}
+                          </span>
+                        </div>
+
+                        <div className="flex items-center justify-between">
+                          <span className="text-sm text-gray-600">Closing Time</span>
+                          <span className="font-medium text-gray-900">{offer.closingDays} days</span>
+                        </div>
+
+                        <div className="pt-3 border-t">
+                          <div className="flex items-center justify-between">
+                            <span className="text-xs text-gray-500">Expires in {offer.expiresIn}h</span>
+                            <button className="text-sm font-medium text-green-600 hover:text-green-700">
+                              Contact Buyer →
+                            </button>
+                          </div>
+                        </div>
+                      </div>
+                    </motion.div>
+                  ))}
+                </div>
+              </div>
+            </motion.div>
+          </div>
+        </section>
+      )}
+
+      {/* How It Works */}
+      <section className="py-16 bg-gray-50">
+        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-12">
+            <h2 className="text-3xl font-bold text-gray-900">How It Works</h2>
+            <p className="mt-4 text-lg text-gray-600">
+              Get cash offers in 3 simple steps
             </p>
           </div>
-        </div>
-      </div>
 
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 -mt-8">
-        {/* Stats Bar */}
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-8">
-          <Card className="border-0 shadow-lg">
-            <CardContent className="p-4 flex items-center space-x-3">
-              <div className="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center">
-                <Users className="w-5 h-5 text-blue-600" />
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              className="text-center"
+            >
+              <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-green-100 mb-4">
+                <Home className="h-8 w-8 text-green-600" />
               </div>
-              <div>
-                <p className="text-sm text-gray-600">Active Buyers</p>
-                <p className="text-xl font-bold">523</p>
+              <h3 className="text-lg font-semibold text-gray-900 mb-2">1. Enter Property Details</h3>
+              <p className="text-gray-600">
+                Provide basic information about your Houston property
+              </p>
+            </motion.div>
+
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ delay: 0.1 }}
+              className="text-center"
+            >
+              <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-green-100 mb-4">
+                <Users className="h-8 w-8 text-green-600" />
               </div>
-            </CardContent>
-          </Card>
-          <Card className="border-0 shadow-lg">
-            <CardContent className="p-4 flex items-center space-x-3">
-              <div className="w-10 h-10 bg-green-100 rounded-lg flex items-center justify-center">
-                <DollarSign className="w-5 h-5 text-green-600" />
+              <h3 className="text-lg font-semibold text-gray-900 mb-2">2. Receive Multiple Offers</h3>
+              <p className="text-gray-600">
+                Get competitive offers from 500+ pre-qualified buyers
+              </p>
+            </motion.div>
+
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ delay: 0.2 }}
+              className="text-center"
+            >
+              <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-green-100 mb-4">
+                <CheckCircle className="h-8 w-8 text-green-600" />
               </div>
-              <div>
-                <p className="text-sm text-gray-600">Avg Cash Offer</p>
-                <p className="text-xl font-bold">98.5%</p>
-              </div>
-            </CardContent>
-          </Card>
-          <Card className="border-0 shadow-lg">
-            <CardContent className="p-4 flex items-center space-x-3">
-              <div className="w-10 h-10 bg-purple-100 rounded-lg flex items-center justify-center">
-                <Clock className="w-5 h-5 text-purple-600" />
-              </div>
-              <div>
-                <p className="text-sm text-gray-600">Avg Close Time</p>
-                <p className="text-xl font-bold">14 Days</p>
-              </div>
-            </CardContent>
-          </Card>
-          <Card className="border-0 shadow-lg">
-            <CardContent className="p-4 flex items-center space-x-3">
-              <div className="w-10 h-10 bg-orange-100 rounded-lg flex items-center justify-center">
-                <Shield className="w-5 h-5 text-orange-600" />
-              </div>
-              <div>
-                <p className="text-sm text-gray-600">Success Rate</p>
-                <p className="text-xl font-bold">94%</p>
-              </div>
-            </CardContent>
-          </Card>
-        </div>
-
-        {/* Main Content */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-          {/* Property Form */}
-          <Card className="shadow-lg">
-            <CardHeader>
-              <CardTitle>Get Instant Offers</CardTitle>
-              <p className="text-gray-600">Enter your property details for immediate cash offers</p>
-            </CardHeader>
-            <CardContent>
-              <form onSubmit={handleSubmit} className="space-y-4">
-                <div>
-                  <Label htmlFor="address">Property Address</Label>
-                  <Input
-                    id="address"
-                    placeholder="123 Main St, Houston, TX"
-                    value={propertyData.address}
-                    onChange={(e) => setPropertyData({...propertyData, address: e.target.value})}
-                    required
-                  />
-                </div>
-
-                <div className="grid grid-cols-2 gap-4">
-                  <div>
-                    <Label htmlFor="bedrooms">Bedrooms</Label>
-                    <Select
-                      value={propertyData.bedrooms}
-                      onValueChange={(value) => setPropertyData({...propertyData, bedrooms: value})}
-                    >
-                      <SelectTrigger>
-                        <SelectValue placeholder="Select" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        {[1,2,3,4,5,6].map(num => (
-                          <SelectItem key={num} value={num.toString()}>{num}</SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                  </div>
-                  <div>
-                    <Label htmlFor="bathrooms">Bathrooms</Label>
-                    <Select
-                      value={propertyData.bathrooms}
-                      onValueChange={(value) => setPropertyData({...propertyData, bathrooms: value})}
-                    >
-                      <SelectTrigger>
-                        <SelectValue placeholder="Select" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        {[1,1.5,2,2.5,3,3.5,4].map(num => (
-                          <SelectItem key={num} value={num.toString()}>{num}</SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                  </div>
-                </div>
-
-                <div>
-                  <Label htmlFor="squareFeet">Square Feet</Label>
-                  <Input
-                    id="squareFeet"
-                    type="number"
-                    placeholder="2,500"
-                    value={propertyData.squareFeet}
-                    onChange={(e) => setPropertyData({...propertyData, squareFeet: e.target.value})}
-                    required
-                  />
-                </div>
-
-                <div>
-                  <Label htmlFor="propertyType">Property Type</Label>
-                  <Select
-                    value={propertyData.propertyType}
-                    onValueChange={(value) => setPropertyData({...propertyData, propertyType: value})}
-                  >
-                    <SelectTrigger>
-                      <SelectValue />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="single-family">Single Family</SelectItem>
-                      <SelectItem value="condo">Condo</SelectItem>
-                      <SelectItem value="townhouse">Townhouse</SelectItem>
-                      <SelectItem value="multi-family">Multi-Family</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
-
-                <div>
-                  <Label htmlFor="condition">Property Condition</Label>
-                  <Select
-                    value={propertyData.condition}
-                    onValueChange={(value) => setPropertyData({...propertyData, condition: value})}
-                  >
-                    <SelectTrigger>
-                      <SelectValue />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="excellent">Excellent</SelectItem>
-                      <SelectItem value="good">Good</SelectItem>
-                      <SelectItem value="fair">Fair</SelectItem>
-                      <SelectItem value="needs-work">Needs Work</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
-
-                <Button 
-                  type="submit" 
-                  className="w-full bg-gradient-to-r from-blue-600 to-blue-700"
-                  disabled={loading}
-                >
-                  {loading ? 'Getting Offers...' : 'Get Instant Offers'} 
-                  <ArrowRight className="ml-2 h-4 w-4" />
-                </Button>
-              </form>
-            </CardContent>
-          </Card>
-
-          {/* Buyer Network Preview */}
-          <div className="space-y-6">
-            <Card className="shadow-lg">
-              <CardHeader>
-                <CardTitle>Our Buyer Network</CardTitle>
-                <p className="text-gray-600">Pre-qualified buyers ready to make offers</p>
-              </CardHeader>
-              <CardContent>
-                <div className="space-y-4">
-                  <div className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
-                    <div className="flex items-center space-x-3">
-                      <div className="w-10 h-10 bg-blue-100 rounded-full flex items-center justify-center">
-                        <DollarSign className="w-5 h-5 text-blue-600" />
-                      </div>
-                      <div>
-                        <p className="font-semibold">Cash Investors</p>
-                        <p className="text-sm text-gray-600">Close in 7-14 days</p>
-                      </div>
-                    </div>
-                    <Badge variant="secondary">186 Active</Badge>
-                  </div>
-                  <div className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
-                    <div className="flex items-center space-x-3">
-                      <div className="w-10 h-10 bg-green-100 rounded-full flex items-center justify-center">
-                        <Users className="w-5 h-5 text-green-600" />
-                      </div>
-                      <div>
-                        <p className="font-semibold">Traditional Buyers</p>
-                        <p className="text-sm text-gray-600">Pre-approved financing</p>
-                      </div>
-                    </div>
-                    <Badge variant="secondary">237 Active</Badge>
-                  </div>
-                  <div className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
-                    <div className="flex items-center space-x-3">
-                      <div className="w-10 h-10 bg-purple-100 rounded-full flex items-center justify-center">
-                        <TrendingUp className="w-5 h-5 text-purple-600" />
-                      </div>
-                      <div>
-                        <p className="font-semibold">International Buyers</p>
-                        <p className="text-sm text-gray-600">All-cash offers</p>
-                      </div>
-                    </div>
-                    <Badge variant="secondary">100 Active</Badge>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-
-            {/* Success Stories */}
-            <Card className="shadow-lg bg-gradient-to-br from-green-50 to-green-100 border-green-200">
-              <CardContent className="p-6">
-                <div className="flex items-start space-x-3">
-                  <CheckCircle className="w-6 h-6 text-green-600 mt-1" />
-                  <div>
-                    <p className="font-semibold text-green-900 mb-2">Recent Success</p>
-                    <p className="text-green-800">
-                      "Received 5 cash offers within 24 hours and closed in just 10 days. 
-                      The process was incredibly smooth!"
-                    </p>
-                    <p className="text-sm text-green-700 mt-2">- Sarah M., River Oaks</p>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
+              <h3 className="text-lg font-semibold text-gray-900 mb-2">3. Choose Your Best Offer</h3>
+              <p className="text-gray-600">
+                Accept an offer and close on your timeline
+              </p>
+            </motion.div>
           </div>
         </div>
-
-        {/* Offers Display */}
-        {submitted && offers.length > 0 && (
-          <div className="mt-8">
-            <Alert className="mb-6 bg-blue-50 border-blue-200">
-              <AlertDescription className="text-blue-800">
-                🎉 Great news! You have {offers.length} instant offers for your property.
-              </AlertDescription>
-            </Alert>
-            
-            <h3 className="text-2xl font-bold mb-4">Your Instant Offers</h3>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-              {offers.map((offer) => (
-                <Card key={offer.id} className="shadow-lg hover:shadow-xl transition-shadow">
-                  <CardHeader>
-                    <div className="flex justify-between items-start">
-                      <div>
-                        <p className="text-sm text-gray-600">{offer.buyerType}</p>
-                        <p className="text-2xl font-bold text-green-600">
-                          ${offer.offerAmount.toLocaleString()}
-                        </p>
-                      </div>
-                      <Badge variant="outline" className="text-xs">
-                        ⭐ {offer.buyerRating}
-                      </Badge>
-                    </div>
-                  </CardHeader>
-                  <CardContent className="space-y-3">
-                    <div className="flex items-center justify-between text-sm">
-                      <span className="text-gray-600">Closing Time</span>
-                      <span className="font-semibold">{offer.closingDays} days</span>
-                    </div>
-                    <div className="flex items-center justify-between text-sm">
-                      <span className="text-gray-600">Contingencies</span>
-                      <span className="font-semibold">{offer.contingencies.join(', ')}</span>
-                    </div>
-                    <div className="flex items-center justify-between text-sm">
-                      <span className="text-gray-600">Proof of Funds</span>
-                      <span className="font-semibold">{offer.proofOfFunds ? '✓ Yes' : 'Pending'}</span>
-                    </div>
-                    <Button className="w-full mt-4 bg-gradient-to-r from-green-600 to-green-700">
-                      Accept Offer
-                    </Button>
-                  </CardContent>
-                </Card>
-              ))}
-            </div>
-          </div>
-        )}
-      </div>
-    </div>
-  );
+      </section>
+    </>
+  )
 }

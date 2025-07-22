@@ -1,7 +1,5 @@
 'use client';
 
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
 import { 
   Shield, 
   FileText, 
@@ -20,9 +18,9 @@ export default function TermsOfService() {
       <div className="bg-gradient-to-br from-slate-600 to-slate-800 text-white py-16">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center">
-            <Badge className="mb-4 bg-white/20 text-white border-white/30">
-              Legal Compliance
-            </Badge>
+            <div className="inline-flex items-center justify-center px-4 py-2 bg-white/20 backdrop-blur-sm rounded-full mb-4">
+              <span className="text-sm font-medium text-white">Legal Compliance</span>
+            </div>
             <h1 className="text-4xl md:text-5xl font-bold mb-4">
               Terms of Service
             </h1>
@@ -38,14 +36,14 @@ export default function TermsOfService() {
 
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 -mt-8">
         {/* Quick Navigation */}
-        <Card className="shadow-lg mb-8">
-          <CardHeader>
-            <CardTitle className="flex items-center">
+        <div className="bg-white shadow-lg mb-8 rounded-xl">
+          <div className="p-6 border-b">
+            <h2 className="text-xl font-bold text-gray-900 flex items-center">
               <FileText className="w-5 h-5 mr-2" />
               Quick Navigation
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
+            </h2>
+          </div>
+          <div className="p-6">
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
               <a href="#acceptance" className="text-blue-600 hover:text-blue-800 font-medium">1. Acceptance</a>
               <a href="#services" className="text-blue-600 hover:text-blue-800 font-medium">2. Services</a>
@@ -56,20 +54,20 @@ export default function TermsOfService() {
               <a href="#disclaimers" className="text-blue-600 hover:text-blue-800 font-medium">7. Disclaimers</a>
               <a href="#liability" className="text-blue-600 hover:text-blue-800 font-medium">8. Liability</a>
             </div>
-          </CardContent>
-        </Card>
+          </div>
+        </div>
 
         {/* Terms Content */}
         <div className="space-y-8">
           {/* Section 1: Acceptance */}
-          <Card id="acceptance" className="shadow-lg">
-            <CardHeader>
-              <CardTitle className="flex items-center">
+          <div id="acceptance" className="bg-white shadow-lg rounded-xl">
+            <div className="p-6 border-b">
+              <h2 className="text-xl font-bold text-gray-900 flex items-center">
                 <Shield className="w-5 h-5 mr-2 text-green-600" />
                 1. Acceptance of Terms
-              </CardTitle>
-            </CardHeader>
-            <CardContent className="prose max-w-none">
+              </h2>
+            </div>
+            <div className="p-6 prose max-w-none">
               <p className="text-gray-700 leading-relaxed">
                 By accessing and using the Houston Land Group Development Intelligence Platform 
                 ("Platform", "Service"), you accept and agree to be bound by the terms and provision 
@@ -80,18 +78,18 @@ export default function TermsOfService() {
                 intelligence platform, market analysis tools, and related services operated by 
                 Houston Land Group ("we", "us", "our").
               </p>
-            </CardContent>
-          </Card>
+            </div>
+          </div>
 
           {/* Section 2: Description of Services */}
-          <Card id="services" className="shadow-lg">
-            <CardHeader>
-              <CardTitle className="flex items-center">
+          <div id="services" className="bg-white shadow-lg rounded-xl">
+            <div className="p-6 border-b">
+              <h2 className="text-xl font-bold text-gray-900 flex items-center">
                 <Globe className="w-5 h-5 mr-2 text-blue-600" />
                 2. Description of Services
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
+              </h2>
+            </div>
+            <div className="p-6">
               <div className="space-y-4">
                 <p className="text-gray-700 leading-relaxed">
                   Our Platform provides real estate development intelligence services including:
@@ -114,18 +112,18 @@ export default function TermsOfService() {
                   </p>
                 </div>
               </div>
-            </CardContent>
-          </Card>
+            </div>
+          </div>
 
           {/* Section 3: User Accounts */}
-          <Card id="accounts" className="shadow-lg">
-            <CardHeader>
-              <CardTitle className="flex items-center">
+          <div id="accounts" className="bg-white shadow-lg rounded-xl">
+            <div className="p-6 border-b">
+              <h2 className="text-xl font-bold text-gray-900 flex items-center">
                 <Users className="w-5 h-5 mr-2 text-purple-600" />
                 3. User Accounts and Registration
-              </CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-4">
+              </h2>
+            </div>
+            <div className="p-6 space-y-4">
               <p className="text-gray-700 leading-relaxed">
                 To access certain features of our Platform, you may be required to create an account. 
                 You agree to:
@@ -141,18 +139,18 @@ export default function TermsOfService() {
                 We reserve the right to suspend or terminate accounts that violate these Terms 
                 or are inactive for extended periods.
               </p>
-            </CardContent>
-          </Card>
+            </div>
+          </div>
 
           {/* Section 4: Data Usage and Accuracy */}
-          <Card id="data" className="shadow-lg">
-            <CardHeader>
-              <CardTitle className="flex items-center">
+          <div id="data" className="bg-white shadow-lg rounded-xl">
+            <div className="p-6 border-b">
+              <h2 className="text-xl font-bold text-gray-900 flex items-center">
                 <FileText className="w-5 h-5 mr-2 text-orange-600" />
                 4. Data Usage and Accuracy
-              </CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-4">
+              </h2>
+            </div>
+            <div className="p-6 space-y-4">
               <div className="bg-orange-50 border border-orange-200 rounded-lg p-4">
                 <h4 className="font-semibold text-orange-800 mb-2">Data Sources and Accuracy</h4>
                 <p className="text-orange-700">
@@ -172,18 +170,18 @@ export default function TermsOfService() {
                 <li>Data should not be used for discriminatory practices</li>
                 <li>Users agree to comply with all applicable data protection laws</li>
               </ul>
-            </CardContent>
-          </Card>
+            </div>
+          </div>
 
           {/* Section 5: Intellectual Property */}
-          <Card id="intellectual" className="shadow-lg">
-            <CardHeader>
-              <CardTitle className="flex items-center">
+          <div id="intellectual" className="bg-white shadow-lg rounded-xl">
+            <div className="p-6 border-b">
+              <h2 className="text-xl font-bold text-gray-900 flex items-center">
                 <Scale className="w-5 h-5 mr-2 text-indigo-600" />
                 5. Intellectual Property Rights
-              </CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-4">
+              </h2>
+            </div>
+            <div className="p-6 space-y-4">
               <p className="text-gray-700 leading-relaxed">
                 The Platform and its original content, features, and functionality are owned by 
                 Houston Land Group and are protected by international copyright, trademark, 
@@ -211,18 +209,18 @@ export default function TermsOfService() {
                   </ul>
                 </div>
               </div>
-            </CardContent>
-          </Card>
+            </div>
+          </div>
 
           {/* Section 6: Privacy */}
-          <Card id="privacy" className="shadow-lg">
-            <CardHeader>
-              <CardTitle className="flex items-center">
+          <div id="privacy" className="bg-white shadow-lg rounded-xl">
+            <div className="p-6 border-b">
+              <h2 className="text-xl font-bold text-gray-900 flex items-center">
                 <Lock className="w-5 h-5 mr-2 text-green-600" />
                 6. Privacy and Data Protection
-              </CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-4">
+              </h2>
+            </div>
+            <div className="p-6 space-y-4">
               <p className="text-gray-700 leading-relaxed">
                 Your privacy is important to us. Our Privacy Policy explains how we collect, 
                 use, and protect your information when you use our Platform.
@@ -241,18 +239,18 @@ export default function TermsOfService() {
                 By using our Platform, you consent to the collection and use of information 
                 as outlined in our Privacy Policy.
               </p>
-            </CardContent>
-          </Card>
+            </div>
+          </div>
 
           {/* Section 7: Disclaimers */}
-          <Card id="disclaimers" className="shadow-lg">
-            <CardHeader>
-              <CardTitle className="flex items-center">
+          <div id="disclaimers" className="bg-white shadow-lg rounded-xl">
+            <div className="p-6 border-b">
+              <h2 className="text-xl font-bold text-gray-900 flex items-center">
                 <AlertTriangle className="w-5 h-5 mr-2 text-red-600" />
                 7. Disclaimers and Warranties
-              </CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-4">
+              </h2>
+            </div>
+            <div className="p-6 space-y-4">
               <div className="bg-red-50 border border-red-200 rounded-lg p-4">
                 <h4 className="font-semibold text-red-800 mb-2">IMPORTANT DISCLAIMERS:</h4>
                 <p className="text-red-700 leading-relaxed">
@@ -271,18 +269,18 @@ export default function TermsOfService() {
                   <li><strong>System Availability:</strong> We do not guarantee uninterrupted or error-free service</li>
                 </ul>
               </div>
-            </CardContent>
-          </Card>
+            </div>
+          </div>
 
           {/* Section 8: Limitation of Liability */}
-          <Card id="liability" className="shadow-lg">
-            <CardHeader>
-              <CardTitle className="flex items-center">
+          <div id="liability" className="bg-white shadow-lg rounded-xl">
+            <div className="p-6 border-b">
+              <h2 className="text-xl font-bold text-gray-900 flex items-center">
                 <Shield className="w-5 h-5 mr-2 text-gray-600" />
                 8. Limitation of Liability
-              </CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-4">
+              </h2>
+            </div>
+            <div className="p-6 space-y-4">
               <div className="bg-gray-50 border border-gray-200 rounded-lg p-4">
                 <p className="text-gray-700 leading-relaxed">
                   TO THE FULLEST EXTENT PERMITTED BY LAW, HOUSTON LAND GROUP SHALL NOT BE LIABLE 
@@ -296,18 +294,18 @@ export default function TermsOfService() {
                 shall not exceed the amount you paid to us in the twelve (12) months preceding 
                 the claim, or $100, whichever is greater.
               </p>
-            </CardContent>
-          </Card>
+            </div>
+          </div>
 
           {/* Contact Information */}
-          <Card className="shadow-lg">
-            <CardHeader>
-              <CardTitle className="flex items-center">
+          <div className="bg-white shadow-lg rounded-xl">
+            <div className="p-6 border-b">
+              <h2 className="text-xl font-bold text-gray-900 flex items-center">
                 <Mail className="w-5 h-5 mr-2 text-blue-600" />
                 Questions About These Terms?
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
+              </h2>
+            </div>
+            <div className="p-6">
               <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
                 <p className="text-blue-800 leading-relaxed">
                   If you have any questions about these Terms of Service, please contact us at:
@@ -323,8 +321,8 @@ export default function TermsOfService() {
                 except with respect to any changes in their provisions in the future, which will be 
                 in effect immediately after being posted on this page.
               </p>
-            </CardContent>
-          </Card>
+            </div>
+          </div>
         </div>
       </div>
     </div>

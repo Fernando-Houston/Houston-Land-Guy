@@ -1,13 +1,6 @@
 'use client';
 
 import { useState } from 'react';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
-import { Progress } from '@/components/ui/progress';
-import { Badge } from '@/components/ui/badge';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { 
   Clock, 
   Calendar, 
@@ -21,7 +14,6 @@ import {
   Zap,
   Target
 } from 'lucide-react';
-import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 
 interface TimelineTask {
   id: string;
@@ -208,9 +200,9 @@ export default function SaleTimelineOptimizer() {
       <div className="bg-gradient-to-br from-purple-600 to-purple-800 text-white py-16">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center">
-            <Badge className="mb-4 bg-white/20 text-white border-white/30">
-              AI-Powered Timeline
-            </Badge>
+            <div className="inline-flex items-center justify-center px-4 py-2 bg-white/20 backdrop-blur-sm rounded-full mb-4">
+              <span className="text-sm font-medium text-white">AI-Powered Timeline</span>
+            </div>
             <h1 className="text-4xl md:text-5xl font-bold mb-4">
               Sale Timeline Optimizer
             </h1>
@@ -224,8 +216,8 @@ export default function SaleTimelineOptimizer() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 -mt-8">
         {/* Quick Stats */}
         <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-8">
-          <Card className="border-0 shadow-lg">
-            <CardContent className="p-4 flex items-center space-x-3">
+          <div className="bg-white border-0 shadow-lg rounded-xl">
+            <div className="p-4 flex items-center space-x-3">
               <div className="w-10 h-10 bg-purple-100 rounded-lg flex items-center justify-center">
                 <Target className="w-5 h-5 text-purple-600" />
               </div>
@@ -233,10 +225,10 @@ export default function SaleTimelineOptimizer() {
                 <p className="text-sm text-gray-600">Avg Days to Sell</p>
                 <p className="text-xl font-bold">28 Days</p>
               </div>
-            </CardContent>
-          </Card>
-          <Card className="border-0 shadow-lg">
-            <CardContent className="p-4 flex items-center space-x-3">
+            </div>
+          </div>
+          <div className="bg-white border-0 shadow-lg rounded-xl">
+            <div className="p-4 flex items-center space-x-3">
               <div className="w-10 h-10 bg-green-100 rounded-lg flex items-center justify-center">
                 <CheckCircle2 className="w-5 h-5 text-green-600" />
               </div>
@@ -244,10 +236,10 @@ export default function SaleTimelineOptimizer() {
                 <p className="text-sm text-gray-600">Tasks Completed</p>
                 <p className="text-xl font-bold">2 of 9</p>
               </div>
-            </CardContent>
-          </Card>
-          <Card className="border-0 shadow-lg">
-            <CardContent className="p-4 flex items-center space-x-3">
+            </div>
+          </div>
+          <div className="bg-white border-0 shadow-lg rounded-xl">
+            <div className="p-4 flex items-center space-x-3">
               <div className="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center">
                 <FileText className="w-5 h-5 text-blue-600" />
               </div>
@@ -255,10 +247,10 @@ export default function SaleTimelineOptimizer() {
                 <p className="text-sm text-gray-600">Documents</p>
                 <p className="text-xl font-bold">5 of 8</p>
               </div>
-            </CardContent>
-          </Card>
-          <Card className="border-0 shadow-lg">
-            <CardContent className="p-4 flex items-center space-x-3">
+            </div>
+          </div>
+          <div className="bg-white border-0 shadow-lg rounded-xl">
+            <div className="p-4 flex items-center space-x-3">
               <div className="w-10 h-10 bg-orange-100 rounded-lg flex items-center justify-center">
                 <Zap className="w-5 h-5 text-orange-600" />
               </div>
@@ -266,82 +258,84 @@ export default function SaleTimelineOptimizer() {
                 <p className="text-sm text-gray-600">On Track</p>
                 <p className="text-xl font-bold">Yes</p>
               </div>
-            </CardContent>
-          </Card>
+            </div>
+          </div>
         </div>
 
         {/* Timeline Generator */}
         {!timelineGenerated ? (
-          <Card className="shadow-lg mb-8">
-            <CardHeader>
-              <CardTitle>Generate Your Custom Timeline</CardTitle>
+          <div className="bg-white shadow-lg mb-8 rounded-xl">
+            <div className="p-6 border-b">
+              <h2 className="text-xl font-bold text-gray-900">Generate Your Custom Timeline</h2>
               <p className="text-gray-600">Tell us about your sale to create a personalized timeline</p>
-            </CardHeader>
-            <CardContent>
+            </div>
+            <div className="p-6">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div>
-                  <Label htmlFor="saleType">Sale Type</Label>
-                  <Select value={saleType} onValueChange={setSaleType}>
-                    <SelectTrigger>
-                      <SelectValue />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="traditional">Traditional Sale (30-45 days)</SelectItem>
-                      <SelectItem value="cash">Cash Sale (15-30 days)</SelectItem>
-                      <SelectItem value="luxury">Luxury Property (60-90 days)</SelectItem>
-                      <SelectItem value="new-construction">New Construction (45-90 days)</SelectItem>
-                    </SelectContent>
-                  </Select>
+                  <label className="block text-sm font-medium text-gray-700 mb-2" htmlFor="saleType">Sale Type</label>
+                  <select
+                    value={saleType}
+                    onChange={(e) => setSaleType(e.target.value)}
+                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+                  >
+                    <option value="traditional">Traditional Sale (30-45 days)</option>
+                    <option value="cash">Cash Sale (15-30 days)</option>
+                    <option value="luxury">Luxury Property (60-90 days)</option>
+                    <option value="new-construction">New Construction (45-90 days)</option>
+                  </select>
                 </div>
                 <div>
-                  <Label htmlFor="targetDate">Target Closing Date</Label>
-                  <Input
+                  <label className="block text-sm font-medium text-gray-700 mb-2" htmlFor="targetDate">Target Closing Date</label>
+                  <input
                     id="targetDate"
                     type="date"
                     value={targetDate}
                     onChange={(e) => setTargetDate(e.target.value)}
+                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
                   />
                 </div>
               </div>
-              <Button 
+              <button 
                 onClick={generateTimeline} 
-                className="mt-6 bg-gradient-to-r from-purple-600 to-purple-700"
+                className="mt-6 px-6 py-3 bg-gradient-to-r from-purple-600 to-purple-700 text-white font-semibold rounded-lg hover:from-purple-700 hover:to-purple-800 transition-all flex items-center"
               >
                 Generate Timeline <ArrowRight className="ml-2 h-4 w-4" />
-              </Button>
-            </CardContent>
-          </Card>
+              </button>
+            </div>
+          </div>
         ) : (
           <>
             {/* Progress Overview */}
-            <Card className="shadow-lg mb-8">
-              <CardHeader>
+            <div className="bg-white shadow-lg mb-8 rounded-xl">
+              <div className="p-6 border-b">
                 <div className="flex justify-between items-center">
                   <div>
-                    <CardTitle>Overall Progress</CardTitle>
+                    <h2 className="text-xl font-bold text-gray-900">Overall Progress</h2>
                     <p className="text-gray-600">You're on track to close in 32 days</p>
                   </div>
-                  <Badge variant="outline" className="text-green-600 border-green-600">
+                  <span className="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium text-green-600 border border-green-600">
                     On Schedule
-                  </Badge>
+                  </span>
                 </div>
-              </CardHeader>
-              <CardContent>
-                <Progress value={overallProgress} className="h-3 mb-2" />
+              </div>
+              <div className="p-6">
+                <div className="w-full bg-gray-200 rounded-full h-3 mb-2">
+                  <div className="bg-purple-600 h-3 rounded-full" style={{width: `${overallProgress}%`}}></div>
+                </div>
                 <p className="text-sm text-gray-600">{overallProgress}% Complete</p>
-              </CardContent>
-            </Card>
+              </div>
+            </div>
 
             {/* Timeline and Milestones */}
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-8">
               {/* Task Timeline */}
               <div className="lg:col-span-2">
-                <Card className="shadow-lg">
-                  <CardHeader>
-                    <CardTitle>Your Sale Timeline</CardTitle>
+                <div className="bg-white shadow-lg rounded-xl">
+                  <div className="p-6 border-b">
+                    <h2 className="text-xl font-bold text-gray-900">Your Sale Timeline</h2>
                     <p className="text-gray-600">Tasks organized by week</p>
-                  </CardHeader>
-                  <CardContent>
+                  </div>
+                  <div className="p-6">
                     {[1, 2, 3, 4].map((week) => (
                       <div key={week} className="mb-6 last:mb-0">
                         <h4 className="font-semibold text-gray-700 mb-3 flex items-center">
@@ -362,12 +356,9 @@ export default function SaleTimelineOptimizer() {
                                   }`}>
                                     {task.title}
                                   </p>
-                                  <Badge 
-                                    variant="secondary" 
-                                    className={`text-xs ${getPriorityColor(task.priority)}`}
-                                  >
+                                  <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${getPriorityColor(task.priority)}`}>
                                     {task.priority}
-                                  </Badge>
+                                  </span>
                                 </div>
                                 <p className="text-sm text-gray-600 mt-1">{task.description}</p>
                               </div>
@@ -376,17 +367,17 @@ export default function SaleTimelineOptimizer() {
                         </div>
                       </div>
                     ))}
-                  </CardContent>
-                </Card>
+                  </div>
+                </div>
               </div>
 
               {/* Milestones */}
               <div className="space-y-6">
-                <Card className="shadow-lg">
-                  <CardHeader>
-                    <CardTitle>Key Milestones</CardTitle>
-                  </CardHeader>
-                  <CardContent>
+                <div className="bg-white shadow-lg rounded-xl">
+                  <div className="p-6 border-b">
+                    <h2 className="text-xl font-bold text-gray-900">Key Milestones</h2>
+                  </div>
+                  <div className="p-6">
                     <div className="space-y-4">
                       {milestones.map((milestone, index) => (
                         <div key={index} className="flex items-start space-x-3">
@@ -401,16 +392,16 @@ export default function SaleTimelineOptimizer() {
                         </div>
                       ))}
                     </div>
-                  </CardContent>
-                </Card>
+                  </div>
+                </div>
 
                 {/* Document Checklist */}
-                <Card className="shadow-lg">
-                  <CardHeader>
-                    <CardTitle>Document Checklist</CardTitle>
+                <div className="bg-white shadow-lg rounded-xl">
+                  <div className="p-6 border-b">
+                    <h2 className="text-xl font-bold text-gray-900">Document Checklist</h2>
                     <p className="text-sm text-gray-600">5 of 8 complete</p>
-                  </CardHeader>
-                  <CardContent>
+                  </div>
+                  <div className="p-6">
                     <div className="space-y-2">
                       {documents.map((doc, index) => (
                         <div key={index} className="flex items-center justify-between text-sm">
@@ -420,28 +411,30 @@ export default function SaleTimelineOptimizer() {
                           {doc.status === 'uploaded' ? (
                             <CheckCircle2 className="w-4 h-4 text-green-600" />
                           ) : (
-                            <Badge variant="outline" className="text-xs">Missing</Badge>
+                            <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium border text-gray-500 border-gray-300">Missing</span>
                           )}
                         </div>
                       ))}
                     </div>
-                    <Button variant="outline" className="w-full mt-4">
+                    <button className="w-full mt-4 px-4 py-2 border border-gray-300 text-gray-700 font-medium rounded-lg hover:bg-gray-50 transition-colors">
                       Upload Documents
-                    </Button>
-                  </CardContent>
-                </Card>
+                    </button>
+                  </div>
+                </div>
               </div>
             </div>
 
             {/* Next Steps Alert */}
-            <Alert className="bg-blue-50 border-blue-200">
-              <AlertCircle className="h-4 w-4 text-blue-600" />
-              <AlertTitle className="text-blue-900">Next Steps</AlertTitle>
-              <AlertDescription className="text-blue-800">
-                Complete deep cleaning this week and schedule your staging consultation. 
-                These tasks are critical for your listing launch next week.
-              </AlertDescription>
-            </Alert>
+            <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 flex items-start">
+              <AlertCircle className="h-5 w-5 text-blue-600 mr-3 flex-shrink-0 mt-0.5" />
+              <div>
+                <h3 className="text-blue-900 font-medium mb-1">Next Steps</h3>
+                <p className="text-blue-800">
+                  Complete deep cleaning this week and schedule your staging consultation. 
+                  These tasks are critical for your listing launch next week.
+                </p>
+              </div>
+            </div>
           </>
         )}
       </div>
