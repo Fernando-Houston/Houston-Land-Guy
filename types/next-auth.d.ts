@@ -5,12 +5,25 @@ declare module 'next-auth' {
     user: {
       id: string
       role: string
-      profile?: any
+      firstName: string
+      lastName: string
+      userType: 'buyer' | 'seller' | 'agent' | 'investor'
     } & DefaultSession['user']
   }
 
   interface User {
     role?: string
-    profile?: any
+    firstName?: string
+    lastName?: string
+    userType?: 'buyer' | 'seller' | 'agent' | 'investor'
+  }
+}
+
+declare module 'next-auth/jwt' {
+  interface JWT {
+    role?: string
+    firstName?: string
+    lastName?: string
+    userType?: 'buyer' | 'seller' | 'agent' | 'investor'
   }
 }

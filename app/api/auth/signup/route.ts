@@ -53,7 +53,6 @@ export async function POST(request: Request) {
         password: hashedPassword,
         firstName,
         lastName,
-        phone,
         userType,
         isEmailVerified: false, // Will need email verification
         createdAt: new Date(),
@@ -82,6 +81,17 @@ export async function POST(request: Request) {
         savedSearchAlerts: true
       }
     })
+
+    // Create user profile with phone if provided
+    if (phone) {
+      await prisma.userProfile.create({
+        data: {
+          userId: user.id,
+          userType: userType.toUpperCase(),
+          phone: phone
+        }
+      })
+    }
 
     // Log user registration for analytics
     console.log(`New user registered: ${user.email} (${user.userType})`)
