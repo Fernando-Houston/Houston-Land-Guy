@@ -1,12 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/ui/badge';
-import { Progress } from '@/components/ui/progress';
-import { Input } from '@/components/ui/input';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+// Removed UI component imports to fix build error - using native HTML instead
 import { 
   AlertTriangle,
   Shield,
@@ -242,9 +237,9 @@ export default function RiskAnalysis() {
       <div className="bg-gradient-to-br from-red-600 to-red-800 text-white py-16">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center">
-            <Badge className="mb-4 bg-white/20 text-white border-white/30">
+            <span className="inline-block mb-4 px-3 py-1 text-sm font-medium bg-white/20 text-white border border-white/30 rounded-full">
               AI Risk Intelligence
-            </Badge>
+            </span>
             <h1 className="text-4xl md:text-5xl font-bold mb-4">
               Risk Analysis Center
             </h1>
@@ -257,53 +252,51 @@ export default function RiskAnalysis() {
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 -mt-8">
         {/* Control Panel */}
-        <Card className="shadow-lg mb-8">
-          <CardHeader>
-            <CardTitle className="flex items-center">
+        <div className="bg-white rounded-lg border border-gray-200 shadow-lg mb-8">
+          <div className="px-6 py-4 border-b border-gray-200">
+            <h3 className="text-lg font-semibold text-gray-900 flex items-center">
               <Target className="w-5 h-5 mr-2" />
               Risk Analysis Controls
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
+            </h3>
+          </div>
+          <div className="p-6">
             <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-              <Select value={selectedArea} onValueChange={setSelectedArea}>
-                <SelectTrigger>
-                  <SelectValue placeholder="Select Area" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="houston-metro">Houston Metro</SelectItem>
-                  <SelectItem value="river-oaks">River Oaks</SelectItem>
-                  <SelectItem value="memorial">Memorial</SelectItem>
-                  <SelectItem value="energy-corridor">Energy Corridor</SelectItem>
-                </SelectContent>
-              </Select>
-              <Select value={timeframe} onValueChange={setTimeframe}>
-                <SelectTrigger>
-                  <SelectValue placeholder="Timeframe" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="3M">3 Months</SelectItem>
-                  <SelectItem value="6M">6 Months</SelectItem>
-                  <SelectItem value="1Y">1 Year</SelectItem>
-                  <SelectItem value="3Y">3 Years</SelectItem>
-                </SelectContent>
-              </Select>
-              <Button variant="outline" className="flex items-center">
+              <select 
+                value={selectedArea} 
+                onChange={(e) => setSelectedArea(e.target.value)}
+                className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+              >
+                <option value="houston-metro">Houston Metro</option>
+                <option value="river-oaks">River Oaks</option>
+                <option value="memorial">Memorial</option>
+                <option value="energy-corridor">Energy Corridor</option>
+              </select>
+              <select 
+                value={timeframe} 
+                onChange={(e) => setTimeframe(e.target.value)}
+                className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+              >
+                <option value="3M">3 Months</option>
+                <option value="6M">6 Months</option>
+                <option value="1Y">1 Year</option>
+                <option value="3Y">3 Years</option>
+              </select>
+              <button className="inline-flex items-center justify-center px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md hover:bg-gray-50 transition-colors">
                 <RefreshCw className="w-4 h-4 mr-2" />
                 Refresh Data
-              </Button>
-              <Button variant="outline" className="flex items-center">
+              </button>
+              <button className="inline-flex items-center justify-center px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md hover:bg-gray-50 transition-colors">
                 <Download className="w-4 h-4 mr-2" />
                 Export Report
-              </Button>
+              </button>
             </div>
-          </CardContent>
-        </Card>
+          </div>
+        </div>
 
         {/* Risk Overview Dashboard */}
         <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
-          <Card className="border-0 shadow-lg">
-            <CardContent className="p-6">
+          <div className="bg-white rounded-lg shadow-lg">
+            <div className="p-6">
               <div className="flex items-center justify-between">
                 <div>
                   <p className="text-sm text-gray-600 mb-1">Overall Risk Score</p>
@@ -314,11 +307,11 @@ export default function RiskAnalysis() {
                   <Shield className="w-6 h-6 text-orange-600" />
                 </div>
               </div>
-            </CardContent>
-          </Card>
+            </div>
+          </div>
 
-          <Card className="border-0 shadow-lg">
-            <CardContent className="p-6">
+          <div className="bg-white rounded-lg shadow-lg">
+            <div className="p-6">
               <div className="flex items-center justify-between">
                 <div>
                   <p className="text-sm text-gray-600 mb-1">High Risk Properties</p>
@@ -329,11 +322,11 @@ export default function RiskAnalysis() {
                   <AlertTriangle className="w-6 h-6 text-red-600" />
                 </div>
               </div>
-            </CardContent>
-          </Card>
+            </div>
+          </div>
 
-          <Card className="border-0 shadow-lg">
-            <CardContent className="p-6">
+          <div className="bg-white rounded-lg shadow-lg">
+            <div className="p-6">
               <div className="flex items-center justify-between">
                 <div>
                   <p className="text-sm text-gray-600 mb-1">Market Volatility</p>
@@ -344,11 +337,11 @@ export default function RiskAnalysis() {
                   <BarChart3 className="w-6 h-6 text-yellow-600" />
                 </div>
               </div>
-            </CardContent>
-          </Card>
+            </div>
+          </div>
 
-          <Card className="border-0 shadow-lg">
-            <CardContent className="p-6">
+          <div className="bg-white rounded-lg shadow-lg">
+            <div className="p-6">
               <div className="flex items-center justify-between">
                 <div>
                   <p className="text-sm text-gray-600 mb-1">Risk Trend</p>
@@ -362,19 +355,19 @@ export default function RiskAnalysis() {
                   <TrendingUp className="w-6 h-6 text-green-600" />
                 </div>
               </div>
-            </CardContent>
-          </Card>
+            </div>
+          </div>
         </div>
 
         {/* Market Risk Analysis */}
-        <Card className="shadow-lg mb-8">
-          <CardHeader>
-            <CardTitle className="flex items-center">
+        <div className="bg-white rounded-lg border border-gray-200 shadow-lg mb-8">
+          <div className="px-6 py-4 border-b border-gray-200">
+            <h3 className="text-lg font-semibold text-gray-900 flex items-center">
               <BarChart3 className="w-5 h-5 mr-2" />
               Market Risk Factors
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
+            </h3>
+          </div>
+          <div className="p-6">
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
               {/* Risk Factor Breakdown */}
               <div className="space-y-4">
@@ -385,35 +378,45 @@ export default function RiskAnalysis() {
                       <span className="text-sm text-gray-600">Market Volatility</span>
                       <span className="text-sm font-medium">48%</span>
                     </div>
-                    <Progress value={48} className="h-2" />
+                    <div className="w-full bg-gray-200 rounded-full h-2">
+                      <div className="bg-blue-600 h-2 rounded-full" style={{width: '48%'}}></div>
+                    </div>
                   </div>
                   <div>
                     <div className="flex justify-between items-center mb-2">
                       <span className="text-sm text-gray-600">Price Decline Risk</span>
                       <span className="text-sm font-medium">35%</span>
                     </div>
-                    <Progress value={35} className="h-2" />
+                    <div className="w-full bg-gray-200 rounded-full h-2">
+                      <div className="bg-blue-600 h-2 rounded-full" style={{width: '35%'}}></div>
+                    </div>
                   </div>
                   <div>
                     <div className="flex justify-between items-center mb-2">
                       <span className="text-sm text-gray-600">Demand Weakness</span>
                       <span className="text-sm font-medium">42%</span>
                     </div>
-                    <Progress value={42} className="h-2" />
+                    <div className="w-full bg-gray-200 rounded-full h-2">
+                      <div className="bg-blue-600 h-2 rounded-full" style={{width: '42%'}}></div>
+                    </div>
                   </div>
                   <div>
                     <div className="flex justify-between items-center mb-2">
                       <span className="text-sm text-gray-600">Oversupply Risk</span>
                       <span className="text-sm font-medium">65%</span>
                     </div>
-                    <Progress value={65} className="h-2" />
+                    <div className="w-full bg-gray-200 rounded-full h-2">
+                      <div className="bg-blue-600 h-2 rounded-full" style={{width: '65%'}}></div>
+                    </div>
                   </div>
                   <div>
                     <div className="flex justify-between items-center mb-2">
                       <span className="text-sm text-gray-600">Economic Shock</span>
                       <span className="text-sm font-medium">55%</span>
                     </div>
-                    <Progress value={55} className="h-2" />
+                    <div className="w-full bg-gray-200 rounded-full h-2">
+                      <div className="bg-blue-600 h-2 rounded-full" style={{width: '55%'}}></div>
+                    </div>
                   </div>
                 </div>
               </div>
@@ -443,18 +446,18 @@ export default function RiskAnalysis() {
                 </div>
               </div>
             </div>
-          </CardContent>
-        </Card>
+          </div>
+        </div>
 
         {/* Property-Specific Risks */}
-        <Card className="shadow-lg mb-8">
-          <CardHeader>
-            <CardTitle className="flex items-center">
+        <div className="bg-white rounded-lg border border-gray-200 shadow-lg mb-8">
+          <div className="px-6 py-4 border-b border-gray-200">
+            <h3 className="text-lg font-semibold text-gray-900 flex items-center">
               <Home className="w-5 h-5 mr-2" />
               Property Risk Assessment
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
+            </h3>
+          </div>
+          <div className="p-6">
             <div className="space-y-6">
               {riskData.map((property, index) => (
                 <div key={index} className="border border-gray-200 rounded-lg p-6">
@@ -491,9 +494,9 @@ export default function RiskAnalysis() {
                               <div className="flex items-center justify-between mb-1">
                                 <h5 className="font-medium text-gray-900">{factor.name}</h5>
                                 <div className="flex items-center space-x-2">
-                                  <Badge className={getRiskColor(factor.level)}>
+                                  <span className={`inline-block px-2 py-1 text-xs font-medium rounded-full ${getRiskColor(factor.level)}`}>
                                     {factor.level}
-                                  </Badge>
+                                  </span>
                                   {getTrendIcon(factor.trend)}
                                 </div>
                               </div>
@@ -521,32 +524,32 @@ export default function RiskAnalysis() {
                       </div>
 
                       <div className="mt-4 pt-4 border-t border-gray-200">
-                        <Button size="sm" className="mr-2">
+                        <button className="inline-flex items-center px-3 py-1.5 mr-2 text-sm font-medium text-white bg-blue-600 rounded-md hover:bg-blue-700 transition-colors">
                           <Eye className="w-3 h-3 mr-1" />
                           View Details
-                        </Button>
-                        <Button variant="outline" size="sm">
+                        </button>
+                        <button className="inline-flex items-center px-3 py-1.5 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md hover:bg-gray-50 transition-colors">
                           <Download className="w-3 h-3 mr-1" />
                           Export
-                        </Button>
+                        </button>
                       </div>
                     </div>
                   </div>
                 </div>
               ))}
             </div>
-          </CardContent>
-        </Card>
+          </div>
+        </div>
 
         {/* Risk Alerts */}
-        <Card className="shadow-lg">
-          <CardHeader>
-            <CardTitle className="flex items-center">
+        <div className="bg-white rounded-lg border border-gray-200 shadow-lg">
+          <div className="px-6 py-4 border-b border-gray-200">
+            <h3 className="text-lg font-semibold text-gray-900 flex items-center">
               <Zap className="w-5 h-5 mr-2" />
               Risk Alerts & Monitoring
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
+            </h3>
+          </div>
+          <div className="p-6">
             <div className="space-y-4">
               <div className="flex items-start space-x-3 p-4 bg-red-50 border border-red-200 rounded-lg">
                 <AlertTriangle className="w-5 h-5 text-red-600 mt-0.5" />
@@ -555,9 +558,9 @@ export default function RiskAnalysis() {
                   <p className="text-sm text-red-700 mt-1">
                     3 properties in your portfolio are in high-risk flood zones. Consider flood insurance review.
                   </p>
-                  <Button variant="outline" size="sm" className="mt-2 text-red-700 border-red-300">
+                  <button className="mt-2 inline-flex items-center px-2 py-1 text-xs font-medium text-red-700 bg-white border border-red-300 rounded hover:bg-red-50 transition-colors">
                     Review Properties
-                  </Button>
+                  </button>
                 </div>
               </div>
               
@@ -568,9 +571,9 @@ export default function RiskAnalysis() {
                   <p className="text-sm text-yellow-700 mt-1">
                     Energy Corridor showing increased price volatility. Monitor for potential impacts.
                   </p>
-                  <Button variant="outline" size="sm" className="mt-2 text-yellow-700 border-yellow-300">
+                  <button className="mt-2 inline-flex items-center px-2 py-1 text-xs font-medium text-yellow-700 bg-white border border-yellow-300 rounded hover:bg-yellow-50 transition-colors">
                     View Analysis
-                  </Button>
+                  </button>
                 </div>
               </div>
 
@@ -581,14 +584,14 @@ export default function RiskAnalysis() {
                   <p className="text-sm text-blue-700 mt-1">
                     City planning new drainage improvements in Memorial area. May reduce flood risk.
                   </p>
-                  <Button variant="outline" size="sm" className="mt-2 text-blue-700 border-blue-300">
+                  <button className="mt-2 inline-flex items-center px-2 py-1 text-xs font-medium text-blue-700 bg-white border border-blue-300 rounded hover:bg-blue-50 transition-colors">
                     Track Progress
-                  </Button>
+                  </button>
                 </div>
               </div>
             </div>
-          </CardContent>
-        </Card>
+          </div>
+        </div>
       </div>
     </div>
   );

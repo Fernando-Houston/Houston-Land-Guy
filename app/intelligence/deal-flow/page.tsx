@@ -1,11 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/ui/badge';
-import { Input } from '@/components/ui/input';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+// Removed UI component imports to fix build error - using native HTML instead
 import { 
   Search,
   Filter,
@@ -244,9 +240,9 @@ export default function DealFlowAutomation() {
       <div className="bg-gradient-to-br from-blue-600 to-blue-800 text-white py-16">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center">
-            <Badge className="mb-4 bg-white/20 text-white border-white/30">
+            <span className="inline-block mb-4 px-3 py-1 text-sm font-medium bg-white/20 text-white border border-white/30 rounded-full">
               AI-Powered Deal Discovery
-            </Badge>
+            </span>
             <h1 className="text-4xl md:text-5xl font-bold mb-4">
               Deal Flow Automation
             </h1>
@@ -259,87 +255,95 @@ export default function DealFlowAutomation() {
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 -mt-8">
         {/* Control Panel */}
-        <Card className="shadow-lg mb-8">
-          <CardHeader>
+        <div className="bg-white rounded-lg border border-gray-200 shadow-lg mb-8">
+          <div className="px-6 py-4 border-b border-gray-200">
             <div className="flex items-center justify-between">
-              <CardTitle className="flex items-center">
+              <h3 className="text-lg font-semibold text-gray-900 flex items-center">
                 <Zap className="w-5 h-5 mr-2" />
                 Deal Flow Control
-              </CardTitle>
+              </h3>
               <div className="flex items-center gap-4">
                 <div className="flex items-center gap-2">
                   <span className="text-sm text-gray-600">Automation</span>
-                  <Button
-                    variant={automationActive ? "default" : "outline"}
-                    size="sm"
+                  <button
                     onClick={() => setAutomationActive(!automationActive)}
-                    className="flex items-center gap-2"
+                    className={`inline-flex items-center gap-2 px-3 py-1.5 text-sm font-medium rounded-md transition-colors ${
+                      automationActive 
+                        ? 'bg-blue-600 text-white hover:bg-blue-700' 
+                        : 'bg-white text-gray-700 border border-gray-300 hover:bg-gray-50'
+                    }`}
                   >
                     {automationActive ? <Pause className="w-3 h-3" /> : <Play className="w-3 h-3" />}
                     {automationActive ? 'Active' : 'Paused'}
-                  </Button>
+                  </button>
                 </div>
-                <Button variant="outline" size="sm">
+                <button className="inline-flex items-center px-3 py-1.5 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md hover:bg-gray-50 transition-colors">
                   <Settings className="w-3 h-3 mr-1" />
                   Configure
-                </Button>
+                </button>
               </div>
             </div>
-          </CardHeader>
-          <CardContent>
+          </div>
+          <div className="p-6">
             <div className="grid grid-cols-1 md:grid-cols-6 gap-4">
-              <Input
+              <input
+                type="text"
                 placeholder="Min Price"
                 value={searchCriteria.minPrice}
                 onChange={(e) => handleFilterChange('minPrice', e.target.value)}
+                className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
               />
-              <Input
+              <input
+                type="text"
                 placeholder="Max Price"
                 value={searchCriteria.maxPrice}
                 onChange={(e) => handleFilterChange('maxPrice', e.target.value)}
+                className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
               />
-              <Select value={searchCriteria.neighborhood} onValueChange={(value) => handleFilterChange('neighborhood', value)}>
-                <SelectTrigger>
-                  <SelectValue placeholder="Neighborhood" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="">All Neighborhoods</SelectItem>
-                  <SelectItem value="The Heights">The Heights</SelectItem>
-                  <SelectItem value="Memorial">Memorial</SelectItem>
-                  <SelectItem value="River Oaks">River Oaks</SelectItem>
-                  <SelectItem value="Midtown">Midtown</SelectItem>
-                  <SelectItem value="Oak Forest">Oak Forest</SelectItem>
-                </SelectContent>
-              </Select>
-              <Select value={searchCriteria.propertyType} onValueChange={(value) => handleFilterChange('propertyType', value)}>
-                <SelectTrigger>
-                  <SelectValue placeholder="Property Type" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="">All Types</SelectItem>
-                  <SelectItem value="Single Family">Single Family</SelectItem>
-                  <SelectItem value="Townhouse">Townhouse</SelectItem>
-                  <SelectItem value="Condo">Condo</SelectItem>
-                </SelectContent>
-              </Select>
-              <Input
+              <select 
+                value={searchCriteria.neighborhood} 
+                onChange={(e) => handleFilterChange('neighborhood', e.target.value)}
+                className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+              >
+                <option value="">All Neighborhoods</option>
+                <option value="The Heights">The Heights</option>
+                <option value="Memorial">Memorial</option>
+                <option value="River Oaks">River Oaks</option>
+                <option value="Midtown">Midtown</option>
+                <option value="Oak Forest">Oak Forest</option>
+              </select>
+              <select 
+                value={searchCriteria.propertyType} 
+                onChange={(e) => handleFilterChange('propertyType', e.target.value)}
+                className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+              >
+                <option value="">All Types</option>
+                <option value="Single Family">Single Family</option>
+                <option value="Townhouse">Townhouse</option>
+                <option value="Condo">Condo</option>
+              </select>
+              <input
+                type="text"
                 placeholder="Min ROI %"
                 value={searchCriteria.minROI}
                 onChange={(e) => handleFilterChange('minROI', e.target.value)}
+                className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
               />
-              <Input
+              <input
+                type="text"
                 placeholder="Min Deal Score"
                 value={searchCriteria.dealScore}
                 onChange={(e) => handleFilterChange('dealScore', e.target.value)}
+                className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
               />
             </div>
-          </CardContent>
-        </Card>
+          </div>
+        </div>
 
         {/* Stats Overview */}
         <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
-          <Card className="border-0 shadow-lg">
-            <CardContent className="p-6">
+          <div className="bg-white rounded-lg shadow-lg">
+            <div className="p-6">
               <div className="flex items-center justify-between">
                 <div>
                   <p className="text-sm text-gray-600 mb-1">Active Deals</p>
@@ -349,11 +353,11 @@ export default function DealFlowAutomation() {
                   <Target className="w-6 h-6 text-blue-600" />
                 </div>
               </div>
-            </CardContent>
-          </Card>
+            </div>
+          </div>
 
-          <Card className="border-0 shadow-lg">
-            <CardContent className="p-6">
+          <div className="bg-white rounded-lg shadow-lg">
+            <div className="p-6">
               <div className="flex items-center justify-between">
                 <div>
                   <p className="text-sm text-gray-600 mb-1">Avg Deal Score</p>
@@ -365,11 +369,11 @@ export default function DealFlowAutomation() {
                   <Star className="w-6 h-6 text-green-600" />
                 </div>
               </div>
-            </CardContent>
-          </Card>
+            </div>
+          </div>
 
-          <Card className="border-0 shadow-lg">
-            <CardContent className="p-6">
+          <div className="bg-white rounded-lg shadow-lg">
+            <div className="p-6">
               <div className="flex items-center justify-between">
                 <div>
                   <p className="text-sm text-gray-600 mb-1">Avg ROI</p>
@@ -381,11 +385,11 @@ export default function DealFlowAutomation() {
                   <TrendingUp className="w-6 h-6 text-yellow-600" />
                 </div>
               </div>
-            </CardContent>
-          </Card>
+            </div>
+          </div>
 
-          <Card className="border-0 shadow-lg">
-            <CardContent className="p-6">
+          <div className="bg-white rounded-lg shadow-lg">
+            <div className="p-6">
               <div className="flex items-center justify-between">
                 <div>
                   <p className="text-sm text-gray-600 mb-1">Hot Deals</p>
@@ -397,15 +401,15 @@ export default function DealFlowAutomation() {
                   <AlertCircle className="w-6 h-6 text-red-600" />
                 </div>
               </div>
-            </CardContent>
-          </Card>
+            </div>
+          </div>
         </div>
 
         {/* Deal Cards */}
         <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-6">
           {filteredDeals.map((deal) => (
-            <Card key={deal.id} className="shadow-lg hover:shadow-xl transition-shadow">
-              <CardHeader className="pb-4">
+            <div key={deal.id} className="bg-white rounded-lg border border-gray-200 shadow-lg hover:shadow-xl transition-shadow">
+              <div className="px-6 py-4 pb-4">
                 <div className="flex items-start justify-between">
                   <div>
                     <h3 className="font-semibold text-gray-900 text-lg mb-1">{deal.address}</h3>
@@ -414,12 +418,12 @@ export default function DealFlowAutomation() {
                       <span className="text-sm">{deal.neighborhood}</span>
                     </div>
                   </div>
-                  <Badge className={getStatusColor(deal.status)}>
+                  <span className={`inline-block px-2 py-1 text-xs font-medium rounded-full ${getStatusColor(deal.status)}`}>
                     {deal.status.replace('_', ' ')}
-                  </Badge>
+                  </span>
                 </div>
-              </CardHeader>
-              <CardContent className="space-y-4">
+              </div>
+              <div className="px-6 pb-6 space-y-4">
                 {/* Price and Value */}
                 <div className="flex justify-between items-center">
                   <div>
@@ -488,33 +492,33 @@ export default function DealFlowAutomation() {
 
                 {/* Actions */}
                 <div className="flex gap-2 pt-2">
-                  <Button size="sm" className="flex-1">
+                  <button className="flex-1 inline-flex items-center justify-center px-3 py-1.5 text-sm font-medium text-white bg-blue-600 rounded-md hover:bg-blue-700 transition-colors">
                     <Eye className="w-3 h-3 mr-1" />
                     View Details
-                  </Button>
-                  <Button variant="outline" size="sm">
+                  </button>
+                  <button className="inline-flex items-center justify-center px-2 py-1.5 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md hover:bg-gray-50 transition-colors">
                     <Heart className="w-3 h-3" />
-                  </Button>
+                  </button>
                 </div>
-              </CardContent>
-            </Card>
+              </div>
+            </div>
           ))}
         </div>
 
         {/* No Results */}
         {filteredDeals.length === 0 && (
-          <Card className="shadow-lg">
-            <CardContent className="p-12 text-center">
+          <div className="bg-white rounded-lg border border-gray-200 shadow-lg">
+            <div className="p-12 text-center">
               <Search className="w-12 h-12 text-gray-400 mx-auto mb-4" />
               <h3 className="text-lg font-semibold text-gray-600 mb-2">No deals found</h3>
               <p className="text-gray-500">
                 Try adjusting your filters or wait for new deals to be discovered.
               </p>
-              <Button variant="outline" className="mt-4">
+              <button className="mt-4 inline-flex items-center px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md hover:bg-gray-50 transition-colors">
                 Reset Filters
-              </Button>
-            </CardContent>
-          </Card>
+              </button>
+            </div>
+          </div>
         )}
       </div>
     </div>

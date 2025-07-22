@@ -1,10 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/ui/badge';
-import { Progress } from '@/components/ui/progress';
+// Removed UI component imports to fix build error - using native HTML instead
 import { 
   TrendingUp, 
   TrendingDown, 
@@ -126,13 +123,13 @@ export default function PortfolioAnalytics() {
   const getStatusBadge = (status: string) => {
     switch(status) {
       case 'owned':
-        return <Badge className="bg-green-100 text-green-800">Owned</Badge>;
+        return <span className="inline-block px-2 py-1 text-xs font-medium bg-green-100 text-green-800 rounded-full">Owned</span>;
       case 'under_contract':
-        return <Badge className="bg-yellow-100 text-yellow-800">Under Contract</Badge>;
+        return <span className="inline-block px-2 py-1 text-xs font-medium bg-yellow-100 text-yellow-800 rounded-full">Under Contract</span>;
       case 'sold':
-        return <Badge className="bg-gray-100 text-gray-800">Sold</Badge>;
+        return <span className="inline-block px-2 py-1 text-xs font-medium bg-gray-100 text-gray-800 rounded-full">Sold</span>;
       default:
-        return <Badge variant="outline">{status}</Badge>;
+        return <span className="inline-block px-2 py-1 text-xs font-medium bg-white text-gray-700 border border-gray-300 rounded-full">{status}</span>;
     }
   };
 
@@ -159,9 +156,9 @@ export default function PortfolioAnalytics() {
       <div className="bg-gradient-to-br from-purple-600 to-purple-800 text-white py-16">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center">
-            <Badge className="mb-4 bg-white/20 text-white border-white/30">
+            <span className="inline-block mb-4 px-3 py-1 text-sm font-medium bg-white/20 text-white border border-white/30 rounded-full">
               AI-Powered Analytics
-            </Badge>
+            </span>
             <h1 className="text-4xl md:text-5xl font-bold mb-4">
               Portfolio Analytics
             </h1>
@@ -175,8 +172,8 @@ export default function PortfolioAnalytics() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 -mt-8">
         {/* Portfolio Overview Cards */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-          <Card className="border-0 shadow-lg">
-            <CardContent className="p-6">
+          <div className="bg-white rounded-lg shadow-lg">
+            <div className="p-6">
               <div className="flex items-center justify-between">
                 <div>
                   <p className="text-sm text-gray-600 mb-1">Total Portfolio Value</p>
@@ -194,11 +191,11 @@ export default function PortfolioAnalytics() {
                   <TrendingUp className="w-6 h-6 text-purple-600" />
                 </div>
               </div>
-            </CardContent>
-          </Card>
+            </div>
+          </div>
 
-          <Card className="border-0 shadow-lg">
-            <CardContent className="p-6">
+          <div className="bg-white rounded-lg shadow-lg">
+            <div className="p-6">
               <div className="flex items-center justify-between">
                 <div>
                   <p className="text-sm text-gray-600 mb-1">Monthly Net Cash Flow</p>
@@ -216,11 +213,11 @@ export default function PortfolioAnalytics() {
                   <DollarSign className="w-6 h-6 text-green-600" />
                 </div>
               </div>
-            </CardContent>
-          </Card>
+            </div>
+          </div>
 
-          <Card className="border-0 shadow-lg">
-            <CardContent className="p-6">
+          <div className="bg-white rounded-lg shadow-lg">
+            <div className="p-6">
               <div className="flex items-center justify-between">
                 <div>
                   <p className="text-sm text-gray-600 mb-1">Total Appreciation</p>
@@ -238,11 +235,11 @@ export default function PortfolioAnalytics() {
                   <BarChart3 className="w-6 h-6 text-blue-600" />
                 </div>
               </div>
-            </CardContent>
-          </Card>
+            </div>
+          </div>
 
-          <Card className="border-0 shadow-lg">
-            <CardContent className="p-6">
+          <div className="bg-white rounded-lg shadow-lg">
+            <div className="p-6">
               <div className="flex items-center justify-between">
                 <div>
                   <p className="text-sm text-gray-600 mb-1">Active Properties</p>
@@ -260,35 +257,38 @@ export default function PortfolioAnalytics() {
                   <Building2 className="w-6 h-6 text-orange-600" />
                 </div>
               </div>
-            </CardContent>
-          </Card>
+            </div>
+          </div>
         </div>
 
         {/* Performance Analytics */}
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-8">
           {/* Portfolio Performance Chart */}
-          <Card className="lg:col-span-2 shadow-lg">
-            <CardHeader>
+          <div className="lg:col-span-2 bg-white rounded-lg border border-gray-200 shadow-lg">
+            <div className="px-6 py-4 border-b border-gray-200">
               <div className="flex items-center justify-between">
-                <CardTitle className="flex items-center">
+                <h3 className="text-lg font-semibold text-gray-900 flex items-center">
                   <PieChart className="w-5 h-5 mr-2" />
                   Portfolio Performance
-                </CardTitle>
+                </h3>
                 <div className="flex gap-2">
                   {['1M', '3M', '6M', '1Y', 'ALL'].map((period) => (
-                    <Button
+                    <button
                       key={period}
-                      variant={selectedTimeframe === period ? "default" : "outline"}
-                      size="sm"
                       onClick={() => setSelectedTimeframe(period)}
+                      className={`px-3 py-1.5 text-sm font-medium rounded-md transition-colors ${
+                        selectedTimeframe === period 
+                          ? 'bg-blue-600 text-white' 
+                          : 'bg-white text-gray-700 border border-gray-300 hover:bg-gray-50'
+                      }`}
                     >
                       {period}
-                    </Button>
+                    </button>
                   ))}
                 </div>
               </div>
-            </CardHeader>
-            <CardContent>
+            </div>
+            <div className="p-6">
               <div className="h-64 bg-gradient-to-br from-gray-50 to-gray-100 rounded-lg flex items-center justify-center">
                 <div className="text-center">
                   <BarChart3 className="w-12 h-12 text-gray-400 mx-auto mb-4" />
@@ -296,60 +296,66 @@ export default function PortfolioAnalytics() {
                   <p className="text-sm text-gray-500">Showing portfolio value over time</p>
                 </div>
               </div>
-            </CardContent>
-          </Card>
+            </div>
+          </div>
 
           {/* Property Distribution */}
-          <Card className="shadow-lg">
-            <CardHeader>
-              <CardTitle className="flex items-center">
+          <div className="bg-white rounded-lg border border-gray-200 shadow-lg">
+            <div className="px-6 py-4 border-b border-gray-200">
+              <h3 className="text-lg font-semibold text-gray-900 flex items-center">
                 <Target className="w-5 h-5 mr-2" />
                 Property Distribution
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
+              </h3>
+            </div>
+            <div className="p-6">
               <div className="space-y-4">
                 <div>
                   <div className="flex justify-between items-center mb-2">
                     <span className="text-sm text-gray-600">Single Family</span>
                     <span className="text-sm font-medium">33.3%</span>
                   </div>
-                  <Progress value={33.3} className="h-2" />
+                  <div className="w-full bg-gray-200 rounded-full h-2">
+                    <div className="bg-blue-600 h-2 rounded-full" style={{width: '33.3%'}}></div>
+                  </div>
                 </div>
                 <div>
                   <div className="flex justify-between items-center mb-2">
                     <span className="text-sm text-gray-600">Townhouse</span>
                     <span className="text-sm font-medium">33.3%</span>
                   </div>
-                  <Progress value={33.3} className="h-2" />
+                  <div className="w-full bg-gray-200 rounded-full h-2">
+                    <div className="bg-blue-600 h-2 rounded-full" style={{width: '33.3%'}}></div>
+                  </div>
                 </div>
                 <div>
                   <div className="flex justify-between items-center mb-2">
                     <span className="text-sm text-gray-600">Condo</span>
                     <span className="text-sm font-medium">33.3%</span>
                   </div>
-                  <Progress value={33.3} className="h-2" />
+                  <div className="w-full bg-gray-200 rounded-full h-2">
+                    <div className="bg-blue-600 h-2 rounded-full" style={{width: '33.3%'}}></div>
+                  </div>
                 </div>
               </div>
-            </CardContent>
-          </Card>
+            </div>
+          </div>
         </div>
 
         {/* Property List */}
-        <Card className="shadow-lg mb-8">
-          <CardHeader>
+        <div className="bg-white rounded-lg border border-gray-200 shadow-lg mb-8">
+          <div className="px-6 py-4 border-b border-gray-200">
             <div className="flex items-center justify-between">
-              <CardTitle className="flex items-center">
+              <h3 className="text-lg font-semibold text-gray-900 flex items-center">
                 <Building2 className="w-5 h-5 mr-2" />
                 Portfolio Properties
-              </CardTitle>
-              <Button className="bg-gradient-to-r from-purple-600 to-purple-700">
+              </h3>
+              <button className="inline-flex items-center px-4 py-2 text-sm font-medium text-white bg-gradient-to-r from-purple-600 to-purple-700 rounded-md hover:from-purple-700 hover:to-purple-800 transition-colors">
                 <Plus className="w-4 h-4 mr-2" />
                 Add Property
-              </Button>
+              </button>
             </div>
-          </CardHeader>
-          <CardContent>
+          </div>
+          <div className="p-6">
             <div className="overflow-x-auto">
               <table className="w-full">
                 <thead>
@@ -415,13 +421,13 @@ export default function PortfolioAnalytics() {
                       </td>
                       <td className="py-4 px-4">
                         <div className="flex gap-2">
-                          <Button variant="outline" size="sm">
+                          <button className="inline-flex items-center px-2 py-1 text-xs font-medium text-gray-700 bg-white border border-gray-300 rounded hover:bg-gray-50 transition-colors">
                             <Eye className="w-3 h-3 mr-1" />
                             View
-                          </Button>
-                          <Button variant="outline" size="sm">
+                          </button>
+                          <button className="inline-flex items-center px-2 py-1 text-xs font-medium text-gray-700 bg-white border border-gray-300 rounded hover:bg-gray-50 transition-colors">
                             <Settings className="w-3 h-3" />
-                          </Button>
+                          </button>
                         </div>
                       </td>
                     </tr>
@@ -429,18 +435,18 @@ export default function PortfolioAnalytics() {
                 </tbody>
               </table>
             </div>
-          </CardContent>
-        </Card>
+          </div>
+        </div>
 
         {/* Market Intelligence Integration */}
-        <Card className="shadow-lg">
-          <CardHeader>
-            <CardTitle className="flex items-center">
+        <div className="bg-white rounded-lg border border-gray-200 shadow-lg">
+          <div className="px-6 py-4 border-b border-gray-200">
+            <h3 className="text-lg font-semibold text-gray-900 flex items-center">
               <AlertTriangle className="w-5 h-5 mr-2 text-orange-600" />
               Market Intelligence Alerts
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
+            </h3>
+          </div>
+          <div className="p-6">
             <div className="space-y-4">
               <div className="flex items-start space-x-3 p-4 bg-yellow-50 border border-yellow-200 rounded-lg">
                 <AlertTriangle className="w-5 h-5 text-yellow-600 mt-0.5" />
@@ -449,9 +455,9 @@ export default function PortfolioAnalytics() {
                   <p className="text-sm text-yellow-700 mt-1">
                     Your River Oaks property has appreciated 8.2% this quarter, outperforming the area average of 5.1%.
                   </p>
-                  <Button variant="outline" size="sm" className="mt-2 text-yellow-700 border-yellow-300">
+                  <button className="mt-2 inline-flex items-center px-2 py-1 text-xs font-medium text-yellow-700 bg-white border border-yellow-300 rounded hover:bg-yellow-50 transition-colors">
                     View Full Analysis
-                  </Button>
+                  </button>
                 </div>
               </div>
               
@@ -462,14 +468,14 @@ export default function PortfolioAnalytics() {
                   <p className="text-sm text-blue-700 mt-1">
                     Memorial area rents have increased 12% YoY. Consider raising rent on your townhouse property.
                   </p>
-                  <Button variant="outline" size="sm" className="mt-2 text-blue-700 border-blue-300">
+                  <button className="mt-2 inline-flex items-center px-2 py-1 text-xs font-medium text-blue-700 bg-white border border-blue-300 rounded hover:bg-blue-50 transition-colors">
                     Calculate New Rent
-                  </Button>
+                  </button>
                 </div>
               </div>
             </div>
-          </CardContent>
-        </Card>
+          </div>
+        </div>
       </div>
     </div>
   );
