@@ -1,5 +1,65 @@
 // Fernando-X AI Assistant - Enhanced with 750,000+ Data Points
-import { INTEGRATED_DATA } from './fernando-x-data'
+import { getIntegratedData } from './fernando-x-data'
+
+// Fallback static data for when database is not available
+const INTEGRATED_DATA = {
+  populationGrowth: {
+    totalProjected: 750000,
+    topGrowthAreas: [
+      { area: 'EaDo', growthRate: 250, projectedGrowth: 25000 },
+      { area: 'Cypress', growthRate: 165, projectedGrowth: 45000 },
+      { area: 'Katy', growthRate: 142, projectedGrowth: 65000 }
+    ]
+  },
+  jobGrowth: {
+    totalNewJobs: 50000,
+    sectors: [
+      { sector: 'Technology', newJobs: 12500 },
+      { sector: 'Healthcare', newJobs: 15000 }
+    ]
+  },
+  developers: [],
+  majorProjects: [],
+  permitActivity: {
+    totalPermits: 1206,
+    totalConstructionValue: 7300000000,
+    byType: { Residential: 740, Commercial: 366, Industrial: 100 },
+    hotZones: []
+  },
+  constructionCosts: {
+    residentialPerSqFt: 150,
+    commercialPerSqFt: 225
+  },
+  marketMetrics: {
+    medianHomePrice: 255000,
+    priceGrowthYoY: 12.5
+  },
+  neighborhoodRankings: [],
+  capitalFlows: {
+    totalInvestment2024: 8500000000,
+    foreignInvestment: 2100000000,
+    preferredAssetTypes: ['Multifamily', 'Industrial', 'Mixed-Use'],
+    topSources: ['Canada', 'Mexico', 'China']
+  },
+  lendingTrends: {
+    currentRate: 7.25,
+    yearAgoRate: 6.75,
+    constructionLoanRate: 'Prime + 1.5%',
+    preferredEquity: '25-30%',
+    capRates: {
+      multifamily: 5.5,
+      office: 7.5,
+      retail: 6.8,
+      industrial: 6.2
+    }
+  },
+  totalTechCompanies: 450,
+  techDistricts: [],
+  schoolDistrictImpact: {
+    topDistricts: ['Katy ISD', 'Cypress-Fairbanks ISD', 'Fort Bend ISD']
+  },
+  environmentalInitiatives: []
+}
 
 export interface FernandoXQuery {
   text: string

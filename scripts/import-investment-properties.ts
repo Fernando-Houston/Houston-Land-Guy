@@ -166,23 +166,18 @@ async function importInvestmentProperties() {
               neighborhood: property.neighborhood,
               city: 'Houston',
               state: 'TX',
-              zipCode: '77000', // Default zip, would normally be more specific
+              zipCode: '77000',
               propertyType: property.propertyType,
+              status: property.propertyStatus,
               listPrice: property.price,
-              squareFootage: property.squareFootage,
+              squareFeet: property.squareFootage,
               bedrooms: property.bedrooms,
               bathrooms: property.bathrooms,
               yearBuilt: property.yearBuilt,
               lotSize: property.lotSize,
-              capRate: property.capRate,
-              grossRent: property.grossRent,
-              estimatedCashFlow: property.estimatedCashFlow,
-              propertyStatus: property.propertyStatus,
-              description: property.description,
-              amenities: property.amenities,
-              investmentHighlights: property.investmentHighlights,
-              listingDate: new Date(),
-              lastUpdated: new Date()
+              features: property.amenities,
+              listDate: new Date(),
+              lastModified: new Date()
             }
           })
           totalImported++
