@@ -69,6 +69,11 @@ export default function IntelligenceMap() {
   const markersRef = useRef<google.maps.Marker[]>([])
   const heatmapRef = useRef<google.maps.visualization.HeatmapLayer | null>(null)
   const [aiInsights, setAiInsights] = useState<string[]>([])
+  const [leftPanelCollapsed, setLeftPanelCollapsed] = useState(false)
+  const [rightPanelCollapsed, setRightPanelCollapsed] = useState(false)
+  const [currentHeatmapType, setCurrentHeatmapType] = useState<string | null>(null)
+  const [animatedMarkers, setAnimatedMarkers] = useState<any[]>([])
+  const [pulsingAreas, setPulsingAreas] = useState<any[]>([])
 
   // Initialize map
   useEffect(() => {
@@ -107,7 +112,7 @@ export default function IntelligenceMap() {
 
   const loadMapData = async () => {
     try {
-      // Mock permits data for development sites
+      // Enhanced mock permits data with more variety and detail
       const mockPermits = [
         {
           permitNumber: 'P2024-001',
@@ -115,7 +120,9 @@ export default function IntelligenceMap() {
           coordinates: { lat: 29.7604, lng: -95.3698 },
           value: 2500000,
           type: 'Commercial',
-          status: 'Active'
+          status: 'Active',
+          priority: 'high',
+          riskLevel: 'low'
         },
         {
           permitNumber: 'P2024-002',
@@ -123,7 +130,9 @@ export default function IntelligenceMap() {
           coordinates: { lat: 29.7805, lng: -95.4618 },
           value: 1800000,
           type: 'Residential',
-          status: 'Active'
+          status: 'Active',
+          priority: 'medium',
+          riskLevel: 'medium'
         },
         {
           permitNumber: 'P2024-003',
@@ -131,7 +140,9 @@ export default function IntelligenceMap() {
           coordinates: { lat: 29.7989, lng: -95.3984 },
           value: 3200000,
           type: 'Mixed-Use',
-          status: 'Active'
+          status: 'Active',
+          priority: 'high',
+          riskLevel: 'low'
         },
         {
           permitNumber: 'P2024-004',
@@ -139,7 +150,9 @@ export default function IntelligenceMap() {
           coordinates: { lat: 29.7407, lng: -95.3908 },
           value: 1500000,
           type: 'Commercial',
-          status: 'Active'
+          status: 'Active',
+          priority: 'low',
+          riskLevel: 'high'
         },
         {
           permitNumber: 'P2024-005',
@@ -147,7 +160,40 @@ export default function IntelligenceMap() {
           coordinates: { lat: 29.7371, lng: -95.4618 },
           value: 4500000,
           type: 'Commercial',
-          status: 'Active'
+          status: 'Active',
+          priority: 'high',
+          riskLevel: 'low'
+        },
+        // Additional scattered permits for better visualization
+        {
+          permitNumber: 'P2024-006',
+          address: '2468 River Oaks Blvd, Houston, TX',
+          coordinates: { lat: 29.7569, lng: -95.4145 },
+          value: 5200000,
+          type: 'Luxury Residential',
+          status: 'Planning',
+          priority: 'high',
+          riskLevel: 'low'
+        },
+        {
+          permitNumber: 'P2024-007',
+          address: '1357 Energy Corridor Dr, Houston, TX',
+          coordinates: { lat: 29.7433, lng: -95.6100 },
+          value: 8900000,
+          type: 'Office Complex',
+          status: 'Under Construction',
+          priority: 'high',
+          riskLevel: 'medium'
+        },
+        {
+          permitNumber: 'P2024-008',
+          address: '9876 Cypress Creek Pkwy, Houston, TX',
+          coordinates: { lat: 29.9500, lng: -95.6772 },
+          value: 3100000,
+          type: 'Industrial',
+          status: 'Active',
+          priority: 'medium',
+          riskLevel: 'low'
         }
       ]
       
@@ -197,18 +243,35 @@ export default function IntelligenceMap() {
     
     if (activePermitLayer) {
       sites.forEach(site => {
+        // Dynamic marker colors based on priority and type
+        let fillColor = '#3B82F6'; // default blue
+        let strokeColor = '#ffffff';
+        let strokeWeight = 2;
+        
+        if (site.data.priority === 'high') {
+          fillColor = site.data.riskLevel === 'low' ? '#10B981' : '#F59E0B'; // green for safe high priority, yellow for risky
+          strokeWeight = 3;
+        } else if (site.data.riskLevel === 'high') {
+          fillColor = '#EF4444'; // red for high risk
+          strokeColor = '#FCA5A5';
+        }
+
+        // Pulsing animation for high-priority items
+        const isPulsing = site.data.priority === 'high';
+        
         const marker = new google.maps.Marker({
           position: site.position,
           map: mapRef.current,
-          title: site.data.address || 'Development Site',
+          title: `${site.data.address} - ${site.data.type} ($${(site.value/1000000).toFixed(1)}M)`,
           icon: {
             path: google.maps.SymbolPath.CIRCLE,
-            scale: Math.max(8, Math.min(site.value / 100000, 20)),
-            fillColor: site.type === 'permit' ? '#3B82F6' : '#10B981',
-            fillOpacity: 0.7,
-            strokeColor: '#ffffff',
-            strokeWeight: 2
-          }
+            scale: isPulsing ? Math.max(12, Math.min(site.value / 80000, 25)) : Math.max(8, Math.min(site.value / 100000, 20)),
+            fillColor: fillColor,
+            fillOpacity: isPulsing ? 0.8 : 0.7,
+            strokeColor: strokeColor,
+            strokeWeight: strokeWeight
+          },
+          animation: isPulsing ? google.maps.Animation.BOUNCE : undefined
         })
 
         marker.addListener('click', () => {
@@ -219,44 +282,110 @@ export default function IntelligenceMap() {
       })
     }
 
-    // Update heatmap for cost layer
-    const activeCostLayer = selectedLayers.find(l => l.id === 'costs')?.active
-    if (activeCostLayer && window.google?.maps?.visualization) {
-      const heatmapPoints = sites.map(site => ({
-        location: new google.maps.LatLng(site.position.lat, site.position.lng),
-        weight: site.value / 100000
-      }))
-
+    // Enhanced heatmap system with multiple types
+    const updateHeatmap = (layerId: string, gradientType: string) => {
       if (heatmapRef.current) {
         heatmapRef.current.setMap(null)
       }
 
-      heatmapRef.current = new google.maps.visualization.HeatmapLayer({
-        data: heatmapPoints,
-        map: mapRef.current,
-        radius: 30,
-        opacity: 0.6,
-        gradient: [
-          'rgba(0, 255, 255, 0)',
-          'rgba(0, 255, 255, 1)',
-          'rgba(0, 191, 255, 1)',
-          'rgba(0, 127, 255, 1)',
-          'rgba(0, 63, 255, 1)',
-          'rgba(0, 0, 255, 1)',
-          'rgba(0, 0, 223, 1)',
-          'rgba(0, 0, 191, 1)',
-          'rgba(0, 0, 159, 1)',
-          'rgba(0, 0, 127, 1)',
-          'rgba(63, 0, 91, 1)',
-          'rgba(127, 0, 63, 1)',
-          'rgba(191, 0, 31, 1)',
-          'rgba(255, 0, 0, 1)'
-        ]
-      })
+      let heatmapPoints: any[] = [];
+      let gradient: string[] = [];
+      let radius = 30;
+      let opacity = 0.6;
+
+      switch (layerId) {
+        case 'costs':
+          heatmapPoints = sites.map(site => ({
+            location: new google.maps.LatLng(site.position.lat, site.position.lng),
+            weight: site.value / 100000
+          }));
+          gradient = [
+            'rgba(0, 255, 255, 0)',
+            'rgba(0, 255, 255, 0.6)',
+            'rgba(0, 191, 255, 0.8)',
+            'rgba(0, 127, 255, 1)',
+            'rgba(255, 255, 0, 1)',
+            'rgba(255, 127, 0, 1)',
+            'rgba(255, 0, 0, 1)'
+          ];
+          break;
+        case 'demographics':
+          // Population density simulation
+          neighborhoods.forEach(hood => {
+            heatmapPoints.push({
+              location: new google.maps.LatLng(hood.center.lat, hood.center.lng),
+              weight: hood.developmentScore / 10
+            });
+          });
+          gradient = [
+            'rgba(0, 255, 0, 0)',
+            'rgba(0, 255, 0, 0.6)',
+            'rgba(255, 255, 0, 0.8)',
+            'rgba(255, 127, 0, 1)',
+            'rgba(255, 0, 0, 1)'
+          ];
+          radius = 50;
+          break;
+        case 'risk':
+          heatmapPoints = sites.filter(site => site.data.riskLevel === 'high').map(site => ({
+            location: new google.maps.LatLng(site.position.lat, site.position.lng),
+            weight: 5
+          }));
+          gradient = [
+            'rgba(255, 0, 0, 0)',
+            'rgba(255, 0, 0, 0.3)',
+            'rgba(255, 0, 0, 0.6)',
+            'rgba(255, 0, 0, 0.8)',
+            'rgba(139, 0, 0, 1)'
+          ];
+          opacity = 0.4;
+          break;
+        case 'opportunities':
+          heatmapPoints = sites.filter(site => site.data.priority === 'high' && site.data.riskLevel === 'low').map(site => ({
+            location: new google.maps.LatLng(site.position.lat, site.position.lng),
+            weight: site.value / 50000
+          }));
+          gradient = [
+            'rgba(0, 255, 0, 0)',
+            'rgba(0, 255, 0, 0.4)',
+            'rgba(34, 197, 94, 0.6)',
+            'rgba(22, 163, 74, 0.8)',
+            'rgba(21, 128, 61, 1)'
+          ];
+          break;
+      }
+
+      if (heatmapPoints.length > 0) {
+        heatmapRef.current = new google.maps.visualization.HeatmapLayer({
+          data: heatmapPoints,
+          map: mapRef.current,
+          radius: radius,
+          opacity: opacity,
+          gradient: gradient
+        });
+        setCurrentHeatmapType(layerId);
+      }
+    };
+
+    // Check for active heatmap layers
+    const activeCostLayer = selectedLayers.find(l => l.id === 'costs')?.active;
+    const activeDemographicsLayer = selectedLayers.find(l => l.id === 'demographics')?.active;
+    const activeRiskLayer = selectedLayers.find(l => l.id === 'risk')?.active;
+    const activeOpportunitiesLayer = selectedLayers.find(l => l.id === 'opportunities')?.active;
+
+    if (activeCostLayer && window.google?.maps?.visualization) {
+      updateHeatmap('costs', 'cost');
+    } else if (activeDemographicsLayer && window.google?.maps?.visualization) {
+      updateHeatmap('demographics', 'population');
+    } else if (activeRiskLayer && window.google?.maps?.visualization) {
+      updateHeatmap('risk', 'risk');
+    } else if (activeOpportunitiesLayer && window.google?.maps?.visualization) {
+      updateHeatmap('opportunities', 'opportunity');
     } else if (heatmapRef.current) {
-      heatmapRef.current.setMap(null)
+      heatmapRef.current.setMap(null);
+      setCurrentHeatmapType(null);
     }
-  }, [sites, selectedLayers])
+  }, [sites, selectedLayers, neighborhoods])
 
   useEffect(() => {
     updateMarkers()
@@ -359,104 +488,137 @@ export default function IntelligenceMap() {
 
           {/* Enhanced Layer Controls */}
           <motion.div
-            initial={{ x: -300 }}
-            animate={{ x: 0 }}
-            className="absolute top-4 left-4 bg-gray-900/95 backdrop-blur-sm rounded-xl shadow-2xl border border-gray-700 w-80"
+            initial={{ x: leftPanelCollapsed ? -280 : 0 }}
+            animate={{ x: leftPanelCollapsed ? -280 : 0 }}
+            transition={{ duration: 0.3 }}
+            className={`absolute top-4 left-4 bg-gray-900/95 backdrop-blur-sm rounded-xl shadow-2xl border border-gray-700 transition-all ${leftPanelCollapsed ? 'w-20' : 'w-80'}`}
           >
             <div className="p-4">
               <div className="flex items-center justify-between mb-4">
-                <h3 className="text-lg font-semibold text-white">Data Layers</h3>
+                {!leftPanelCollapsed && <h3 className="text-lg font-semibold text-white">Data Layers</h3>}
                 <div className="flex items-center gap-2">
-                  <Layers className="h-5 w-5 text-gray-400" />
-                  <button className="p-1 hover:bg-gray-800 rounded">
-                    <Settings className="h-4 w-4 text-gray-400" />
+                  {!leftPanelCollapsed && <Layers className="h-5 w-5 text-gray-400" />}
+                  <button 
+                    onClick={() => setLeftPanelCollapsed(!leftPanelCollapsed)}
+                    className="p-2 hover:bg-gray-800 rounded-lg transition-colors"
+                    title={leftPanelCollapsed ? "Expand Panel" : "Collapse Panel"}
+                  >
+                    <ChevronDown className={`h-4 w-4 text-gray-400 transition-transform ${leftPanelCollapsed ? 'rotate-90' : '-rotate-90'}`} />
                   </button>
+                  {!leftPanelCollapsed && (
+                    <button className="p-1 hover:bg-gray-800 rounded">
+                      <Settings className="h-4 w-4 text-gray-400" />
+                    </button>
+                  )}
                 </div>
               </div>
               
-              <div className="space-y-3">
-                {selectedLayers.map((layer, index) => {
-                  const Icon = layer.icon
-                  const layerCount = layer.id === 'permits' ? 1247 : 
-                                   layer.id === 'opportunities' ? 89 :
-                                   layer.id === 'risk' ? 156 : 
-                                   layer.id === 'infrastructure' ? 234 : null;
-                  
-                  return (
-                    <motion.div
-                      key={layer.id}
-                      initial={{ x: -20, opacity: 0 }}
-                      animate={{ x: 0, opacity: 1 }}
-                      transition={{ delay: index * 0.05 }}
-                      className={`p-3 rounded-lg cursor-pointer transition-all border ${
-                        layer.active 
-                          ? 'bg-gray-800 border-purple-500/50' 
-                          : 'bg-gray-800/50 border-gray-700 hover:bg-gray-800/70'
-                      }`}
-                      onClick={() => toggleLayer(layer.id)}
-                    >
-                      <div className="flex items-center justify-between mb-2">
-                        <div className="flex items-center gap-3">
-                          <div className={`p-2 rounded-lg transition-all ${layer.active ? 'scale-110' : ''}`} style={{ backgroundColor: layer.color + '20' }}>
-                            <Icon className="h-4 w-4" style={{ color: layer.color }} />
-                          </div>
-                          <div>
-                            <div className={`text-sm font-medium ${layer.active ? 'text-white' : 'text-gray-300'}`}>
-                              {layer.name}
+              {!leftPanelCollapsed && (
+                <div className="space-y-3">
+                  {selectedLayers.map((layer, index) => {
+                    const Icon = layer.icon
+                    const layerCount = layer.id === 'permits' ? 1247 : 
+                                     layer.id === 'opportunities' ? 89 :
+                                     layer.id === 'risk' ? 156 : 
+                                     layer.id === 'infrastructure' ? 234 : null;
+                    
+                    return (
+                      <motion.div
+                        key={layer.id}
+                        initial={{ x: -20, opacity: 0 }}
+                        animate={{ x: 0, opacity: 1 }}
+                        transition={{ delay: index * 0.05 }}
+                        className={`p-3 rounded-lg cursor-pointer transition-all border ${
+                          layer.active 
+                            ? 'bg-gray-800 border-purple-500/50' 
+                            : 'bg-gray-800/50 border-gray-700 hover:bg-gray-800/70'
+                        }`}
+                        onClick={() => toggleLayer(layer.id)}
+                      >
+                        <div className="flex items-center justify-between mb-2">
+                          <div className="flex items-center gap-3">
+                            <div className={`p-2 rounded-lg transition-all ${layer.active ? 'scale-110' : ''}`} style={{ backgroundColor: layer.color + '20' }}>
+                              <Icon className="h-4 w-4" style={{ color: layer.color }} />
                             </div>
-                            {layerCount && (
-                              <div className="text-xs text-gray-400">
-                                {layerCount.toLocaleString()} items
+                            <div>
+                              <div className={`text-sm font-medium ${layer.active ? 'text-white' : 'text-gray-300'}`}>
+                                {layer.name}
                               </div>
+                              {layerCount && (
+                                <div className="text-xs text-gray-400">
+                                  {layerCount.toLocaleString()} items
+                                </div>
+                              )}
+                            </div>
+                          </div>
+                          <div className="flex items-center gap-2">
+                            {layer.active && (
+                              <div className="w-2 h-2 bg-green-400 rounded-full animate-pulse" />
                             )}
+                            <button
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                // Toggle visibility logic
+                              }}
+                              className="p-1 hover:bg-gray-700 rounded"
+                            >
+                              {layer.active ? 
+                                <Eye className="h-3 w-3 text-gray-300" /> : 
+                                <EyeOff className="h-3 w-3 text-gray-500" />
+                              }
+                            </button>
                           </div>
                         </div>
-                        <div className="flex items-center gap-2">
-                          {layer.active && (
-                            <div className="w-2 h-2 bg-green-400 rounded-full animate-pulse" />
-                          )}
-                          <button
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              // Toggle visibility logic
-                            }}
-                            className="p-1 hover:bg-gray-700 rounded"
+                        
+                        {layer.active && (
+                          <motion.div
+                            initial={{ height: 0, opacity: 0 }}
+                            animate={{ height: 'auto', opacity: 1 }}
+                            className="mt-2 pt-2 border-t border-gray-700"
                           >
-                            {layer.active ? 
-                              <Eye className="h-3 w-3 text-gray-300" /> : 
-                              <EyeOff className="h-3 w-3 text-gray-500" />
-                            }
-                          </button>
-                        </div>
-                      </div>
-                      
-                      {layer.active && (
-                        <motion.div
-                          initial={{ height: 0, opacity: 0 }}
-                          animate={{ height: 'auto', opacity: 1 }}
-                          className="mt-2 pt-2 border-t border-gray-700"
-                        >
-                          <div className="flex items-center justify-between text-xs">
-                            <span className="text-gray-400">Opacity</span>
-                            <span className="text-gray-300">{Math.round(layer.opacity * 100)}%</span>
-                          </div>
-                          <input
-                            type="range"
-                            min="0"
-                            max="1"
-                            step="0.1"
-                            value={layer.opacity}
-                            onChange={(e) => {
-                              // Update opacity logic
-                            }}
-                            className="w-full mt-1 h-1 bg-gray-700 rounded-lg appearance-none cursor-pointer"
-                          />
-                        </motion.div>
-                      )}
-                    </motion.div>
-                  )
-                })}
-              </div>
+                            <div className="flex items-center justify-between text-xs">
+                              <span className="text-gray-400">Opacity</span>
+                              <span className="text-gray-300">{Math.round(layer.opacity * 100)}%</span>
+                            </div>
+                            <input
+                              type="range"
+                              min="0"
+                              max="1"
+                              step="0.1"
+                              value={layer.opacity}
+                              onChange={(e) => {
+                                // Update opacity logic
+                              }}
+                              className="w-full mt-1 h-1 bg-gray-700 rounded-lg appearance-none cursor-pointer"
+                            />
+                          </motion.div>
+                        )}
+                      </motion.div>
+                    )
+                  })}
+                </div>
+              )}
+
+              {/* Collapsed State - Show quick layer toggles */}
+              {leftPanelCollapsed && (
+                <div className="space-y-2">
+                  {selectedLayers.slice(0, 4).map((layer) => {
+                    const Icon = layer.icon;
+                    return (
+                      <button
+                        key={layer.id}
+                        onClick={() => toggleLayer(layer.id)}
+                        className={`w-full p-2 rounded-lg transition-all ${
+                          layer.active ? 'bg-purple-600' : 'bg-gray-800 hover:bg-gray-700'
+                        }`}
+                        title={layer.name}
+                      >
+                        <Icon className="h-4 w-4 text-white mx-auto" />
+                      </button>
+                    );
+                  })}
+                </div>
+              )}
 
               {/* Enhanced Time Controls */}
               <div className="mt-6 pt-4 border-t border-gray-700">
@@ -538,24 +700,37 @@ export default function IntelligenceMap() {
 
           {/* Enhanced AI Insights Panel */}
           <motion.div
-            initial={{ opacity: 0, x: 20 }}
-            animate={{ opacity: 1, x: 0 }}
-            className="absolute top-4 right-4 bg-gray-900/95 backdrop-blur-sm rounded-xl shadow-2xl border border-gray-700 w-96"
+            initial={{ opacity: 0, x: rightPanelCollapsed ? 280 : 0 }}
+            animate={{ opacity: 1, x: rightPanelCollapsed ? 280 : 0 }}
+            transition={{ duration: 0.3 }}
+            className={`absolute top-4 right-4 bg-gray-900/95 backdrop-blur-sm rounded-xl shadow-2xl border border-gray-700 transition-all ${rightPanelCollapsed ? 'w-20' : 'w-96'}`}
           >
             <div className="p-4">
               <div className="flex items-center justify-between mb-4">
                 <div className="flex items-center gap-2">
-                  <Brain className="h-5 w-5 text-purple-400" />
-                  <h3 className="text-lg font-semibold text-white">AI Insights</h3>
-                  <div className="w-2 h-2 bg-purple-400 rounded-full animate-pulse" />
+                  {!rightPanelCollapsed && <Brain className="h-5 w-5 text-purple-400" />}
+                  {!rightPanelCollapsed && <h3 className="text-lg font-semibold text-white">AI Insights</h3>}
+                  {!rightPanelCollapsed && <div className="w-2 h-2 bg-purple-400 rounded-full animate-pulse" />}
                 </div>
-                <button className="p-1 hover:bg-gray-800 rounded">
-                  <MoreHorizontal className="h-4 w-4 text-gray-400" />
-                </button>
+                <div className="flex items-center gap-2">
+                  <button 
+                    onClick={() => setRightPanelCollapsed(!rightPanelCollapsed)}
+                    className="p-2 hover:bg-gray-800 rounded-lg transition-colors"
+                    title={rightPanelCollapsed ? "Expand AI Panel" : "Collapse AI Panel"}
+                  >
+                    <ChevronDown className={`h-4 w-4 text-gray-400 transition-transform ${rightPanelCollapsed ? '-rotate-90' : 'rotate-90'}`} />
+                  </button>
+                  {!rightPanelCollapsed && (
+                    <button className="p-1 hover:bg-gray-800 rounded">
+                      <MoreHorizontal className="h-4 w-4 text-gray-400" />
+                    </button>
+                  )}
+                </div>
               </div>
 
-              <div className="space-y-3 max-h-80 overflow-y-auto">
-                {[
+              {!rightPanelCollapsed && (
+                <div className="space-y-3 max-h-80 overflow-y-auto">
+                  {[
                   {
                     type: 'opportunity',
                     icon: Target,
@@ -624,30 +799,44 @@ export default function IntelligenceMap() {
                       </div>
                     </motion.div>
                   );
-                })}
-              </div>
+                  })}
+                </div>
 
-              {/* Fernando-X Chat Integration */}
-              <div className="mt-4 p-3 bg-gradient-to-r from-purple-900/50 to-blue-900/50 rounded-lg border border-purple-500/30">
-                <div className="flex items-center gap-2 mb-2">
-                  <Brain className="h-4 w-4 text-purple-400" />
-                  <span className="text-sm font-medium text-white">Ask Fernando-X</span>
+                {/* Fernando-X Chat Integration */}
+                <div className="mt-4 p-3 bg-gradient-to-r from-purple-900/50 to-blue-900/50 rounded-lg border border-purple-500/30">
+                  <div className="flex items-center gap-2 mb-2">
+                    <Brain className="h-4 w-4 text-purple-400" />
+                    <span className="text-sm font-medium text-white">Ask Fernando-X</span>
+                  </div>
+                  <div className="space-y-1">
+                    <button className="w-full text-left p-2 text-xs text-gray-300 hover:bg-gray-800/50 rounded transition-colors">
+                      "Show me highest ROI opportunities in this area"
+                    </button>
+                    <button className="w-full text-left p-2 text-xs text-gray-300 hover:bg-gray-800/50 rounded transition-colors">
+                      "What's driving permit activity in Cypress?"
+                    </button>
+                    <button className="w-full text-left p-2 text-xs text-gray-300 hover:bg-gray-800/50 rounded transition-colors">
+                      "Compare construction costs: Heights vs River Oaks"
+                    </button>
+                  </div>
+                  <button className="w-full mt-2 px-3 py-2 bg-purple-600 hover:bg-purple-700 rounded-lg text-sm font-medium text-white transition-colors">
+                    Open Full Chat
+                  </button>
                 </div>
-                <div className="space-y-1">
-                  <button className="w-full text-left p-2 text-xs text-gray-300 hover:bg-gray-800/50 rounded transition-colors">
-                    "Show me highest ROI opportunities in this area"
-                  </button>
-                  <button className="w-full text-left p-2 text-xs text-gray-300 hover:bg-gray-800/50 rounded transition-colors">
-                    "What's driving permit activity in Cypress?"
-                  </button>
-                  <button className="w-full text-left p-2 text-xs text-gray-300 hover:bg-gray-800/50 rounded transition-colors">
-                    "Compare construction costs: Heights vs River Oaks"
-                  </button>
+              )}
+
+              {/* Collapsed State - Show AI status */}
+              {rightPanelCollapsed && (
+                <div className="flex flex-col items-center gap-3">
+                  <div className="w-8 h-8 bg-purple-600 rounded-full flex items-center justify-center">
+                    <Brain className="h-4 w-4 text-white" />
+                  </div>
+                  <div className="w-2 h-2 bg-purple-400 rounded-full animate-pulse" />
+                  <div className="text-xs text-gray-400 text-center writing-mode-vertical-rl" style={{ writingMode: 'vertical-rl' }}>
+                    AI Active
+                  </div>
                 </div>
-                <button className="w-full mt-2 px-3 py-2 bg-purple-600 hover:bg-purple-700 rounded-lg text-sm font-medium text-white transition-colors">
-                  Open Full Chat
-                </button>
-              </div>
+              )}
             </div>
           </motion.div>
 
@@ -756,8 +945,28 @@ export default function IntelligenceMap() {
             </div>
           </div>
 
+          {/* Heat Map Indicator */}
+          {currentHeatmapType && (
+            <div className="absolute top-20 left-1/2 -translate-x-1/2 bg-gray-900/90 backdrop-blur-sm rounded-lg px-4 py-2 border border-gray-700">
+              <div className="flex items-center gap-2">
+                <div className={`w-3 h-3 rounded-full ${
+                  currentHeatmapType === 'costs' ? 'bg-yellow-400' :
+                  currentHeatmapType === 'demographics' ? 'bg-cyan-400' :
+                  currentHeatmapType === 'risk' ? 'bg-red-400' :
+                  'bg-green-400'
+                }`} />
+                <span className="text-sm text-white font-medium">
+                  {currentHeatmapType === 'costs' ? 'Construction Cost Heat' :
+                   currentHeatmapType === 'demographics' ? 'Population Density' :
+                   currentHeatmapType === 'risk' ? 'Risk Assessment' :
+                   'Investment Opportunities'} Active
+                </span>
+              </div>
+            </div>
+          )}
+
           {/* Neighborhood Scores Overlay */}
-          <div className="absolute top-20 left-1/2 -translate-x-1/2 flex space-x-2">
+          <div className={`absolute ${currentHeatmapType ? 'top-32' : 'top-20'} left-1/2 -translate-x-1/2 flex space-x-2`}>
             {neighborhoods.slice(0, 4).map((hood, index) => (
               <motion.div
                 key={hood.name}
