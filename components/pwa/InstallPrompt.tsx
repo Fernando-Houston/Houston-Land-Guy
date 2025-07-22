@@ -18,8 +18,11 @@ export default function InstallPrompt() {
   const [isInstalled, setIsInstalled] = useState(false)
   const [isOnline, setIsOnline] = useState(true)
   const [showOfflineReady, setShowOfflineReady] = useState(false)
+  const [isClient, setIsClient] = useState(false)
 
   useEffect(() => {
+    setIsClient(true)
+    
     // Check if already installed
     if (window.matchMedia('(display-mode: standalone)').matches) {
       setIsInstalled(true)
@@ -96,6 +99,11 @@ export default function InstallPrompt() {
   }
 
   const isIOS = typeof navigator !== 'undefined' ? /iPad|iPhone|iPod/.test(navigator.userAgent) && !(window as any).MSStream : false
+
+  // Don't render anything on server-side to prevent hydration mismatch
+  if (!isClient) {
+    return null
+  }
 
   return (
     <>

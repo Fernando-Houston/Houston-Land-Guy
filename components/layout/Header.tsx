@@ -72,9 +72,11 @@ export function Header() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
   const [scrolled, setScrolled] = useState(false)
   const [openDropdown, setOpenDropdown] = useState<string | null>(null)
+  const [isClient, setIsClient] = useState(false)
   const pathname = usePathname()
 
   useEffect(() => {
+    setIsClient(true)
     const handleScroll = () => {
       setScrolled(window.scrollY > 10)
     }
@@ -101,7 +103,7 @@ export function Header() {
           <div className="hidden md:block">
             <div className="ml-10 flex items-center space-x-8">
               {navigation.map((item, index) => {
-                const isActive = pathname === item.href || pathname.startsWith(item.href + '/')
+                const isActive = isClient && (pathname === item.href || pathname.startsWith(item.href + '/'))
                 const hasSubItems = item.subItems && item.subItems.length > 0
                 
                 return (
@@ -252,7 +254,7 @@ export function Header() {
             <motion.div className="space-y-1 px-2 pb-3 pt-2 bg-white border-t border-gray-100">
               {navigation.map((item, index) => {
                 const Icon = item.icon
-                const isActive = pathname === item.href || pathname.startsWith(item.href + '/')
+                const isActive = isClient && (pathname === item.href || pathname.startsWith(item.href + '/'))
                 const hasSubItems = item.subItems && item.subItems.length > 0
                 
                 return (
