@@ -1,64 +1,151 @@
-const CACHE_NAME = 'houston-intel-v2'; // Updated to force cache refresh
+const CACHE_NAME = 'houston-intel-v3'; // Updated to force cache refresh
+const STATIC_CACHE_NAME = 'houston-intel-static-v3';
+const API_CACHE_NAME = 'houston-intel-api-v3';
+
 const urlsToCache = [
   '/',
   '/assistant',
   '/roi-calculator',
   '/intelligence/map',
   '/intelligence',
-  '/offline'
+  '/investment-opportunities/deals',
+  '/compare',
+  '/offline',
+  '/manifest.json'
+];
+
+// API endpoints to cache
+const API_ENDPOINTS = [
+  '/api/investment-opportunities',
+  '/api/properties',
+  '/api/market-data'
 ];
 
 // Install Service Worker
 self.addEventListener('install', event => {
   event.waitUntil(
-    caches.open(CACHE_NAME)
-      .then(cache => {
-        console.log('Opened cache');
+    Promise.all([
+      caches.open(CACHE_NAME).then(cache => {
+        console.log('Opened main cache');
         return cache.addAll(urlsToCache);
-      })
+      }),
+      caches.open(STATIC_CACHE_NAME),
+      caches.open(API_CACHE_NAME)
+    ]).then(() => {
+      self.skipWaiting();
+    })
   );
 });
 
 // Cache and return requests
 self.addEventListener('fetch', event => {
-  event.respondWith(
-    caches.match(event.request)
-      .then(response => {
-        // Cache hit - return response
-        if (response) {
-          return response;
-        }
+  const { request } = event;
+  const url = new URL(request.url);
 
-        // Clone the request
-        const fetchRequest = event.request.clone();
-
-        return fetch(fetchRequest).then(response => {
-          // Check if valid response
-          if (!response || response.status !== 200 || response.type !== 'basic') {
-            return response;
-          }
-
-          // Clone the response
-          const responseToCache = response.clone();
-
-          // Cache the fetched response for future use
-          caches.open(CACHE_NAME)
-            .then(cache => {
-              cache.put(event.request, responseToCache);
+  // Handle navigation requests (pages)
+  if (request.mode === 'navigate') {
+    event.respondWith(
+      fetch(request)
+        .then(response => {
+          if (response.status === 200) {
+            const responseClone = response.clone();
+            caches.open(CACHE_NAME).then(cache => {
+              cache.put(request, responseClone);
             });
-
+          }
           return response;
-        }).catch(() => {
-          // Network request failed, serve offline page
-          return caches.match('/offline');
+        })
+        .catch(() => {
+          return caches.match(request).then(cachedResponse => {
+            if (cachedResponse) {
+              return cachedResponse;
+            }
+            return caches.match('/offline');
+          });
+        })
+    );
+    return;
+  }
+
+  // Handle API requests with network-first strategy
+  if (url.pathname.startsWith('/api/')) {
+    event.respondWith(
+      fetch(request)
+        .then(response => {
+          if (response.status === 200) {
+            const responseClone = response.clone();
+            caches.open(API_CACHE_NAME).then(cache => {
+              cache.put(request, responseClone);
+            });
+          }
+          return response;
+        })
+        .catch(() => {
+          return caches.match(request).then(cachedResponse => {
+            if (cachedResponse) {
+              return cachedResponse;
+            }
+            return new Response(JSON.stringify({ 
+              error: 'Offline', 
+              message: 'This data is not available offline',
+              cached: false 
+            }), {
+              status: 503,
+              headers: { 'Content-Type': 'application/json' }
+            });
+          });
+        })
+    );
+    return;
+  }
+
+  // Handle static resources with cache-first strategy
+  if (
+    request.destination === 'style' ||
+    request.destination === 'script' ||
+    request.destination === 'image' ||
+    url.pathname.startsWith('/_next/static/')
+  ) {
+    event.respondWith(
+      caches.match(request).then(cachedResponse => {
+        if (cachedResponse) {
+          return cachedResponse;
+        }
+        return fetch(request).then(response => {
+          if (response.status === 200) {
+            const responseClone = response.clone();
+            caches.open(STATIC_CACHE_NAME).then(cache => {
+              cache.put(request, responseClone);
+            });
+          }
+          return response;
         });
+      })
+    );
+    return;
+  }
+
+  // Default: network-first for other requests
+  event.respondWith(
+    fetch(request)
+      .then(response => {
+        if (response.status === 200) {
+          const responseClone = response.clone();
+          caches.open(CACHE_NAME).then(cache => {
+            cache.put(request, responseClone);
+          });
+        }
+        return response;
+      })
+      .catch(() => {
+        return caches.match(request);
       })
   );
 });
 
 // Update Service Worker
 self.addEventListener('activate', event => {
-  const cacheWhitelist = [CACHE_NAME];
+  const cacheWhitelist = [CACHE_NAME, STATIC_CACHE_NAME, API_CACHE_NAME];
   event.waitUntil(
     caches.keys().then(cacheNames => {
       return Promise.all(
@@ -68,6 +155,8 @@ self.addEventListener('activate', event => {
           }
         })
       );
+    }).then(() => {
+      self.clients.claim();
     })
   );
 });
@@ -127,8 +216,16 @@ self.addEventListener('notificationclick', event => {
   event.notification.close();
 
   if (event.action === 'explore') {
-    clients.openWindow('/properties/new');
+    event.waitUntil(
+      clients.openWindow('/investment-opportunities/deals')
+    );
+  } else if (event.action === 'close') {
+    // Just close the notification
+    return;
   } else {
-    clients.openWindow('/');
+    // Default action - open the app
+    event.waitUntil(
+      clients.openWindow('/')
+    );
   }
 });

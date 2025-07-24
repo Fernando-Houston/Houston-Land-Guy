@@ -4,6 +4,8 @@ import { usePathname } from 'next/navigation';
 import { useState, useEffect } from 'react';
 import { Header } from './Header';
 import { Footer } from './Footer';
+import FloatingActions from '@/components/enhanced/FloatingActions';
+// import OnboardingFlow from '@/components/enhanced/OnboardingFlow';
 
 export function ConditionalLayout({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
@@ -27,6 +29,8 @@ export function ConditionalLayout({ children }: { children: React.ReactNode }) {
       <Header />
       <main className="flex-1">{children}</main>
       <Footer />
+      <FloatingActions />
+      {/* <OnboardingFlow /> */}
     </div>
   );
 }

@@ -7,6 +7,9 @@ import { Analytics } from '@vercel/analytics/react';
 import InstallPrompt from '@/components/pwa/InstallPrompt';
 import { SpeedInsights } from '@vercel/speed-insights/next';
 import { GoogleAnalytics } from '@/components/analytics/GoogleAnalytics';
+import FernandoXWidget from '@/components/FernandoXWidget';
+import { NotificationProvider } from '@/contexts/NotificationContext';
+import NotificationSystem from '@/components/NotificationSystem';
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -237,8 +240,12 @@ export default function RootLayout({
       </head>
       <body className={`${inter.className} antialiased bg-gray-50`}>
         <GoogleAnalytics />
-        <ConditionalLayout>{children}</ConditionalLayout>
-        <InstallPrompt />
+        <NotificationProvider>
+          <ConditionalLayout>{children}</ConditionalLayout>
+          <FernandoXWidget />
+          <NotificationSystem />
+          <InstallPrompt />
+        </NotificationProvider>
         <Analytics />
         <SpeedInsights />
         <Toaster

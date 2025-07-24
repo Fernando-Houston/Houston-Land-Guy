@@ -7,6 +7,7 @@ import { cn } from '@/lib/utils/cn'
 import { motion, AnimatePresence } from 'framer-motion'
 import { usePathname } from 'next/navigation'
 import { Logo } from '@/components/ui/Logo'
+import NotificationBell from '@/components/NotificationBell'
 
 const navigation = [
   { 
@@ -161,6 +162,15 @@ export function Header() {
                 )
               })}
               
+              {/* Notification Bell */}
+              <motion.div
+                initial={{ opacity: 0, scale: 0.8 }}
+                animate={{ opacity: 1, scale: 1 }}
+                transition={{ delay: 0.3 }}
+              >
+                <NotificationBell />
+              </motion.div>
+
               {/* Fernando-X Button */}
               <motion.div
                 initial={{ opacity: 0, scale: 0.8 }}

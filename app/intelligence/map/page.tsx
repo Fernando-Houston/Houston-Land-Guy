@@ -281,9 +281,11 @@ export default function IntelligenceMap() {
         markersRef.current.push(marker)
       })
     }
+  }, [selectedLayers, sites])
 
-    // Enhanced heatmap system with multiple types
-    const updateHeatmap = (layerId: string, gradientType: string) => {
+  // Enhanced heatmap system with multiple types
+  const updateHeatmap = useCallback(() => {
+    const updateHeatmapInternal = (layerId: string, gradientType: string) => {
       if (heatmapRef.current) {
         heatmapRef.current.setMap(null)
       }
@@ -374,13 +376,13 @@ export default function IntelligenceMap() {
     const activeOpportunitiesLayer = selectedLayers.find(l => l.id === 'opportunities')?.active;
 
     if (activeCostLayer && window.google?.maps?.visualization) {
-      updateHeatmap('costs', 'cost');
+      updateHeatmapInternal('costs', 'cost');
     } else if (activeDemographicsLayer && window.google?.maps?.visualization) {
-      updateHeatmap('demographics', 'population');
+      updateHeatmapInternal('demographics', 'population');
     } else if (activeRiskLayer && window.google?.maps?.visualization) {
-      updateHeatmap('risk', 'risk');
+      updateHeatmapInternal('risk', 'risk');
     } else if (activeOpportunitiesLayer && window.google?.maps?.visualization) {
-      updateHeatmap('opportunities', 'opportunity');
+      updateHeatmapInternal('opportunities', 'opportunity');
     } else if (heatmapRef.current) {
       heatmapRef.current.setMap(null);
       setCurrentHeatmapType(null);
@@ -390,6 +392,10 @@ export default function IntelligenceMap() {
   useEffect(() => {
     updateMarkers()
   }, [updateMarkers])
+
+  useEffect(() => {
+    updateHeatmap()
+  }, [updateHeatmap])
 
   const captureScreenshot = () => {
     // In production, implement map screenshot functionality
@@ -799,9 +805,12 @@ export default function IntelligenceMap() {
                       </div>
                     </motion.div>
                   );
-                  })}
+                })}
                 </div>
+              )}
 
+              {!rightPanelCollapsed && (
+                <div>
                 {/* Fernando-X Chat Integration */}
                 <div className="mt-4 p-3 bg-gradient-to-r from-purple-900/50 to-blue-900/50 rounded-lg border border-purple-500/30">
                   <div className="flex items-center gap-2 mb-2">
@@ -822,6 +831,7 @@ export default function IntelligenceMap() {
                   <button className="w-full mt-2 px-3 py-2 bg-purple-600 hover:bg-purple-700 rounded-lg text-sm font-medium text-white transition-colors">
                     Open Full Chat
                   </button>
+                </div>
                 </div>
               )}
 

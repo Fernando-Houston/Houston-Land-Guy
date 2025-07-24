@@ -8,6 +8,7 @@ import AISearchBar from '@/components/search/AISearchBar'
 // Removed direct service imports - client components should use API calls
 import AIPropertyRecommendations from '@/components/intelligence/AIPropertyRecommendations'
 import FernandoXChat from '@/components/fernando-x-chat'
+import MarketHeatMap from '@/components/MarketHeatMap'
 
 export default function IntelligenceHub() {
   const [selectedCategory, setSelectedCategory] = useState<'all' | 'developers' | 'sellers' | 'investors'>('all')
@@ -825,6 +826,11 @@ export default function IntelligenceHub() {
             )
           })}
         </div>
+      </div>
+
+      {/* Market Heat Map */}
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+        <MarketHeatMap />
       </div>
 
       {/* AI Property Recommendations */}

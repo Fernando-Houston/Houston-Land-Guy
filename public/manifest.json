@@ -67,6 +67,20 @@
       "icons": [{ "src": "/icons/ai-96x96.png", "sizes": "96x96" }]
     },
     {
+      "name": "Investment Deals",
+      "short_name": "Deals",
+      "description": "Browse investment opportunities",
+      "url": "/investment-opportunities/deals",
+      "icons": [{ "src": "/icons/deals-96x96.png", "sizes": "96x96" }]
+    },
+    {
+      "name": "Property Comparison",
+      "short_name": "Compare",
+      "description": "Compare properties side-by-side",
+      "url": "/compare",
+      "icons": [{ "src": "/icons/compare-96x96.png", "sizes": "96x96" }]
+    },
+    {
       "name": "ROI Calculator",
       "short_name": "Calculator",
       "description": "Calculate property ROI",
