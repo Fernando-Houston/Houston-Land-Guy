@@ -166,7 +166,7 @@ export default function FernandoXWidget() {
 
   return (
     <div className={`fixed bottom-6 right-6 bg-white rounded-lg shadow-2xl border border-gray-200 z-50 transition-all duration-300 ${
-      isMinimized ? 'w-80 h-16' : 'w-80 h-96'
+      isMinimized ? 'w-80 h-16' : 'w-96 h-[600px]'
     }`}>
       {/* Header */}
       <div className="flex items-center justify-between p-4 border-b border-gray-200 bg-gradient-to-r from-blue-600 to-blue-700 text-white rounded-t-lg">
@@ -198,7 +198,7 @@ export default function FernandoXWidget() {
       {!isMinimized && (
         <>
           {/* Messages */}
-          <div className="flex-1 overflow-y-auto p-4 space-y-3 h-64">
+          <div className="flex-1 overflow-y-auto p-4 space-y-3" style={{ height: '450px' }}>
             {session.messages.map((message) => (
               <div
                 key={message.id}
